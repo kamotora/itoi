@@ -10,7 +10,9 @@ set(QT_VERSION 5)
 set(REQUIRED_LIBS Core Gui Widgets)
 set(REQUIRED_LIBS_QUALIFIED Qt5::Core Qt5::Gui Qt5::Widgets)
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp core/InputImage.cpp core/InputImage.h core/DoubleImage.cpp core/DoubleImage.h core/helper.h core/helper.cpp core/FilterUtil.cpp core/FilterUtil.h filter/border/IBorderPolicy.cpp filter/border/IBorderPolicy.h filter/border/MirrorPolicy.cpp filter/border/MirrorPolicy.h filter/border/ZeroPolicy.cpp filter/border/ZeroPolicy.h filter/border/SymmetryPolicy.cpp filter/border/SymmetryPolicy.h filter/border/CopyPolicy.cpp filter/border/CopyPolicy.h)
+
+set(CMAKE_PREFIX_PATH /usr/include/{host}/qt{version}/)
 
 if (NOT CMAKE_PREFIX_PATH)
     message(WARNING "CMAKE_PREFIX_PATH is not defined, you may need to set it "
