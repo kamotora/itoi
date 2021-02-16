@@ -1,12 +1,11 @@
 #include "helper.h"
 
-unsigned char Helper::toSRGB(const QColor &rgbPixel) {
+unsigned char Helper::toGrayscale(const QColor &rgbPixel) {
     auto result = 0.213 * rgbPixel.red() + 0.715 * rgbPixel.green() + 0.072 * rgbPixel.blue();
     return result;
 }
 
-//todo разобраться, где применяется
-void Helper::normalizeMinMax(unique_ptr<double[]> data, int size) {
+unique_ptr<double[]> Helper::normalizeMinMax(const unique_ptr<double[]> &data, int size, double newDiff) {
     double max = data[0];
     double min = data[0];
     for (int i = 0; i < size; i++) {
@@ -14,7 +13,9 @@ void Helper::normalizeMinMax(unique_ptr<double[]> data, int size) {
         if (data[i] > max) max = data[i];
     }
     // normalizing
+    auto res = make_unique<double[]>(size);
     for (int i = 0; i < size; i++) {
-        data[i] = (data[i] - min) * (1.0 / (max - min));
+        res[i] = (data[i] - min) * (newDiff / (max - min));
     }
+    return res;
 }

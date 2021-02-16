@@ -8,8 +8,8 @@ using namespace std;
 
 class Helper {
 public:
-    static unsigned char toSRGB(const QColor &rgbPixel);
+    static unsigned char toGrayscale(const QColor &rgbPixel);
 
-    void normalizeMinMax(unique_ptr<double[]> data, int size);
+    static unique_ptr<double[]> normalizeMinMax(const unique_ptr<double[]> &data, int size, double newDiff = 1.0);
 };
 #endif //ITOI_HELPER_H

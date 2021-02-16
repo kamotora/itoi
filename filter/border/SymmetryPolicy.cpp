@@ -1,13 +1,14 @@
 #include "SymmetryPolicy.h"
 
 double SymmetryPolicy::getBorderedPixel(DoubleImage &image, int x, int y) {
+    int resX = x, resY = y;
     if (x < 0)
-        x *= -1;
+        resX = x * -1;
     else if (x >= image.getWidth())
-        x -= 2 * (x - image.getWidth());
+        resX = x - 2 * (x - image.getWidth()) - 1;
     if (y < 0)
-        y *= -1;
+        resY = y * -1;
     else if (y >= image.getHeight())
-        y -= 2 * (y - image.getHeight());
-    return image.getPixel(x, y);
+        resY = y - 2 * (y - image.getHeight()) - 1;
+    return image.getPixel(resX, resY);
 }
