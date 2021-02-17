@@ -4,9 +4,11 @@
 #include "IBorderPolicy.h"
 
 class MirrorPolicy : public IBorderPolicy{
-public:
+protected:
     double getBorderedPixel(DoubleImage &image, int x, int y) override;
 
+public:
+    QString toString() override;
 };
 
 

@@ -11,3 +11,7 @@ double MirrorPolicy::getBorderedPixel(DoubleImage &image, int x, int y) {
         x -= image.getWidth();
     return image.getPixel(x, y);
 }
+
+QString MirrorPolicy::toString() {
+    return "mirrorBorderPolicy";
+}

@@ -26,6 +26,15 @@ public:
     static DoubleImage derivY(DoubleImage &image,
                               IBorderPolicy &borderPolicy = (IBorderPolicy &) DEFAULT_POLICY);
 
+
+    static DoubleImage applyGauss(DoubleImage &image, double sigma,
+                                  IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY, bool normalize = false);
+
+    static DoubleImage applySeparable(DoubleImage &image, pair<DoubleImage,DoubleImage>,
+                                           IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY);
+
+    static DoubleImage applyGaussSeparable(DoubleImage &image, double sigma,
+                           IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY, bool normalize = false);
 };
 
 

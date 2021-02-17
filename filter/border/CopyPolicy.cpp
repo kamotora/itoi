@@ -5,3 +5,7 @@ double CopyPolicy::getBorderedPixel(DoubleImage &image, int x, int y) {
     int resY = (y < 0) ? 0 : (y >= image.getHeight() ? image.getHeight() - 1 : y);
     return image.getPixel(resX, resY);
 }
+
+QString CopyPolicy::toString() {
+    return "copyBorderPolicy";
+}

@@ -12,3 +12,7 @@ double SymmetryPolicy::getBorderedPixel(DoubleImage &image, int x, int y) {
         resY = y - 2 * (y - image.getHeight()) - 1;
     return image.getPixel(resX, resY);
 }
+
+QString SymmetryPolicy::toString() {
+    return "symmetryBorderPolicy";
+}

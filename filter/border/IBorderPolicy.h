@@ -8,14 +8,13 @@ using namespace std;
 
 class IBorderPolicy {
 protected:
-    static IBorderPolicy *borderPolicy;
     static bool isBorder(DoubleImage &image, int x, int y);
     IBorderPolicy() = default;
 
+    virtual double getBorderedPixel(DoubleImage &image, int x, int y) = 0;
 public:
     double getPixel(DoubleImage &image, int x, int y);
-    //todo protected
-    virtual double getBorderedPixel(DoubleImage &image, int x, int y) = 0;
+    virtual QString toString() = 0;
 };
 
 

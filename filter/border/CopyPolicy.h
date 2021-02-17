@@ -5,8 +5,10 @@
 #include "IBorderPolicy.h"
 
 class CopyPolicy : public IBorderPolicy {
-public:
+protected:
     double getBorderedPixel(DoubleImage &image, int x, int y) override;
+public:
+    QString toString() override;
 };
 
 

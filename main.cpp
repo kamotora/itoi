@@ -7,5 +7,5 @@
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     Lab1::work();
-    return a.exec();
+    return 0;
 }

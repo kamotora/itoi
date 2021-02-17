@@ -5,8 +5,11 @@
 #include "IBorderPolicy.h"
 
 class ZeroPolicy: public IBorderPolicy {
-public:
+protected:
     double getBorderedPixel(DoubleImage &image, int x, int y) override;
+
+public:
+    QString toString() override;
 };
 
 

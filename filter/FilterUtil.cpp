@@ -28,7 +28,7 @@ DoubleImage FilterUtil::applyConvolution(DoubleImage &image, DoubleImage &kernel
     int kernelW = kernel.getWidth();
     int kernelH = kernel.getHeight();
     if (!(kernelW % 2) || !(kernelH % 2)) {
-        cerr << "Invalid kernel size" << endl;
+        cerr << "Invalid kernel size. Width: " << kernelW << ", height: " << kernelH << endl;
     }
     int kernelKW = kernelW / 2;
     int kernelKH = kernelH / 2;
@@ -68,4 +68,25 @@ DoubleImage FilterUtil::derivX(DoubleImage &image, IBorderPolicy &borderPolicy) 
 DoubleImage FilterUtil::derivY(DoubleImage &image, IBorderPolicy &borderPolicy) {
     auto kernel = Kernels::GetSobelY();
     return applyConvolution(image, kernel, borderPolicy);
+}
+
+DoubleImage FilterUtil::applyGauss(DoubleImage &image, double sigma, IBorderPolicy &policy, bool normalize){
+    auto gaussFilter = Kernels::GetGauss(sigma);
+    auto res = FilterUtil::applyConvolution(image, gaussFilter, policy);
+    if(normalize)
+        return res.normalize();
+    return res;
+}
+
+DoubleImage FilterUtil::applyGaussSeparable(DoubleImage &image, double sigma, IBorderPolicy &policy, bool normalize) {
+    auto result = applySeparable(image, Kernels::GetGaussSeparableXY(sigma), policy);
+    if(normalize)
+        return result.normalize();
+    return result;
+}
+
+DoubleImage FilterUtil::applySeparable(DoubleImage &image, pair<DoubleImage, DoubleImage> pair, IBorderPolicy &policy) {
+    auto resX = applyConvolution(image, pair.first, policy);
+    auto resY = applyConvolution(resX, pair.second, policy);
+    return resY;
 }
