@@ -14,14 +14,14 @@ using namespace std;
 class Lab1 {
 public:
     static void work() {
-        testSobelOper("butterfly", ".jpg", Policies::COPY);
-        testSobelOper("girl", ".jpg", Policies::MIRROR);
-        testSobelOper("cat_dog", ".jpg", Policies::SYMMETRY);
-        testSobelOper("shrek", ".jpg", Policies::ZERO);
-//        testGauss("butterfly", ".jpg", 1.3, Policies::SYMMETRY);
-//        testGauss("butterfly", ".jpg", 0.4, Policies::MIRROR);
-//        testGauss("butterfly", ".jpg", 5, Policies::COPY);
-//        testGauss("butterfly", ".jpg", 2.6, Policies::ZERO);
+//        testSobelOper("butterfly", ".jpg", Policies::COPY);
+//        testSobelOper("girl", ".jpg", Policies::MIRROR);
+//        testSobelOper("cat_dog", ".jpg", Policies::SYMMETRY);
+//        testSobelOper("shrek", ".jpg", Policies::ZERO);
+        testGauss("butterfly", ".jpg", 1.3, Policies::SYMMETRY);
+        testGauss("butterfly", ".jpg", 0.4, Policies::MIRROR);
+        testGauss("butterfly", ".jpg", 5, Policies::COPY);
+        testGauss("butterfly", ".jpg", 2.6, Policies::ZERO);
         cout << "end work" << endl;
     }
 
