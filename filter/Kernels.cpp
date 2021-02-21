@@ -31,25 +31,25 @@ DoubleImage Kernels::GetIncreaseSharpness() {
 }
 
 DoubleImage Kernels::GetGauss(double sigma) {
-    int size = floor(3 * sigma);
-    auto matrix_gauss = vector<double>(size * size);
+    int size = 6 * static_cast<int>(sigma) + 1;
     int halfSize = size / 2;
+    auto matrix_gauss = vector<double>(size * size);
     double ss2 = 2 * sigma * sigma;
     double firstDrob = 1.0 / (M_PI * ss2);
-    double test_sum = 0.0;
+    double normalize = 0.0;
     int rowI = 0;
     for (int x = -halfSize; x <= halfSize; x++) {
         int columnI = 0;
         for (int y = -halfSize; y <= halfSize; y++) {
             double gauss = firstDrob * exp(-(x * x + y * y) / ss2);
             matrix_gauss[rowI * size + columnI++] = gauss;
-            test_sum += gauss;
+            normalize += gauss;
         }
         rowI++;
     }
     for (int x = -halfSize; x <= halfSize; x++)
         for (int y = -halfSize; y <= halfSize; y++)
-            matrix_gauss[(x + halfSize) * size + y + halfSize] /= test_sum;
+            matrix_gauss[(x + halfSize) * size + y + halfSize] /= normalize;
     return DoubleImage(matrix_gauss, size, size);
 }
 
