@@ -93,3 +93,7 @@ InputImage *InputImage::open(const QString &imageName) {
 //    myLabel2.show();
 //    return this;
 }
+
+InputImage *InputImage::saveToResources(const string &imageName) {
+    return saveToResources(QString::fromStdString(imageName));
+}

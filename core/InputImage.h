@@ -17,7 +17,7 @@ class InputImage {
 private:
     inline static const QString RESOURCES = "../resources";
     inline static const QString INPUT = "/input/";
-    inline static const QString OUTPUT = "/output/lab1/";
+    inline static const QString OUTPUT = "/output/lab2/";
     QImage img;
     int width, height;
     unique_ptr<unsigned char[]> data;
@@ -32,6 +32,7 @@ public:
     static InputImage fromResources(const QString &imageName);
 
     InputImage *saveToResources(const QString &imageName);
+    InputImage *saveToResources(const string &imageName);
 
     [[nodiscard]] int getWidth() const;
 
