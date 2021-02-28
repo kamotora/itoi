@@ -33,8 +33,9 @@ public:
     static DoubleImage applySeparable(DoubleImage &image, pair<DoubleImage,DoubleImage>,
                                            IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY);
 
-    static DoubleImage applyGaussSeparable(DoubleImage &image, double sigma,
-                           IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY, bool normalize = false);
+    static shared_ptr<DoubleImage>
+    applyGaussSeparable(const shared_ptr<DoubleImage> &image, double sigma,
+                        IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY, bool normalize = false);
 };
 
 

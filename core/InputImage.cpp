@@ -61,9 +61,13 @@ InputImage InputImage::fromDoubleImage(DoubleImage &image) {
     result.height = image.getHeight();
     result.width = image.getWidth();
     result.data = std::make_unique<unsigned char[]>(result.width * result.height);
-    for (int i = 0; i < result.width * result.height; i++)
-        result.setPixel(i, image.getPixel(i));
-    result.img = QImage{result.data.get(), result.width, result.height, QImage::Format_Grayscale8};
+    result.img = QImage(result.width, result.height, QImage::Format_Grayscale8);
+    for (int x = 0; x < result.width; x++)
+        for (int y = 0; y < result.height; y++) {
+            unsigned char pixel = image.getPixel(x, y);
+            result.setPixel(x, y, pixel);
+            result.img.setPixel(x, y, qRgb(pixel, pixel, pixel));
+        }
     return result;
 }
 
@@ -71,13 +75,16 @@ QImage InputImage::getImage() {
     return img;
 }
 
-InputImage *InputImage::saveToResources(const QString &imageName) {
-    if (img.isNull()) {
+void InputImage::saveToResources(const QImage& image, const QString &imageName) {
+    if (image.isNull()) {
         cerr << "Try to saveToResources null image" << endl;
         throw invalid_argument("Try to saveToResources null image");
     }
-    //todo check save (шреку плохо совсем)
-    img.save(RESOURCES + OUTPUT + imageName);
+    image.save(RESOURCES + OUTPUT + imageName);
+}
+
+InputImage *InputImage::saveToResources(const QString &imageName) {
+    saveToResources(img, imageName);
     return this;
 }
 

@@ -3,37 +3,43 @@
 //
 
 #include "OctavesCreator.h"
+#include "../filter/border/Policies.h"
+#include "../core/InputImage.h"
 
-vector<Octave> OctavesCreator::generateOctaves(int octavesCount, int nLevels, double sigma0, DoubleImage &inputImage,
-                                                 double imageSigma) {
-        double k = pow(2.0, 1.0 / /*(nLevels - 1)*/ nLevels); // интервал между масштабами в октаве
-        auto deltaSigma = calculateDeltaSigma(imageSigma, sigma0);
-        DoubleImage startImage = FilterUtil::applyGaussSeparable(inputImage, deltaSigma);
-        auto globalSigma = sigma0;
-        vector<Octave> octaves;
-        for (int i = 0; i < octavesCount; i++) {
-            auto octave = generateOneOctaveParallel(nLevels, sigma0, startImage, k, globalSigma);
-            octaves.push_back(octave);
-            globalSigma *= 2l;
-            startImage = getHalfSizeImage(octave.getLast().getImage());
-        }
-        return octaves;
+
+vector<shared_ptr<struct Octave>>
+OctavesCreator::generateOctaves(int octavesCount, int nLevels, double sigma0, DoubleImage &inputImage,
+                                double imageSigma) {
+    double k = pow(2.0, 1.0 / /*(nLevels - 1)*/ nLevels); // интервал между масштабами в октаве
+    auto deltaSigma = calculateDeltaSigma(imageSigma, sigma0);
+    auto startImage = FilterUtil::applyGaussSeparable(make_shared<DoubleImage>(inputImage), deltaSigma);
+    auto globalSigma = sigma0;
+    vector<shared_ptr<Octave>> octaves;
+    for (int i = 0; i < octavesCount; i++) {
+        auto octave = generateOneOctave(nLevels, sigma0, startImage, k, globalSigma);
+        octaves.push_back(octave);
+        globalSigma *= 2l;
+        startImage = getHalfSizeImage(octave->getLast()->getImage());
+    }
+    return octaves;
 }
 
 //todo ошибка здесь
-Octave OctavesCreator::generateOneOctaveParallel(int nLevels, double sigma0, const DoubleImage &startImage, double k,
-                                                 double globalSigma) {
-    Octave result;
-    OctaveElement startElement(sigma0, globalSigma, startImage);
-    result.addElement(startElement);
-    auto oldSigma = startElement.getLocalSigma();
+shared_ptr<Octave>
+OctavesCreator::generateOneOctave(int nLevels, double sigma0, const shared_ptr<DoubleImage> &startImage, double k,
+                                  double globalSigma) {
+    auto result = make_shared<Octave>();
+    auto startElement = make_shared<OctaveElement>(sigma0, globalSigma, startImage);
+    result->addElement(startElement);
+    auto oldSigma = sigma0;
     double curK = k;
     for (int i = 1; i <= nLevels; i++) {
         auto newSigma = oldSigma * curK;
         auto deltaSigma = calculateDeltaSigma(oldSigma, newSigma);
-        auto newImage = FilterUtil::applyGaussSeparable(startElement.getImage(), deltaSigma);
+        auto newImage = FilterUtil::applyGaussSeparable(startElement->getImage(), deltaSigma,
+                                                        Policies::MIRROR, true);
         OctaveElement element(newSigma, globalSigma * curK, newImage);
-        result.addElement(element);
+        result->addElement(make_shared<OctaveElement>(element));
         curK *= k;
     }
     return result;
@@ -43,12 +49,49 @@ double OctavesCreator::calculateDeltaSigma(double oldSigma, double newSigma) {
     return sqrt(newSigma * newSigma - oldSigma * oldSigma);
 }
 
-DoubleImage OctavesCreator::getHalfSizeImage(DoubleImage &image) {
-    DoubleImage result(image.getWidth() / 2, image.getHeight() / 2);
-    int curPixel = 0;
-    for (int x = 0; x < image.getWidth(); x += 2)
-        for (int y = 0; y < image.getHeight(); y += 2)
-            result.setPixel(curPixel++, image.getPixel(x, y));
+shared_ptr<DoubleImage> OctavesCreator::getHalfSizeImage(const shared_ptr<DoubleImage> &image) {
+    auto res = make_shared<DoubleImage>(image->getWidth() / 2, image->getHeight() / 2);
 
-    return result;
+    for (int x = 0; x < res->getWidth(); x++)
+        for (int y = 0; y < res->getHeight(); y++)
+            res->setPixel(x, y, image->getPixel(x * 2, y * 2));
+    if (res->getSize() != ((image->getWidth() / 2) * (image->getHeight() / 2))) {
+        cerr << "Invalid function" << endl;
+        throw runtime_error("invalid");
+    }
+    return res;
+//    return make_shared<DoubleImage>(pixels, image->getWidth() / 2, image->getHeight() / 2);;
 }
+
+
+shared_ptr<DoubleImage> OctavesCreator::L(DoubleImage &inputImage, vector<shared_ptr<Octave>> pyramid, double sigma) {
+    auto targetLayer = pyramid[0]->getElements()[0];
+
+    int octaveLevel = 0;
+    int octaveCount = 0;
+    for (auto &octave : pyramid) {
+        for (auto &layer : octave->getElements()) {
+            if (fabs(layer->getGlobalSigma() - sigma) < fabs(targetLayer->getGlobalSigma() - sigma)) {
+                targetLayer = layer;
+                octaveLevel = octaveCount;
+            }
+        }
+        octaveCount++;
+    }
+    //targetLayer->_itp->Save("TARGET");
+
+    int trans_coeff = pow(2., octaveLevel);
+    auto output = make_shared<DoubleImage>(inputImage.getWidth(), inputImage.getHeight());
+    for (int x = 0; x < inputImage.getWidth(); x++)
+        for (int y = 0; y < inputImage.getHeight(); y++) {
+            //преобразование координат
+            int x_n = static_cast<int>(x / trans_coeff);
+            int y_n = static_cast<int>(y / trans_coeff);
+            if (y_n >= targetLayer->getImage()->getHeight()) y_n = targetLayer->getImage()->getHeight() - 1;
+            if (x_n >= targetLayer->getImage()->getWidth()) x_n = targetLayer->getImage()->getWidth() - 1;
+
+            output->setPixel(x_n, y_n, targetLayer->getImage()->getPixel(x_n, y_n));
+        }
+    return output;
+}
+

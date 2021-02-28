@@ -3,19 +3,29 @@
 
 
 #include "../core/DoubleImage.h"
+#include "../filter/FilterUtil.h"
 
 class OctaveElement {
 private:
     double localSigma, globalSigma;
-    const DoubleImage& image;
+    shared_ptr<DoubleImage> image;
 public:
-    OctaveElement(double localSigma, double globalSigma, const DoubleImage &image);
+    OctaveElement(double localSigma, double globalSigma, const shared_ptr<DoubleImage> &image) : localSigma(localSigma),
+                                                                                                 globalSigma(
+                                                                                                         globalSigma),
+                                                                                                 image(image) {}
 
-    [[nodiscard]] double getLocalSigma() const;
+    [[nodiscard]] double getLocalSigma() const {
+        return localSigma;
+    }
 
-    [[nodiscard]] double getGlobalSigma() const;
+    [[nodiscard]] double getGlobalSigma() const {
+        return globalSigma;
+    }
 
-    DoubleImage &getImage() const;
+    [[nodiscard]] const shared_ptr<DoubleImage> &getImage() const {
+        return image;
+    }
 };
 
 

@@ -4,15 +4,15 @@
 
 #include "Octave.h"
 
-vector<OctaveElement> Octave::getElements() const {
+vector<shared_ptr<OctaveElement>> Octave::getElements() const {
     return elements;
 }
 
-void Octave::addElement(OctaveElement element) {
+void Octave::addElement(const shared_ptr<OctaveElement>& element) {
     elements.push_back(element);
 }
 
-OctaveElement &Octave::getLast() {
+shared_ptr<OctaveElement> Octave::getLast() {
     return elements.back();
 }
 

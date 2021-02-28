@@ -49,6 +49,8 @@ public:
     QImage getImage();
 
     InputImage *open(const QString &imageName = "output");
+
+    static void saveToResources(const QImage &image, const QString &imageName);
 };
 
 

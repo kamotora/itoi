@@ -7,11 +7,11 @@
 
 class Octave {
 private:
-    vector<OctaveElement> elements;
+    vector<shared_ptr<OctaveElement>> elements;
 public:
-    vector<OctaveElement> getElements() const;
-    void addElement(OctaveElement element);
-    OctaveElement& getLast();
+    [[nodiscard]] vector<shared_ptr<OctaveElement>> getElements() const;
+    void addElement(const shared_ptr<OctaveElement>& element);
+    shared_ptr<OctaveElement> getLast();
 };
 
 

@@ -9,16 +9,18 @@
 #include <cmath>
 
 class OctavesCreator {
-private:
-    static DoubleImage getHalfSizeImage(DoubleImage &image);
 public:
-    static vector<Octave> generateOctaves(int octavesCount, int nLevels, double sigma0, DoubleImage &inputImage, double imageSigma = 0.5);
+    static vector<shared_ptr<struct Octave>>
+    generateOctaves(int octavesCount, int nLevels, double sigma0, DoubleImage &inputImage, double imageSigma = 0.5);
 
-    static Octave
-    generateOneOctaveParallel(int nLevels, double sigma0, const DoubleImage &startImage, double k, double globalSigma);
+    static shared_ptr<struct Octave>
+    generateOneOctave(int nLevels, double sigma0, const shared_ptr<DoubleImage>& startImage, double k, double globalSigma);
 
     static double calculateDeltaSigma(double oldSigma, double newSigma);
 
+    static shared_ptr<DoubleImage> L(DoubleImage &inputImage, vector<shared_ptr<Octave>> pyramid, double sigma);
+
+    static shared_ptr<DoubleImage> getHalfSizeImage(const shared_ptr<DoubleImage> &image);
 };
 
 
