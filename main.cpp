@@ -7,6 +7,6 @@
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    Lab2().work();
+    Lab2::demo();
     return 0;
 }

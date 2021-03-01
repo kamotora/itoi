@@ -9,9 +9,9 @@
 
 vector<shared_ptr<struct Octave>>
 OctavesCreator::generateOctaves(int octavesCount, int nLevels, double sigma0, DoubleImage &inputImage,
-                                double imageSigma) {
+                                double sigmaA) {
     double k = pow(2.0, 1.0 / /*(nLevels - 1)*/ nLevels); // интервал между масштабами в октаве
-    auto deltaSigma = calculateDeltaSigma(imageSigma, sigma0);
+    auto deltaSigma = calculateDeltaSigma(sigmaA, sigma0);
     auto startImage = FilterUtil::applyGaussSeparable(make_shared<DoubleImage>(inputImage), deltaSigma);
     auto globalSigma = sigma0;
     vector<shared_ptr<Octave>> octaves;
@@ -24,7 +24,6 @@ OctavesCreator::generateOctaves(int octavesCount, int nLevels, double sigma0, Do
     return octaves;
 }
 
-//todo ошибка здесь
 shared_ptr<Octave>
 OctavesCreator::generateOneOctave(int nLevels, double sigma0, const shared_ptr<DoubleImage> &startImage, double k,
                                   double globalSigma) {
@@ -33,7 +32,7 @@ OctavesCreator::generateOneOctave(int nLevels, double sigma0, const shared_ptr<D
     result->addElement(startElement);
     auto oldSigma = sigma0;
     double curK = k;
-    for (int i = 1; i <= nLevels; i++) {
+    for (int i = 1; i < nLevels; i++) {
         auto newSigma = oldSigma * curK;
         auto deltaSigma = calculateDeltaSigma(oldSigma, newSigma);
         auto newImage = FilterUtil::applyGaussSeparable(startElement->getImage(), deltaSigma,
@@ -67,6 +66,7 @@ shared_ptr<DoubleImage> OctavesCreator::getHalfSizeImage(const shared_ptr<Double
 shared_ptr<DoubleImage> OctavesCreator::L(DoubleImage &inputImage, vector<shared_ptr<Octave>> pyramid, double sigma) {
     auto targetLayer = pyramid[0]->getElements()[0];
 
+    //Поиск нужной октавы
     int octaveLevel = 0;
     int octaveCount = 0;
     for (auto &octave : pyramid) {
@@ -78,19 +78,18 @@ shared_ptr<DoubleImage> OctavesCreator::L(DoubleImage &inputImage, vector<shared
         }
         octaveCount++;
     }
-    //targetLayer->_itp->Save("TARGET");
 
-    int trans_coeff = pow(2., octaveLevel);
+    int transformationCoef =static_cast<int>(pow(2, octaveLevel));
     auto output = make_shared<DoubleImage>(inputImage.getWidth(), inputImage.getHeight());
     for (int x = 0; x < inputImage.getWidth(); x++)
         for (int y = 0; y < inputImage.getHeight(); y++) {
             //преобразование координат
-            int x_n = static_cast<int>(x / trans_coeff);
-            int y_n = static_cast<int>(y / trans_coeff);
+            int x_n = static_cast<int>(x / transformationCoef);
+            int y_n = static_cast<int>(y / transformationCoef);
             if (y_n >= targetLayer->getImage()->getHeight()) y_n = targetLayer->getImage()->getHeight() - 1;
             if (x_n >= targetLayer->getImage()->getWidth()) x_n = targetLayer->getImage()->getWidth() - 1;
 
-            output->setPixel(x_n, y_n, targetLayer->getImage()->getPixel(x_n, y_n));
+            output->setPixel(x, y, targetLayer->getImage()->getPixel(x_n, y_n));
         }
     return output;
 }

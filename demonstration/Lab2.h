@@ -8,55 +8,76 @@
 
 class Lab2 {
 private:
-    // todo nOctaves сделать на основе изображения
-    int nOctaves = 5, nLevels = 2;
-    double sigma0 = 1, sigmaA = 0, sigmaL = 7.13;
+    int nOctaves, nLevels;
+    double sigma0, sigmaA, sigmaL;
+    const QString &imageName, &ext;
 public:
-    void work() {
-        //todo normalization
-        const string imageName = "butterfly";
-        const string ext = ".jpg";
-        auto input = InputImage::fromResources(QString::fromStdString(imageName + ext));
-        auto inputDouble = input.toDoubleImage();
-        auto octaves = OctavesCreator::generateOctaves(nOctaves, nLevels, sigma0, inputDouble);
-//        auto L = OctavesCreator::L(inputDouble, octaves, sigmaL);
-//        InputImage::fromDoubleImage(*L).saveToResources(QString::fromStdString("L.jpg"));
-        for (int i = 0; i < octaves.size(); i++) {
-            auto elements = octaves[i];
-            for (auto &&element : elements->getElements()) {
-//            for (int j = 0; j < elements.size(); j++) {
-//                auto element = elements.begin()[j];
-                InputImage::fromDoubleImage(*element->getImage()).saveToResources(
-                        "octave_" + to_string(i) +
-                        "_img_" + imageName +
-                        "_local_" + to_string(element->getLocalSigma()) +
-                        "_global_" + to_string(element->getGlobalSigma())
-                        + ext);
-            }
+    Lab2(int nOctaves, int nLevels, double sigma0, double sigmaA, double sigmaL, const QString &imageName,
+         const QString &ext) : nOctaves(nOctaves), nLevels(nLevels), sigma0(sigma0), sigmaA(sigmaA), sigmaL(sigmaL),
+                               imageName(imageName), ext(ext) {}
+
+    static void demo() {
+        //a
+//        {
+//            Lab2(5, 2, 1, 0.5, 6, "butterfly", ".jpg").work();
+//            Lab2(3, 2, 1.5, 0.8, 4, "shrek", ".jpg").work();
+//            Lab2(3, 4, 0.7, 0.3, 3, "cat_dog", ".jpg").work();
+//        }
+        //b
+        {
+            Lab2(4, 2, 1, 0.5, 6, "butterfly", ".jpg").work();
+            Lab2(4, 2, 1.5, 1, 6, "butterfly", ".jpg").work();
+            Lab2(4, 2, 0.7, 0.3, 6, "butterfly", ".jpg").work();
         }
-        saveAsCompoundImage(imageName, ext, octaves, nOctaves, nLevels);
     }
 
-    static void
-    saveAsCompoundImage(const string &name, const string &ext, const vector<shared_ptr<Octave>> &octaves, int nOctaves,
-                        int nLevels) {
-        vector<vector<InputImage>> imagesByLvl(nOctaves);
-        for (int i = 0; i < nLevels; i++) {
-            for (int j = 0; j < nOctaves; j++) {
-                imagesByLvl[i].push_back(InputImage::fromDoubleImage(*octaves[j]->getElements()[i]->getImage()));
+    void work() {
+        auto input = InputImage::fromResources(imageName + ext);
+        auto inputDouble = input.toDoubleImage();
+        auto octaves = OctavesCreator::generateOctaves(nOctaves, nLevels, sigma0, inputDouble, sigmaA);
+        if (nOctaves != octaves.size())
+            throw std::exception();
+        for (int i = 0; i < nOctaves; i++) {
+            auto elements = octaves[i]->getElements();
+            if (nLevels != elements.size())
+                throw std::exception();
+            for (int j = 0; j < nLevels; j++) {
+                std::ostringstream streamStr;
+                streamStr << setprecision(3);
+                streamStr << imageName.toStdString()
+                          << "_octave_" << i << "_lvl_" << j <<
+                          "_local_" << elements[j]->getLocalSigma() <<
+                          "_global_" << elements[j]->getGlobalSigma() <<
+                          ext.toStdString();
+                InputImage::fromDoubleImage(*elements[j]->getImage()).saveToResources(streamStr.str());
             }
         }
+        auto L = OctavesCreator::L(inputDouble, octaves, sigmaL);
+        InputImage::fromDoubleImage(*L).saveToResources(
+                imageName + "L_" + QString::fromStdString(to_string(sigmaL)) + ext);
+        saveAsCompoundImage(octaves);
+    }
+
+    void saveAsCompoundImage(const vector<shared_ptr<Octave>> &octaves) {
+//        vector<vector<shared_ptr<InputImage>>> imagesByLvl(nOctaves);
+//        for (int i = 0; i < nLevels; i++) {
+//            for (int j = 0; j < nOctaves; j++) {
+//                auto img = InputImage::fromDoubleImage(*octaves[j]->getElements()[i]->getImage());
+//                imagesByLvl[i].push_back(make_shared<InputImage>(img));
+//            }
+//        }
         for (int i = 0; i < nLevels; i++) {
-            auto resultImage = imagesByLvl[i][0].getImage();
+//            auto resultImage = imagesByLvl[i][0]->getImage();
+            auto resultImage = InputImage::fromDoubleImage(*octaves[0]->getElements()[i]->getImage()).getImage();
             for (int j = 0; j < nOctaves; j++) {
-                auto curImage = imagesByLvl[i][j].getImage();
+                auto curImage = InputImage::fromDoubleImage(*octaves[j]->getElements()[i]->getImage()).getImage();
                 for (int x = 0; x < curImage.width(); x++)
                     for (int y = 0; y < curImage.height(); y++)
                         resultImage.setPixel(x,
                                              (resultImage.height() - curImage.height() + y), curImage.pixel(x, y));
             }
             InputImage::saveToResources(resultImage,
-                                        QString::fromStdString(name + "_compound_lvl_" + to_string(i) + ext));
+                                        imageName + QString::fromStdString("_compound_lvl_" + to_string(i)) + ext);
         }
     }
 };

@@ -11,7 +11,7 @@
 class OctavesCreator {
 public:
     static vector<shared_ptr<struct Octave>>
-    generateOctaves(int octavesCount, int nLevels, double sigma0, DoubleImage &inputImage, double imageSigma = 0.5);
+    generateOctaves(int octavesCount, int nLevels, double sigma0, DoubleImage &inputImage, double sigmaA = 0.5);
 
     static shared_ptr<struct Octave>
     generateOneOctave(int nLevels, double sigma0, const shared_ptr<DoubleImage>& startImage, double k, double globalSigma);
