@@ -17,17 +17,17 @@ public:
                                imageName(imageName), ext(ext) {}
 
     static void demo() {
-        //a
-//        {
-//            Lab2(5, 2, 1, 0.5, 6, "butterfly", ".jpg").work();
+//        a
+        {
+//            Lab2(5, 2, 1, 0, 7.13, "butterfly", ".jpg").work();
 //            Lab2(3, 2, 1.5, 0.8, 4, "shrek", ".jpg").work();
 //            Lab2(3, 4, 0.7, 0.3, 3, "cat_dog", ".jpg").work();
-//        }
-        //b
+        }
+//        b
         {
-            Lab2(4, 2, 1, 0.5, 6, "butterfly", ".jpg").work();
-            Lab2(4, 2, 1.5, 1, 6, "butterfly", ".jpg").work();
-            Lab2(4, 2, 0.7, 0.3, 6, "butterfly", ".jpg").work();
+            Lab2(2, 4, 1, 0.5, 3, "butterfly1", ".jpg").work();
+            Lab2(3, 3, 1, 0.5, 6, "butterfly2", ".jpg").work();
+            Lab2(4, 2, 1, 0.5, 9, "butterfly3", ".jpg").work();
         }
     }
 
