@@ -78,10 +78,10 @@ DoubleImage FilterUtil::applyGauss(DoubleImage &image, double sigma, IBorderPoli
     return res;
 }
 
-DoubleImage FilterUtil::applyGaussSeparable(DoubleImage &image, double sigma, IBorderPolicy &policy, bool normalize) {
-    auto result = applySeparable(image, Kernels::GetGaussSeparableXY(sigma), policy);
+shared_ptr<DoubleImage> FilterUtil::applyGaussSeparable(const shared_ptr<DoubleImage>& image, double sigma, IBorderPolicy &policy, bool normalize) {
+    auto result = make_shared<DoubleImage>(applySeparable(*image, Kernels::GetGaussSeparableXY(sigma), policy));
     if(normalize)
-        return result.normalize();
+        return make_shared<DoubleImage>(result->normalize());
     return result;
 }
 

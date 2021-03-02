@@ -16,23 +16,19 @@ public:
 
     DoubleImage(int width, int height);
 //    todo реализовать при необходимости
-//    DoubleImage(const DoubleImage &source);
-//
 //    DoubleImage(const double *doubleSource, const int width, const int height);
-
-    DoubleImage(DoubleImage &&other) noexcept;
-
+//    DoubleImage(DoubleImage &&other) noexcept;
+    DoubleImage(DoubleImage const &other);
+    DoubleImage() = default;
     DoubleImage &operator=(DoubleImage &&other) noexcept;
 
     void setPixel(int x, int y, double value);
 
-    double getPixel(int x, int y);
+    [[nodiscard]] double getPixel(int x, int y) const;
 
-    double getPixel(int i);
+    [[nodiscard]] double getPixel(int i) const;
 
     void setPixel(int i, double value);
-
-    void setPixel(int i, unsigned char value);
 
     void copy(DoubleImage &other);
 
@@ -44,9 +40,11 @@ public:
 
     const unique_ptr<double[]> &getData();
 
-    int getSize();
+    [[nodiscard]] int getSize() const;
 
     DoubleImage normalize(float diff = 1.0);
+
+    [[nodiscard]] int xyToI(int x, int y) const;
 };
 
 
