@@ -45,40 +45,41 @@ DoubleImage Kernels::GetGauss(double sigma) {
             matrix_gauss[rowI * size + columnI++] = gauss;
             normalize += gauss;
         }
-        rowI++;
     }
-    for (int x = -halfSize; x <= halfSize; x++)
-        for (int y = -halfSize; y <= halfSize; y++)
-            matrix_gauss[(x + halfSize) * size + y + halfSize] /= normalize;
+    if (isNeedNormalize) {
+        for (int i = 0; i < size * size; i++)
+            matrix_gauss[i] /= normalize;
+    }
+
     return DoubleImage(matrix_gauss, size, size);
 }
 
-DoubleImage Kernels::GetGauss(double sigma, int radius, bool normalize) {
-    double coeff = 1 / (2 * M_PI * sigma * sigma);
-    double divider = 2 * sigma * sigma;
-    double sum = 1;
-    // -radius .. 0 .. radius
-    // 2 radius + point at 0, so + 1
-    int w = (2 * radius) + 1;
-    int h = (2 * radius) + 1;
-    auto matrix_gauss = vector<double>(w * h);
-    int k = 0;
-    for (int u = -radius; u <= radius; u++) {
-        //qDebug() << "U :" << u << ' ';
-        for (int v = -radius; v <= radius; v++) {
-            double gaussValue = coeff * exp(-(u * u + v * v) / divider);
-            matrix_gauss[k++] = gaussValue;
-            sum += gaussValue;
-
-        }
-        //qDebug() << "Size gauss::" << k << endl;
-        //qDebug() << "radius gauss::" << radius << endl;
-    }
-    if (normalize)
-        for (int i = 0; i < w * h; ++i)
-            matrix_gauss[i] /= sum;
-    return DoubleImage(matrix_gauss, w, h);
-}
+//DoubleImage Kernels::GetGauss(double sigma, int radius, bool normalize) {
+//    double coeff = 1 / (2 * M_PI * sigma * sigma);
+//    double divider = 2 * sigma * sigma;
+//    double sum = 1;
+//    // -radius .. 0 .. radius
+//    // 2 radius + point at 0, so + 1
+//    int w = (2 * radius) + 1;
+//    int h = (2 * radius) + 1;
+//    auto matrix_gauss = vector<double>(w * h);
+//    int k = 0;
+//    for (int u = -radius; u <= radius; u++) {
+//        //qDebug() << "U :" << u << ' ';
+//        for (int v = -radius; v <= radius; v++) {
+//            double gaussValue = coeff * exp(-(u * u + v * v) / divider);
+//            matrix_gauss[k++] = gaussValue;
+//            sum += gaussValue;
+//
+//        }
+//        //qDebug() << "Size gauss::" << k << endl;
+//        //qDebug() << "radius gauss::" << radius << endl;
+//    }
+//    if (normalize)
+//        for (int i = 0; i < w * h; ++i)
+//            matrix_gauss[i] /= sum;
+//    return DoubleImage(matrix_gauss, w, h);
+//}
 
 pair<DoubleImage, DoubleImage> Kernels::GetGaussSeparableXY(double sigma) {
     auto kernel = GetGaussSeparableX(sigma);
