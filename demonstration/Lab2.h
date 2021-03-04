@@ -19,9 +19,9 @@ public:
     static void demo() {
 //        a
         {
-//            Lab2(5, 2, 1, 0, 7.13, "butterfly", ".jpg").work();
-//            Lab2(3, 2, 1.5, 0.8, 4, "shrek", ".jpg").work();
-//            Lab2(3, 4, 0.7, 0.3, 3, "cat_dog", ".jpg").work();
+            Lab2(5, 2, 1, 0.5, 7.13, "butterfly", ".jpg").work();
+            Lab2(3, 2, 1.5, 0.8, 4, "shrek", ".jpg").work();
+            Lab2(3, 4, 0.7, 0.3, 3, "cat_dog", ".jpg").work();
         }
 //        b
         {
@@ -35,13 +35,9 @@ public:
         auto input = InputImage::fromResources(imageName + ext);
         auto inputDouble = input.toDoubleImage();
         auto octaves = OctavesCreator::generateOctaves(nOctaves, nLevels, sigma0, inputDouble, sigmaA);
-        if (nOctaves != octaves.size())
-            throw std::exception();
-        for (int i = 0; i < nOctaves; i++) {
+        for (int i = 0; i < octaves.size(); i++) {
             auto elements = octaves[i]->getElements();
-            if (nLevels != elements.size())
-                throw std::exception();
-            for (int j = 0; j < nLevels; j++) {
+            for (int j = 0; j < elements.size(); j++) {
                 std::ostringstream streamStr;
                 streamStr << setprecision(3);
                 streamStr << imageName.toStdString()
