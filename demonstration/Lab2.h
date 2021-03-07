@@ -55,15 +55,7 @@ public:
     }
 
     void saveAsCompoundImage(const vector<shared_ptr<Octave>> &octaves) {
-//        vector<vector<shared_ptr<InputImage>>> imagesByLvl(nOctaves);
-//        for (int i = 0; i < nLevels; i++) {
-//            for (int j = 0; j < nOctaves; j++) {
-//                auto img = InputImage::fromDoubleImage(*octaves[j]->getElements()[i]->getImage());
-//                imagesByLvl[i].push_back(make_shared<InputImage>(img));
-//            }
-//        }
         for (int i = 0; i < nLevels; i++) {
-//            auto resultImage = imagesByLvl[i][0]->getImage();
             auto resultImage = InputImage::fromDoubleImage(*octaves[0]->getElements()[i]->getImage()).getImage();
             for (int j = 0; j < nOctaves; j++) {
                 auto curImage = InputImage::fromDoubleImage(*octaves[j]->getElements()[i]->getImage()).getImage();

@@ -11,7 +11,7 @@ OctavesCreator::generateOctaves(int octavesCount, int nLevels, double sigma0, Do
                                 double sigmaA) {
     double k = pow(2.0, 1.0 / nLevels); // интервал между масштабами в октаве
     auto deltaSigma = calculateDeltaSigma(sigmaA, sigma0);
-    auto startImage = FilterUtil::applyGaussSeparable(make_shared<DoubleImage>(inputImage), deltaSigma);
+    auto startImage = FilterUtil::applyGauss(make_shared<DoubleImage>(inputImage), deltaSigma);
     auto globalSigma = sigma0;
     vector<shared_ptr<Octave>> octaves;
     for (int i = 0; i < octavesCount; i++) {
@@ -22,7 +22,7 @@ OctavesCreator::generateOctaves(int octavesCount, int nLevels, double sigma0, Do
     }
     return octaves;
 }
-// скорее всего, что-то здесь не так
+
 shared_ptr<Octave>
 OctavesCreator::generateOneOctave(int nLevels, double sigma0, const shared_ptr<DoubleImage> &startImage, double k,
                                   double globalSigma) {
@@ -35,7 +35,7 @@ OctavesCreator::generateOneOctave(int nLevels, double sigma0, const shared_ptr<D
 
         auto newSigma = oldSigma * curK;
         auto deltaSigma = calculateDeltaSigma(oldSigma, newSigma);
-        auto newImage = FilterUtil::applyGaussSeparable(startElement->getImage(), deltaSigma);
+        auto newImage = FilterUtil::applyGauss(startElement->getImage(), deltaSigma);
         OctaveElement element(newSigma, globalSigma * curK, newImage);
         result->addElement(make_shared<OctaveElement>(element));
         curK *= k;
