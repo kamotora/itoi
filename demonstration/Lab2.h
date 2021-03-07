@@ -19,9 +19,9 @@ public:
     static void demo() {
 //        a
         {
-//            Lab2(5, 2, 1, 0, 7.13, "butterfly", ".jpg").work();
-//            Lab2(3, 2, 1.5, 0.8, 4, "shrek", ".jpg").work();
-//            Lab2(3, 4, 0.7, 0.3, 3, "cat_dog", ".jpg").work();
+            Lab2(5, 2, 1, 0.5, 7.13, "butterfly", ".jpg").work();
+            Lab2(3, 2, 1.5, 0.8, 4, "shrek", ".jpg").work();
+            Lab2(3, 4, 0.7, 0.3, 3, "cat_dog", ".jpg").work();
         }
 //        b
         {
@@ -35,13 +35,9 @@ public:
         auto input = InputImage::fromResources(imageName + ext);
         auto inputDouble = input.toDoubleImage();
         auto octaves = OctavesCreator::generateOctaves(nOctaves, nLevels, sigma0, inputDouble, sigmaA);
-        if (nOctaves != octaves.size())
-            throw std::exception();
-        for (int i = 0; i < nOctaves; i++) {
+        for (int i = 0; i < octaves.size(); i++) {
             auto elements = octaves[i]->getElements();
-            if (nLevels != elements.size())
-                throw std::exception();
-            for (int j = 0; j < nLevels; j++) {
+            for (int j = 0; j < elements.size(); j++) {
                 std::ostringstream streamStr;
                 streamStr << setprecision(3);
                 streamStr << imageName.toStdString()
@@ -59,15 +55,7 @@ public:
     }
 
     void saveAsCompoundImage(const vector<shared_ptr<Octave>> &octaves) {
-//        vector<vector<shared_ptr<InputImage>>> imagesByLvl(nOctaves);
-//        for (int i = 0; i < nLevels; i++) {
-//            for (int j = 0; j < nOctaves; j++) {
-//                auto img = InputImage::fromDoubleImage(*octaves[j]->getElements()[i]->getImage());
-//                imagesByLvl[i].push_back(make_shared<InputImage>(img));
-//            }
-//        }
         for (int i = 0; i < nLevels; i++) {
-//            auto resultImage = imagesByLvl[i][0]->getImage();
             auto resultImage = InputImage::fromDoubleImage(*octaves[0]->getElements()[i]->getImage()).getImage();
             for (int j = 0; j < nOctaves; j++) {
                 auto curImage = InputImage::fromDoubleImage(*octaves[j]->getElements()[i]->getImage()).getImage();

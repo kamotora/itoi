@@ -3,16 +3,15 @@
 //
 
 #include "OctavesCreator.h"
-#include "../filter/border/Policies.h"
 #include "../core/InputImage.h"
 
 
 vector<shared_ptr<struct Octave>>
 OctavesCreator::generateOctaves(int octavesCount, int nLevels, double sigma0, DoubleImage &inputImage,
                                 double sigmaA) {
-    double k = pow(2.0, 1.0 / /*(nLevels - 1)*/ nLevels); // интервал между масштабами в октаве
+    double k = pow(2.0, 1.0 / nLevels); // интервал между масштабами в октаве
     auto deltaSigma = calculateDeltaSigma(sigmaA, sigma0);
-    auto startImage = FilterUtil::applyGaussSeparable(make_shared<DoubleImage>(inputImage), deltaSigma);
+    auto startImage = FilterUtil::applyGauss(make_shared<DoubleImage>(inputImage), deltaSigma);
     auto globalSigma = sigma0;
     vector<shared_ptr<Octave>> octaves;
     for (int i = 0; i < octavesCount; i++) {
@@ -32,11 +31,11 @@ OctavesCreator::generateOneOctave(int nLevels, double sigma0, const shared_ptr<D
     result->addElement(startElement);
     auto oldSigma = sigma0;
     double curK = k;
-    for (int i = 1; i < nLevels; i++) {
+    for (int i = 1; i <= nLevels; i++) {
+
         auto newSigma = oldSigma * curK;
         auto deltaSigma = calculateDeltaSigma(oldSigma, newSigma);
-        auto newImage = FilterUtil::applyGaussSeparable(startElement->getImage(), deltaSigma,
-                                                        Policies::MIRROR, true);
+        auto newImage = FilterUtil::applyGauss(startElement->getImage(), deltaSigma);
         OctaveElement element(newSigma, globalSigma * curK, newImage);
         result->addElement(make_shared<OctaveElement>(element));
         curK *= k;
@@ -49,16 +48,16 @@ double OctavesCreator::calculateDeltaSigma(double oldSigma, double newSigma) {
 }
 
 shared_ptr<DoubleImage> OctavesCreator::getHalfSizeImage(const shared_ptr<DoubleImage> &image) {
-    auto res = make_shared<DoubleImage>(image->getWidth() / 2, image->getHeight() / 2);
+    auto res = DoubleImage(image->getWidth() / 2, image->getHeight() / 2);
 
-    for (int x = 0; x < res->getWidth(); x++)
-        for (int y = 0; y < res->getHeight(); y++)
-            res->setPixel(x, y, image->getPixel(x * 2, y * 2));
-    if (res->getSize() != ((image->getWidth() / 2) * (image->getHeight() / 2))) {
+    for (int x = 0; x < res.getWidth(); x++)
+        for (int y = 0; y < res.getHeight(); y++)
+            res.setPixel(x, y, image->getPixel(x * 2, y * 2));
+    if (res.getSize() != ((image->getWidth() / 2) * (image->getHeight() / 2))) {
         cerr << "Invalid function" << endl;
         throw runtime_error("invalid");
     }
-    return res;
+    return make_shared<DoubleImage>(res.normalize());
 //    return make_shared<DoubleImage>(pixels, image->getWidth() / 2, image->getHeight() / 2);;
 }
 
