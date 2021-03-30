@@ -36,6 +36,9 @@ public:
     static shared_ptr<DoubleImage>
     applyGaussSeparable(const shared_ptr<DoubleImage> &image, double sigma,
                         IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY, bool normalize = false);
+
+    static shared_ptr<DoubleImage>
+    applyGauss(const shared_ptr<DoubleImage> &image, double sigma, IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY, bool normalize = false);
 };
 
 
