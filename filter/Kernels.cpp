@@ -30,20 +30,16 @@ DoubleImage Kernels::GetIncreaseSharpness() {
                        }, 3, 3);
 }
 
-DoubleImage Kernels::GetGauss(double sigma) {
-    int size = 6 * static_cast<int>(sigma) + 1;
-    int halfSize = size / 2;
+DoubleImage Kernels::GetGauss(double sigma, bool isNeedNormalize) {
+    auto halfSize = static_cast<int>(sigma * 3);
+    int size = 2 * halfSize + 1;
     auto matrix_gauss = vector<double>(size * size);
-    double ss2 = 2 * sigma * sigma;
-    double firstDrob = 1.0 / (M_PI * ss2);
     double normalize = 0.0;
-    int rowI = 0;
-    for (int x = -halfSize; x <= halfSize; x++) {
-        int columnI = 0;
-        for (int y = -halfSize; y <= halfSize; y++) {
-            double gauss = firstDrob * exp(-(x * x + y * y) / ss2);
-            matrix_gauss[rowI * size + columnI++] = gauss;
-            normalize += gauss;
+    for (int x = -halfSize, i = 0; x <= halfSize; x++, i++) {
+        for (int y = -halfSize, j = 0; y <= halfSize; y++, j++) {
+            auto value = GetGaussKernelValue(x, y, sigma);
+            matrix_gauss[i * size + j] = value;
+            normalize += value;
         }
     }
     if (isNeedNormalize) {
@@ -81,28 +77,32 @@ DoubleImage Kernels::GetGauss(double sigma) {
 //    return DoubleImage(matrix_gauss, w, h);
 //}
 
-pair<DoubleImage, DoubleImage> Kernels::GetGaussSeparableXY(double sigma) {
-    auto kernel = GetGaussSeparableX(sigma);
+pair<DoubleImage, DoubleImage> Kernels::GetGaussSeparableXY(double sigma, bool normalize) {
+    auto kernel = GetGaussSeparableX(sigma, normalize);
     return make_pair(DoubleImage(kernel, kernel.size(), 1), DoubleImage(kernel, 1, kernel.size()));
 }
 
-vector<double> Kernels::GetGaussSeparableX(double sigma) {
+double Kernels::GetGaussKernelValue(int x, int y, double sigma) {
+    auto ss2 = sigma * sigma * 2;
+    auto top = exp(-(x * x + y * y) / (ss2));
+    auto bottom = M_PI * ss2;
+    return top / bottom;
+}
 
-    double s = sigma * sigma * 2;
-
+vector<double> Kernels::GetGaussSeparableX(double sigma, bool normalize) {
     int halfSize = static_cast<int>(sigma) * 3;
-    if (halfSize % 2 == 0) {
-        ++halfSize;
-    }
     int size = 2 * halfSize + 1;
     auto row = vector<double>(size);
-    int k = 0;
-    double sum = 1;
-
-    for (int i = -halfSize; i <= halfSize; i++, k++) {
-        double value = exp(-(i * i) / s) / (M_PI * s);
+    double sum = 0.0;
+    auto ss2 = sigma * sigma * 2;
+    for (int i = -halfSize, k = 0; i <= halfSize; i++, k++) {
+        double value = exp(-(i * i) / ss2) / (M_PI * ss2);
+//        auto value = GetGaussKernelValue(i, halfSize, sigma);
         row[k] = value;
         sum += value;
     }
+    if (normalize)
+        for (int i = 0; i < size; ++i)
+            row[i] /= sum;
     return row;
 }
