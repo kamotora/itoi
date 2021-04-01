@@ -14,6 +14,8 @@
 class Lab3 {
 private:
     const QString &imageName, &ext;
+    int pointsCount = 1000;
+    int windowSize = 1;
     InputImage inputImage;
 public:
     Lab3(const QString &imageName, const QString &ext) : imageName(imageName), ext(ext) {
@@ -48,26 +50,26 @@ public:
     Lab3 * workMoravec() {
         auto inputDouble = inputImage.toDoubleImage();
         auto moravec = new Moravec(make_shared<DoubleImage>(inputDouble));
-        auto points = moravec->findPoints(1, 1000);
+        auto points = moravec->findPoints(windowSize, pointsCount);
         auto result = InputImage::fromDoubleImage(inputDouble).getImage();
         for (const auto &item : points) {
             drawPlus(item, result);
         }
         InputImage::saveToResources(result,
-                                    imageName + "_moravec_" + QString::fromStdString(to_string(1000)) + ext);
+                                    imageName + "_moravec_" + QString::fromStdString(to_string(pointsCount)) + ext);
         return this;
     }
 
     Lab3 * workHarris() {
         auto inputDouble = inputImage.toDoubleImage();
         auto harris = new Harris(make_shared<DoubleImage>(inputDouble));
-        auto points = harris->findPoints(1, 1000);
+        auto points = harris->findPoints(windowSize, pointsCount);
         auto result = InputImage::fromDoubleImage(inputDouble).getImage();
         for (const auto &item : points) {
             drawPlus(item, result);
         }
         InputImage::saveToResources(result,
-                                    imageName + "_harris_" + QString::fromStdString(to_string(1000)) + ext);
+                                    imageName + "_harris_" + QString::fromStdString(to_string(pointsCount)) + ext);
         return this;
     }
 };

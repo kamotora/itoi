@@ -7,15 +7,19 @@
 vector<Point> Harris::findPoints(int windowSize, int pointsCount) {
     int w = image->getWidth();
     int h = image->getHeight();
+
     auto smoothed = FilterUtil::applyGauss(image, 1.3);
+
+    // smoothed.Save("HARRIS_GAUSS_SEP");
+    auto dx = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivX(image), (IBorderPolicy &) DEFAULT_POLICY);
+    auto dy = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivY(image), (IBorderPolicy &) DEFAULT_POLICY);
+
 
     vector<vector<double>> a, b, c;
 
 
     double sigma = static_cast<double>(windowSize * 2) / 6;
     vector<vector<double>> gaussKernel;
-    auto dx = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivX(image), (IBorderPolicy &) DEFAULT_POLICY);
-    auto dy = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivY(image), (IBorderPolicy &) DEFAULT_POLICY);
 
     double coeff = 1 / (2 * M_PI * sigma * sigma);
     double delitel = 2 * sigma * sigma;
@@ -35,7 +39,7 @@ vector<Point> Harris::findPoints(int windowSize, int pointsCount) {
             for (int u = -windowSize; u <= windowSize; u++) {
                 for (int v = -windowSize; v <= windowSize; v++) {
                     double i_x = dx->getBorderedPixel((x + v), y + u);
-                    double i_y = dy->getBorderedPixel((x + v), y + u);
+                    double i_y = dx->getBorderedPixel((x + v), y + u);
                     sumA += i_x * i_x * gaussKernel[windowSize + u][windowSize + v];
                     sumB += i_x * i_y * gaussKernel[windowSize + u][windowSize + v];
                     sumC += i_y * i_y * gaussKernel[windowSize + u][windowSize + v];
@@ -49,8 +53,8 @@ vector<Point> Harris::findPoints(int windowSize, int pointsCount) {
         b.push_back(bRow);
         c.push_back(cRow);
     }
+    auto harris = make_shared<DoubleImage>(w, h);
 
-    DoubleImage harris = DoubleImage(w, h);
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
             double sc = a[y][x] + c[y][x];
@@ -58,15 +62,14 @@ vector<Point> Harris::findPoints(int windowSize, int pointsCount) {
             double det = sc * sc - 4 * d;
             double L1 = (sc + sqrt(det)) / 2;
             double L2 = (sc - sqrt(det)) / 2;
-            double cHarris = std::min(L1, L2);
-            harris.setPixel(x, y, cHarris);
+            double cHarris = std::max(L1, L2);
+            harris->setPixel(x, y, cHarris);
         }
     }
+    image = harris;
+    vector<Point> points = localMaximum(windowSize, 0.004);
+    return filter(points, pointsCount, std::min(w / 2, h / 2));
 
-    vector<Point> points;
-    points = this->localMaximum(points, windowSize, 0.004);
-    int maxSize = std::min(w / 2, h / 2);
-    return filter(points, pointsCount, maxSize);
 }
 
 Harris::Harris(const shared_ptr<struct DoubleImage> &sharedPtr) : AbstractPointsFinder(sharedPtr) {
