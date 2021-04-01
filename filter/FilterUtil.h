@@ -17,28 +17,26 @@ public:
 
     static DoubleImage applyCrossCorel(DoubleImage &image, DoubleImage &kernel, IBorderPolicy &borderPolicy);
 
-    static DoubleImage applyConvolution(DoubleImage &image, DoubleImage &kernel,
-                                        IBorderPolicy &borderPolicy = (IBorderPolicy &) DEFAULT_POLICY);
+    static shared_ptr<DoubleImage> applyConvolution(const shared_ptr<DoubleImage>& image, DoubleImage &kernel,
+                                                    IBorderPolicy &borderPolicy = (IBorderPolicy &) DEFAULT_POLICY);
 
-    static DoubleImage derivX(DoubleImage &image,
-                                        IBorderPolicy &borderPolicy = (IBorderPolicy &) DEFAULT_POLICY);
+    static shared_ptr<DoubleImage> derivX(const shared_ptr<DoubleImage>& image,
+                                          IBorderPolicy &borderPolicy = (IBorderPolicy &) DEFAULT_POLICY);
 
-    static DoubleImage derivY(DoubleImage &image,
-                              IBorderPolicy &borderPolicy = (IBorderPolicy &) DEFAULT_POLICY);
+    static shared_ptr<DoubleImage> derivY(const shared_ptr<DoubleImage>& image,
+                                          IBorderPolicy &borderPolicy = (IBorderPolicy &) DEFAULT_POLICY);
 
 
-    static DoubleImage applyGauss(DoubleImage &image, double sigma,
-                                  IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY, bool normalize = false);
+    static shared_ptr<DoubleImage> applyGauss(const shared_ptr<DoubleImage>& image, double sigma,
+                                              IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY, bool normalize = false);
 
-    static DoubleImage applySeparable(DoubleImage &image, pair<DoubleImage,DoubleImage>,
-                                           IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY);
+    static shared_ptr<DoubleImage> applySeparable(const shared_ptr<DoubleImage>& image, pair<DoubleImage,DoubleImage>,
+                                                  IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY);
 
     static shared_ptr<DoubleImage>
     applyGaussSeparable(const shared_ptr<DoubleImage> &image, double sigma,
                         IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY, bool normalize = false);
 
-    static shared_ptr<DoubleImage>
-    applyGauss(const shared_ptr<DoubleImage> &image, double sigma, IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY, bool normalize = false);
 };
 
 

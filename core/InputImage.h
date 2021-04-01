@@ -17,14 +17,12 @@ class InputImage {
 private:
     inline static const QString RESOURCES = "../resources";
     inline static const QString INPUT = "/input/";
-    inline static const QString OUTPUT = "/output/lab2/";
+    inline static const QString OUTPUT = "/output/lab3/";
     QImage img;
     int width, height;
     unique_ptr<unsigned char[]> data;
 
     void setImage(const QImage &image);
-
-    void setPixel(int x, int y, unsigned char value);
 
     void setPixel(int i, unsigned char value);
 
@@ -51,6 +49,8 @@ public:
     InputImage *open(const QString &imageName = "output");
 
     static void saveToResources(const QImage &image, const QString &imageName);
+
+    void setPixel(int x, int y, unsigned char value);
 };
 
 

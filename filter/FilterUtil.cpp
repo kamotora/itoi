@@ -1,5 +1,7 @@
 #include "FilterUtil.h"
 
+#include <utility>
+
 
 DoubleImage FilterUtil::applyCrossCorel(DoubleImage &image, DoubleImage &kernel, IBorderPolicy &borderPolicy) {
     int kernelW = kernel.getWidth();
@@ -24,7 +26,7 @@ DoubleImage FilterUtil::applyCrossCorel(DoubleImage &image, DoubleImage &kernel,
     return result;
 }
 
-DoubleImage FilterUtil::applyConvolution(DoubleImage &image, DoubleImage &kernel, IBorderPolicy &borderPolicy) {
+shared_ptr<DoubleImage> FilterUtil::applyConvolution(const shared_ptr<DoubleImage>& image, DoubleImage &kernel, IBorderPolicy &borderPolicy) {
     int kernelW = kernel.getWidth();
     int kernelH = kernel.getHeight();
     if (!(kernelW % 2) || !(kernelH % 2)) {
@@ -32,16 +34,16 @@ DoubleImage FilterUtil::applyConvolution(DoubleImage &image, DoubleImage &kernel
     }
     int kernelKW = kernelW / 2;
     int kernelKH = kernelH / 2;
-    auto result  = DoubleImage(image.getWidth(), image.getHeight());
-    for (int x = 0; x < image.getWidth(); x++) {
-        for (int y = 0; y < image.getHeight(); y++) {
+    auto result  = make_shared<DoubleImage>(image->getWidth(), image->getHeight());
+    for (int x = 0; x < image->getWidth(); x++) {
+        for (int y = 0; y < image->getHeight(); y++) {
             double res = 0;
             for (int i = 0, u = -kernelKW; i < kernelW; i++, u++) {
                 for (int j = 0, v = -kernelKH; j < kernelH; j++, v++) {
-                    res += borderPolicy.getPixel(image, x - u, y - v) * kernel.getPixel(i, j);
+                    res += borderPolicy.getPixel(*image, x - u, y - v) * kernel.getPixel(i, j);
                 }
             }
-            result.setPixel(x, y, res);
+            result->setPixel(x, y, res);
         }
     }
     return result;
@@ -60,40 +62,33 @@ void FilterUtil::print(ostream &out, DoubleImage &matrix) {
     out.flush();
 }
 
-DoubleImage FilterUtil::derivX(DoubleImage &image, IBorderPolicy &borderPolicy) {
+shared_ptr<DoubleImage> FilterUtil::derivX(const shared_ptr<DoubleImage>& image, IBorderPolicy &borderPolicy) {
     auto kernel = Kernels::GetSobelX();
     return applyConvolution(image, kernel, borderPolicy);
 }
 
-DoubleImage FilterUtil::derivY(DoubleImage &image, IBorderPolicy &borderPolicy) {
+shared_ptr<DoubleImage> FilterUtil::derivY(const shared_ptr<DoubleImage>& image, IBorderPolicy &borderPolicy) {
     auto kernel = Kernels::GetSobelY();
     return applyConvolution(image, kernel, borderPolicy);
 }
 
-DoubleImage FilterUtil::applyGauss(DoubleImage &image, double sigma, IBorderPolicy &policy, bool normalize){
+shared_ptr<DoubleImage> FilterUtil::applyGauss(const shared_ptr<DoubleImage>& image, double sigma, IBorderPolicy &policy, bool normalize){
     auto gaussFilter = Kernels::GetGauss(sigma);
     auto res = FilterUtil::applyConvolution(image, gaussFilter, policy);
     if(normalize)
-        return res.normalize();
+        return make_shared<DoubleImage>(res->normalize());
     return res;
 }
 
-shared_ptr<DoubleImage> FilterUtil::applyGauss(const shared_ptr<DoubleImage>& image, double sigma, IBorderPolicy &policy, bool normalize) {
-    auto gaussFilter = Kernels::GetGauss(sigma);
-    auto result = make_shared<DoubleImage>(FilterUtil::applyConvolution(*image, gaussFilter, policy));
-    if(normalize)
-        return make_shared<DoubleImage>(result->normalize());
-    return result;
-}
-
 shared_ptr<DoubleImage> FilterUtil::applyGaussSeparable(const shared_ptr<DoubleImage>& image, double sigma, IBorderPolicy &policy, bool normalize) {
-    auto result = make_shared<DoubleImage>(applySeparable(*image, Kernels::GetGaussSeparableXY(sigma), policy));
+    auto result = applySeparable(image, Kernels::GetGaussSeparableXY(sigma), policy);
     if(normalize)
         return make_shared<DoubleImage>(result->normalize());
     return result;
 }
 
-DoubleImage FilterUtil::applySeparable(DoubleImage &image, pair<DoubleImage, DoubleImage> pair, IBorderPolicy &policy) {
+shared_ptr<DoubleImage>
+FilterUtil::applySeparable(const shared_ptr<DoubleImage>& image, pair<DoubleImage, DoubleImage> pair, IBorderPolicy &policy) {
     auto resX = applyConvolution(image, pair.first, policy);
     auto resY = applyConvolution(resX, pair.second, policy);
     return resY;
