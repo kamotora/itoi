@@ -7,7 +7,7 @@ vector<Point> Moravec::findPoints(int windowSize, int pointsCount) {
     auto smoothed = make_shared<DoubleImageBorderPolicy>(FilterUtil::applyGauss(image, 1.3),
                                                          (IBorderPolicy &) DEFAULT_POLICY);
 
-    DoubleImage moravec = DoubleImage(w, h);
+    auto moravec = make_shared<DoubleImage>(w, h);
     for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
             auto local = std::numeric_limits<double>::max();
@@ -25,12 +25,12 @@ vector<Point> Moravec::findPoints(int windowSize, int pointsCount) {
                         local = std::min(sum, local);
                     }
                 }
-                moravec.setPixel(x, y, local);
+                moravec->setPixel(x, y, local);
             }
         }
     }
-    vector<Point> points;
-    points = this->localMaximum(points, windowSize);
+    image = moravec;
+    vector<Point> points = this->localMaximum(windowSize);
     int maxSize = std::min(w / 2, h / 2);
     return filter(points, pointsCount, maxSize);
 }

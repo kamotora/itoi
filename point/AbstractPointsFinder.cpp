@@ -2,7 +2,7 @@
 
 AbstractPointsFinder::AbstractPointsFinder(const shared_ptr<DoubleImage> &image) : image(image) {}
 
-vector<Point> AbstractPointsFinder::localMaximum(vector<Point> &points, int windowSize, double thresholdCoeff) {
+vector<Point> AbstractPointsFinder::localMaximum(int windowSize, double thresholdCoeff) {
     int w = image->getWidth();
     int h = image->getHeight();
 
@@ -39,26 +39,27 @@ vector<Point> AbstractPointsFinder::localMaximum(vector<Point> &points, int wind
 }
 
 vector<Point> AbstractPointsFinder::filter(vector<Point> &points, int pointsCount, int maxSize) {
+    vector<Point> result(points);
     int r = 3;
-    while (points.size() > pointsCount && r < maxSize) {
-        for (int i = 0; i < points.size(); i++) {
-            for (int j = 0; j < points.size(); j++) {
+    while (result.size() > pointsCount && r < maxSize) {
+        for (int i = 0; i < result.size(); i++) {
+            for (int j = 0; j < result.size(); j++) {
 //                double xd = points[i].getX() - points[j].getX();
 //                double yd = points[i].getY() - points[j].getY();
 //                double dist = sqrt(xd * xd + yd * yd);
-                double dist = points[i].distance(points[j]);
+                double dist = result[i].distance(result[j]);
                 if (dist <= r) {
-                    if (points[i] < points[j]) {
-                        points.erase(points.begin() + i);
+                    if (result[i] < result[j]) {
+                        result.erase(result.begin() + i);
                         i--;
-                        j = points.size();
+                        j = result.size();
                     }
                 }
             }
         }
         r++;
     }
-    return points;
+    return result;
 }
 
 shared_ptr<DoubleImage> AbstractPointsFinder::setPoints(vector<Point> &points) {
