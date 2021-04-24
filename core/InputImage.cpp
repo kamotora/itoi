@@ -61,7 +61,7 @@ InputImage InputImage::fromDoubleImage(DoubleImage &image) {
     result.height = image.getHeight();
     result.width = image.getWidth();
     result.data = std::make_unique<unsigned char[]>(result.width * result.height);
-    result.img = QImage(result.width, result.height, QImage::Format_Grayscale8);
+    result.img = QImage(result.width, result.height, QImage::Format_RGB32);
     for (int x = 0; x < result.width; x++)
         for (int y = 0; y < result.height; y++) {
             unsigned char pixel = image.getPixel(x, y);

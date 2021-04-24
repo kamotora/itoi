@@ -27,19 +27,19 @@ public:
 
     static void testSobelOper(const QString &imageName, const QString &extention, IBorderPolicy &borderPolicy) {
         auto input = InputImage::fromResources(imageName + extention);
-        auto doubleInputImage = input.toDoubleImage();
+        auto doubleInputImage = make_shared<DoubleImage>(input.toDoubleImage());
         auto sobelXImage = FilterUtil::derivX(doubleInputImage);
         auto sobelYSeparableImage = FilterUtil::applySeparable(doubleInputImage, Kernels::GetSobelSeparableY());
         auto sobelYImage = FilterUtil::derivY(doubleInputImage);
         auto result = DoubleImage(input.getWidth(), input.getHeight());
         for (int i = 0; i < result.getSize(); ++i)
-            result.setPixel(i, sqrt(sobelXImage.getPixel(i) * sobelXImage.getPixel(i) +
-                                    sobelYImage.getPixel(i) * sobelYImage.getPixel(i)));
-        InputImage::fromDoubleImage(sobelXImage).saveToResources(
+            result.setPixel(i, sqrt(sobelXImage->getPixel(i) * sobelXImage->getPixel(i) +
+                                    sobelYImage->getPixel(i) * sobelYImage->getPixel(i)));
+        InputImage::fromDoubleImage(*sobelXImage).saveToResources(
                 imageName + "_derivativeX_" + borderPolicy.toString() + extention);
-        InputImage::fromDoubleImage(sobelYSeparableImage).saveToResources(
+        InputImage::fromDoubleImage(*sobelYSeparableImage).saveToResources(
                 imageName + "_separable_derivativeY_" + borderPolicy.toString() + extention);
-        InputImage::fromDoubleImage(sobelYImage).saveToResources(
+        InputImage::fromDoubleImage(*sobelYImage).saveToResources(
                 imageName + "_derivativeY_" + borderPolicy.toString() + extention);
         InputImage::fromDoubleImage(result).saveToResources(
                 imageName + "_sobel_" + borderPolicy.toString() + extention);
@@ -47,7 +47,7 @@ public:
 
     static void testGauss(const QString &imageName, const QString &extention, double sigma, IBorderPolicy &borderPolicy) {
         auto input = InputImage::fromResources(imageName + extention);
-        auto doubleInputImage = input.toDoubleImage();
+        auto doubleInputImage = make_shared<DoubleImage>(input.toDoubleImage());
         double sigmaForTwiceFiltering = sigma;
         double sigmaSum = sigmaForTwiceFiltering * sqrt(2);
         cout << "start for " << imageName.toStdString() << " with sigmaForTwiceFiltering " << sigma << endl;
@@ -56,10 +56,10 @@ public:
         auto twiceGauss = FilterUtil::applyGauss(gaussA, sigmaForTwiceFiltering, borderPolicy);
         auto gaussSum = FilterUtil::applyGauss(doubleInputImage, sigmaSum, borderPolicy);
 //        auto separableGauss = FilterUtil::applyGaussSeparable(doubleInputImage, sigmaSum, borderPolicy);
-        InputImage::fromDoubleImage(twiceGauss).saveToResources(
+        InputImage::fromDoubleImage(*twiceGauss).saveToResources(
                 imageName + "_gauss_twice_sigma" + QString::fromStdString(to_string(sigmaForTwiceFiltering)) + '_' +
                 borderPolicy.toString() + extention);
-        InputImage::fromDoubleImage(gaussSum).saveToResources(
+        InputImage::fromDoubleImage(*gaussSum).saveToResources(
                 imageName + "_gauss_sigma" + QString::fromStdString(to_string(sigmaSum)) + '_' +
                 borderPolicy.toString() + extention);
 //        InputImage::fromDoubleImage(gaussSum).saveToResources(

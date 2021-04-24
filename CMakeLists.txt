@@ -23,7 +23,16 @@ add_executable(${PROJECT_NAME}
         filter/border/SymmetryPolicy.cpp
         filter/border/SymmetryPolicy.h
         filter/border/CopyPolicy.cpp filter/border/CopyPolicy.h
-        demonstration/Lab1.cpp demonstration/Lab1.h filter/border/Policies.cpp filter/border/Policies.h demonstration/Lab2.cpp demonstration/Lab2.h octave/OctavesCreator.cpp octave/OctavesCreator.h octave/OctaveElement.cpp octave/OctaveElement.h octave/Octave.cpp octave/Octave.h)
+        demonstration/Lab1.cpp demonstration/Lab1.h
+        filter/border/Policies.cpp filter/border/Policies.h
+        demonstration/Lab2.cpp demonstration/Lab2.h
+        octave/OctavesCreator.cpp octave/OctavesCreator.h
+        octave/OctaveElement.cpp octave/OctaveElement.h
+        octave/Octave.cpp octave/Octave.h
+        point/Point.cpp point/Point.h
+        point/AbstractPointsFinder.cpp point/AbstractPointsFinder.h
+        point/Moravec.cpp point/Moravec.h
+        point/Harris.cpp point/Harris.h demonstration/Lab3.cpp demonstration/Lab3.h core/DoubleImageBorderPolicy.cpp core/DoubleImageBorderPolicy.h)
 
 set(CMAKE_PREFIX_PATH /usr/include/{host}/qt{version}/)
 

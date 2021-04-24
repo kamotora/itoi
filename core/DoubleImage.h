@@ -24,9 +24,9 @@ public:
 
     void setPixel(int x, int y, double value);
 
-    [[nodiscard]] double getPixel(int x, int y) const;
+    virtual double getPixel(int x, int y) const;
 
-    [[nodiscard]] double getPixel(int i) const;
+    virtual double getPixel(int i) const;
 
     void setPixel(int i, double value);
 
