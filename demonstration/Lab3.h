@@ -14,12 +14,13 @@
 class Lab3 {
 private:
     const QString &imageName, &ext;
-    int pointsCount = 1000;
+    int pointsCount = 100;
     int windowSize = 1;
+    double thresholdCoef = 0.005;
     InputImage inputImage;
 public:
     Lab3(const QString &imageName, const QString &ext) : imageName(imageName), ext(ext) {
-        this->inputImage =InputImage::fromResources(imageName + ext);
+        this->inputImage = InputImage::fromResources(imageName + ext);
     }
 
     void drawPlus(const Point &item, QImage &image) {
@@ -42,15 +43,16 @@ public:
         auto pair = round(x, y, image);
         image.setPixelColor(pair.first, pair.second, qRgb(255, 255, 255));
     }
+
 public:
     static void demo() {
-        Lab3("cat_dog", ".jpg").workMoravec()->workHarris();
+        Lab3("shrek", ".jpg").workMoravec()->workHarris();
     }
 
-    Lab3 * workMoravec() {
+    Lab3 *workMoravec() {
         auto inputDouble = inputImage.toDoubleImage();
-        auto moravec = new Moravec(make_shared<DoubleImage>(inputDouble));
-        auto points = moravec->findPoints(windowSize, pointsCount);
+        auto moravec = new Moravec(make_shared<DoubleImage>(inputDouble), imageName, ext);
+        auto points = moravec->findPoints(windowSize, pointsCount, thresholdCoef);
         auto result = InputImage::fromDoubleImage(inputDouble).getImage();
         for (const auto &item : points) {
             drawPlus(item, result);
@@ -60,10 +62,10 @@ public:
         return this;
     }
 
-    Lab3 * workHarris() {
+    Lab3 *workHarris() {
         auto inputDouble = inputImage.toDoubleImage();
-        auto harris = new Harris(make_shared<DoubleImage>(inputDouble));
-        auto points = harris->findPoints(windowSize, pointsCount);
+        auto harris = new Harris(make_shared<DoubleImage>(inputDouble), imageName, ext);
+        auto points = harris->findPoints(3, pointsCount, thresholdCoef);
         auto result = InputImage::fromDoubleImage(inputDouble).getImage();
         for (const auto &item : points) {
             drawPlus(item, result);

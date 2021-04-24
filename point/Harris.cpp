@@ -4,13 +4,12 @@
 
 #include "Harris.h"
 
-vector<Point> Harris::findPoints(int windowSize, int pointsCount) {
+vector<Point> Harris::findPoints(int windowSize, int pointsCount, double tresholdCoef) {
     int w = image->getWidth();
     int h = image->getHeight();
 
     auto smoothed = FilterUtil::applyGauss(image, 1.3);
 
-    // smoothed.Save("HARRIS_GAUSS_SEP");
     auto dx = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivX(image), (IBorderPolicy &) DEFAULT_POLICY);
     auto dy = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivY(image), (IBorderPolicy &) DEFAULT_POLICY);
 
@@ -55,8 +54,8 @@ vector<Point> Harris::findPoints(int windowSize, int pointsCount) {
     }
     auto harris = make_shared<DoubleImage>(w, h);
 
-    for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) {
+    for (int x = 0; x < w; x++) {
+        for (int y = 0; y < h; y++) {
             double sc = a[y][x] + c[y][x];
             double d = a[y][x] * c[y][x] - b[y][x] * b[y][x];
             double det = sc * sc - 4 * d;
@@ -66,11 +65,18 @@ vector<Point> Harris::findPoints(int windowSize, int pointsCount) {
             harris->setPixel(x, y, cHarris);
         }
     }
+    saveImage(harris, "before_filtering");
     image = harris;
-    vector<Point> points = localMaximum(windowSize, 0.004);
-    return filter(points, pointsCount, std::min(w / 2, h / 2));
-
+    vector<Point> points = localMaximum(windowSize, tresholdCoef);
+    drawPoints(points, "localMaximums");
+    auto pointsAfterFiltering = filter(points, pointsCount, std::min(w / 2, h / 2));
+    drawPoints(pointsAfterFiltering, "after_filtering");
+    return pointsAfterFiltering;
 }
 
-Harris::Harris(const shared_ptr<struct DoubleImage> &sharedPtr) : AbstractPointsFinder(sharedPtr) {
+QString Harris::getMethodName() {
+    return "harris";
 }
+
+Harris::Harris(const shared_ptr<DoubleImage> &image, const QString &imageName, const QString &imageExt)
+        : AbstractPointsFinder(image, imageName, imageExt) {}

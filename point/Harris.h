@@ -13,7 +13,11 @@ class Harris : public AbstractPointsFinder {
 public:
     Harris(const shared_ptr<struct DoubleImage>& sharedPtr);
 
-    vector<Point> findPoints(int windowSize, int pointsCount) override;
+    Harris(const shared_ptr<DoubleImage> &image, const QString &imageName, const QString &imageExt);
+
+    vector<Point> findPoints(int windowSize, int pointsCount, double tresholdCoef) override;
+
+    QString getMethodName() override;
 };
 
 

@@ -1,6 +1,8 @@
 #include "AbstractPointsFinder.h"
 
-AbstractPointsFinder::AbstractPointsFinder(const shared_ptr<DoubleImage> &image) : image(image) {}
+AbstractPointsFinder::AbstractPointsFinder(const shared_ptr<DoubleImage> &image, const QString &imageName,
+                                           const QString &imageExt)
+        : image(image), imageName(imageName), imageExt(imageExt) {}
 
 vector<Point> AbstractPointsFinder::localMaximum(int windowSize, double thresholdCoeff) {
     int w = image->getWidth();
@@ -40,13 +42,10 @@ vector<Point> AbstractPointsFinder::localMaximum(int windowSize, double threshol
 
 vector<Point> AbstractPointsFinder::filter(vector<Point> &points, int pointsCount, int maxSize) {
     vector<Point> result(points);
-    int r = 3;
+    int r = 0;
     while (result.size() > pointsCount && r < maxSize) {
         for (int i = 0; i < result.size(); i++) {
             for (int j = 0; j < result.size(); j++) {
-//                double xd = points[i].getX() - points[j].getX();
-//                double yd = points[i].getY() - points[j].getY();
-//                double dist = sqrt(xd * xd + yd * yd);
                 double dist = result[i].distance(result[j]);
                 if (dist <= r) {
                     if (result[i] < result[j]) {
@@ -81,11 +80,26 @@ pair<int, int> AbstractPointsFinder::round(int x, int y) {
     return make_pair(resX, resY);
 }
 
-void AbstractPointsFinder::setPoint(int x, int y, const shared_ptr<DoubleImage>& sharedPtr) {
+void AbstractPointsFinder::setPoint(int x, int y, const shared_ptr<DoubleImage> &sharedPtr) {
     auto pair = round(x, y);
     sharedPtr->setPixel(pair.first, pair.second, 0);
 }
 
 double AbstractPointsFinder::getPixelWithBorderPolicy(int x, int y, IBorderPolicy &borderPolicy) const {
     return borderPolicy.getPixel(*image, x, y);
+}
+
+
+void AbstractPointsFinder::drawPoints(vector<Point> &points, const QString &name) {
+    auto res = make_shared<DoubleImage>(image->getWidth(), image->getHeight());
+    for (int i = 0; i < res->getSize(); i++)
+        res->setPixel(i, 0);
+    for (const auto &item : points)
+        res->setPixel(item.getX(), item.getY(), 255);
+    saveImage(res, "map_" + name);
+}
+
+void AbstractPointsFinder::saveImage(const shared_ptr<DoubleImage> &outputImage, const QString &nameSuffix) {
+    InputImage::saveToResources(InputImage::fromDoubleImage(*outputImage).getImage(),
+                                imageName + "_" + getMethodName() + "_" + nameSuffix + imageExt);
 }
