@@ -41,12 +41,24 @@ public:
 
     static void setPoint(int x, int y, QImage &image) {
         auto pair = round(x, y, image);
-        image.setPixelColor(pair.first, pair.second, qRgb(255, 255, 255));
+        image.setPixelColor(pair.first, pair.second, qRgb(255, 0, 0));
     }
 
 public:
     static void demo() {
+        Lab3("butterfly", ".jpg").workMoravec()->workHarris();
+
         Lab3("shrek", ".jpg").workMoravec()->workHarris();
+
+        Lab3("cat_dog", ".jpg").workMoravec()->workHarris();
+
+        Lab3("cat_dog_brighted", ".jpg").workMoravec()->workHarris();
+
+        Lab3("cat_dog_rotated", ".jpg").workMoravec()->workHarris();
+
+        Lab3("cat_dog_noised", ".png").workMoravec()->workHarris();
+
+        Lab3("cat_dog_mirror", ".jpg").workMoravec()->workHarris();
     }
 
     Lab3 *workMoravec() {
