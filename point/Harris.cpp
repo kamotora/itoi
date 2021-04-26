@@ -67,7 +67,7 @@ vector<Point> Harris::findPoints(int windowSize, int pointsCount, double treshol
     }
     saveImage(harris, "before_filtering");
     image = harris;
-    vector<Point> points = localMaximum(windowSize, tresholdCoef);
+    vector<Point> points = localMaximum(tresholdCoef);
     drawPoints(points, "localMaximums");
     auto pointsAfterFiltering = filter(points, pointsCount, std::min(w / 2, h / 2));
     drawPoints(pointsAfterFiltering, "after_filtering");

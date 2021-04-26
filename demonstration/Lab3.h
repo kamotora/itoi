@@ -16,7 +16,7 @@ private:
     const QString &imageName, &ext;
     int pointsCount = 100;
     int windowSize = 1;
-    double thresholdCoef = 0.005;
+    double thresholdCoef = 0.01;
     InputImage inputImage;
 public:
     Lab3(const QString &imageName, const QString &ext) : imageName(imageName), ext(ext) {
@@ -46,19 +46,15 @@ public:
 
 public:
     static void demo() {
-        Lab3("butterfly", ".jpg").workMoravec()->workHarris();
+        Lab3("lenna", ".png").workMoravec()->workHarris();
 
-        Lab3("shrek", ".jpg").workMoravec()->workHarris();
+        Lab3("lenna_brighted", ".png").workMoravec()->workHarris();
 
-        Lab3("cat_dog", ".jpg").workMoravec()->workHarris();
+        Lab3("lenna_rotated", ".png").workMoravec()->workHarris();
 
-        Lab3("cat_dog_brighted", ".jpg").workMoravec()->workHarris();
+        Lab3("lenna_noised", ".png").workMoravec()->workHarris();
 
-        Lab3("cat_dog_rotated", ".jpg").workMoravec()->workHarris();
-
-        Lab3("cat_dog_noised", ".png").workMoravec()->workHarris();
-
-        Lab3("cat_dog_mirror", ".jpg").workMoravec()->workHarris();
+        Lab3("lenna_mirror", ".png").workMoravec()->workHarris();
     }
 
     Lab3 *workMoravec() {
