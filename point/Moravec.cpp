@@ -1,31 +1,31 @@
 #include "Moravec.h"
-#include "../core/InputImage.h"
 
 vector<Point> Moravec::findPoints(int windowSize, int pointsCount, double tresholdCoef) {
+    vector<int> dx{-1, 0, 1, -1, 1, -1, 0, -1};
+    vector<int> dy{-1, -1, -1, 0, 0, 1, 1, 1};
+
     int w = image->getWidth();
     int h = image->getHeight();
 
-    auto smoothed = make_shared<DoubleImageBorderPolicy>(FilterUtil::applyGauss(image, 1.3),
+    auto smoothed = make_shared<DoubleImageBorderPolicy>(FilterUtil::applyGauss(image, windowSize),
                                                          (IBorderPolicy &) DEFAULT_POLICY);
 
     auto moravec = make_shared<DoubleImage>(w, h);
-    for (int x = 0; x < w; x++) {
-        for (int y = 0; y < h; y++) {
-            auto local = std::numeric_limits<double>::max();
-            for (int iy = -1; iy <= 1; iy++) {
-                for (int ix = -1; ix <= 1; ix++) {
-                    double sum = 0;
-                    for (int u = -windowSize; u <= windowSize; u++) {
-                        for (int v = -windowSize; v <= windowSize; v++) {
-                            double tmp = smoothed->getBorderedPixel(x, y) -
-                                         smoothed->getBorderedPixel((x + ix + u), y + iy + v);
-                            sum += tmp * tmp;
-                        }
+    for (int i = 0; i < w; i++) {
+        for (int j = 0; j < h; j++) {
+            double min = std::numeric_limits<double>::max();
+            for (int k = 0; k < dx.size(); k++) {
+                double sum = 0;
+                for (int u = -windowSize; u <= windowSize; u++) {
+                    for (int v = -windowSize; v <= windowSize; v++) {
+                        auto temp = getPixelWithBorderPolicy(i + u, j + v) -
+                                    getPixelWithBorderPolicy(i + u + dx[k], j + v + dy[k]);
+                        sum += temp * temp;
                     }
-                    local = std::min(sum, local);
                 }
-                moravec->setPixel(x, y, local);
+                min = std::min(min, sum);
             }
+            moravec->setPixel(i, j, min);
         }
     }
     saveImage(moravec, "before_filtering");

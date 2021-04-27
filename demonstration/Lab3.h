@@ -14,9 +14,10 @@
 class Lab3 {
 private:
     const QString &imageName, &ext;
-    int pointsCount = 100;
-    int windowSize = 1;
-    double thresholdCoef = 0.01;
+    int pointsCount = 1000;
+    int windowSize = 4;
+    double harrisThresholdCoef = 0.1;
+    double moravecThresholdCoef = 0.05;
     InputImage inputImage;
 public:
     Lab3(const QString &imageName, const QString &ext) : imageName(imageName), ext(ext) {
@@ -60,7 +61,7 @@ public:
     Lab3 *workMoravec() {
         auto inputDouble = inputImage.toDoubleImage();
         auto moravec = new Moravec(make_shared<DoubleImage>(inputDouble), imageName, ext);
-        auto points = moravec->findPoints(windowSize, pointsCount, thresholdCoef);
+        auto points = moravec->findPoints(windowSize, pointsCount, moravecThresholdCoef);
         auto result = InputImage::fromDoubleImage(inputDouble).getImage();
         for (const auto &item : points) {
             drawPlus(item, result);
@@ -73,7 +74,7 @@ public:
     Lab3 *workHarris() {
         auto inputDouble = inputImage.toDoubleImage();
         auto harris = new Harris(make_shared<DoubleImage>(inputDouble), imageName, ext);
-        auto points = harris->findPoints(3, pointsCount, thresholdCoef);
+        auto points = harris->findPoints(3, pointsCount, harrisThresholdCoef);
         auto result = InputImage::fromDoubleImage(inputDouble).getImage();
         for (const auto &item : points) {
             drawPlus(item, result);

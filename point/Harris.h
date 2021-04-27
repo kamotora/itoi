@@ -16,6 +16,8 @@ public:
     vector<Point> findPoints(int windowSize, int pointsCount, double tresholdCoef) override;
 
     QString getMethodName() override;
+
+    vector<double> getEigenValues(vector<vector<double>> matrix);
 };
 
 

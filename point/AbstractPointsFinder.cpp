@@ -39,7 +39,6 @@ vector<Point> AbstractPointsFinder::localMaximum(double thresholdCoeff) {
                 result.emplace_back(i, j, currentValue);
             }
         }
-
     }
     return result;
 }

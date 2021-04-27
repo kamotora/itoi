@@ -39,6 +39,8 @@ public:
     void drawPoints(vector<Point> &points, const QString &name);
 
     void saveImage(const shared_ptr<DoubleImage> &outputImage, const QString &nameSuffix);
+
+    vector<Point> localMaximum(int windowSize, double thresholdCoeff);
 };
 
 
