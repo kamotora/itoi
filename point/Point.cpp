@@ -15,7 +15,7 @@ int Point::getY() const {
 Point::Point(int x, int y, double value) : x(x), y(y), value(value) {}
 
 double Point::distance(Point &point) const {
-    return sqrt(sqr(x - point.y) + sqr(x - point.y));
+    return sqrt(sqr(x - point.x) + sqr(x - point.x));
 }
 
 bool Point::operator<(Point point) const {

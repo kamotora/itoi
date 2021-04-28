@@ -17,7 +17,7 @@ public:
 
     QString getMethodName() override;
 
-    vector<double> getEigenValues(vector<vector<double>> matrix);
+    static vector<double> getEigenValues(vector<vector<double>> matrix);
 };
 
 

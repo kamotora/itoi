@@ -38,7 +38,7 @@ vector<Point> Harris::findPoints(int windowSize, int pointsCount, double treshol
     drawPoints(points, "localMaximums");
     auto pointsAfterFiltering = filter(points, pointsCount, std::min(w / 2, h / 2));
     drawPoints(pointsAfterFiltering, "after_filtering");
-    return points;
+    return pointsAfterFiltering;
 }
 
 vector<double> Harris::getEigenValues(vector<vector<double>> matrix) {
