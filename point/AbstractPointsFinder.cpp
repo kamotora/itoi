@@ -4,7 +4,9 @@ AbstractPointsFinder::AbstractPointsFinder(const shared_ptr<DoubleImage> &image,
                                            const QString &imageExt)
         : image(image), imageName(imageName), imageExt(imageExt) {}
 
-vector<Point> AbstractPointsFinder::localMaximum(int windowSize, double thresholdCoeff) {
+vector<Point> AbstractPointsFinder::localMaximum(double thresholdCoeff) {
+    vector<int> dx{-1, 0, 1, -1, 1, -1, 0, -1};
+    vector<int> dy{-1, -1, -1, 0, 0, 1, 1, 1};
     int w = image->getWidth();
     int h = image->getHeight();
 
@@ -24,16 +26,17 @@ vector<Point> AbstractPointsFinder::localMaximum(int windowSize, double threshol
     for (int i = 0; i < w; i++) {
         for (int j = 0; j < h; j++) {
             bool isCorrect = true;
-            double sLocal = image->getPixel(i, j);
-            for (int px = -windowSize; px <= windowSize && isCorrect; px++) {
-                for (int py = -windowSize; py <= windowSize && isCorrect; py++) {
-                    if (px != 0 || py != 0) {
-                        isCorrect = sLocal > getPixelWithBorderPolicy(i + px, j + py);
-                    }
-                }
+            double currentValue = image->getPixel(i, j);
+            for (int k = 0; k < dx.size() && isCorrect; k++) {
+                if (i + dx[k] < 0 ||
+                    i + dx[k] >= w ||
+                    j + dy[k] < 0 ||
+                    j + dy[k] >= h) continue;
+                if (currentValue < getPixelWithBorderPolicy(i + dx[k], j + dy[k]))
+                    isCorrect = false;
             }
-            if (isCorrect && sLocal > threshold) {
-                result.emplace_back(i, j, sLocal);
+            if (isCorrect && currentValue > threshold) {
+                result.emplace_back(i, j, currentValue);
             }
         }
     }

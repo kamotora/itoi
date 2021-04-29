@@ -15,6 +15,8 @@ private:
 public:
     Point(int x, int y, double value);
 
+    double getValue() const;
+
     [[nodiscard]] int getX() const;
 
     [[nodiscard]] int getY() const;
@@ -25,6 +27,7 @@ public:
 
     bool operator>(Point point) const;
 
+    static double sqr(int i) ;
 };
 
 

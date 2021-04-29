@@ -15,12 +15,21 @@ int Point::getY() const {
 Point::Point(int x, int y, double value) : x(x), y(y), value(value) {}
 
 double Point::distance(Point &point) const {
-    return sqrt((x - point.x) * (x - point.x) + (y - point.y) * (y - point.y));
+    return sqrt(sqr(x - point.x) + sqr(x - point.x));
 }
 
 bool Point::operator<(Point point) const {
     return value < point.value;
 }
+
 bool Point::operator>(Point point) const {
     return value > point.value;
+}
+
+double Point::getValue() const {
+    return value;
+}
+
+double Point::sqr(int i) {
+    return i * i;
 }

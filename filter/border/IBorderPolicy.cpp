@@ -1,7 +1,5 @@
 #include "IBorderPolicy.h"
 
-//todo проверить везде соответствие width vs x, height vs y;
-
 double IBorderPolicy::getPixel(DoubleImage &image, int x, int y) {
     if (!isBorder(image, x, y))
         return image.getPixel(x, y);
