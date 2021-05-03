@@ -1,6 +1,6 @@
 #include "Moravec.h"
 
-vector<Point> Moravec::findPoints(int windowSize, int pointsCount, double tresholdCoef) {
+vector<Point> Moravec::findPoints(int pointsCount, int windowSize, double tresholdCoef) {
     vector<int> dx{-1, 0, 1, -1, 1, -1, 0, -1};
     vector<int> dy{-1, -1, -1, 0, 0, 1, 1, 1};
 

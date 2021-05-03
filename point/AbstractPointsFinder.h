@@ -23,10 +23,10 @@ protected:
     void setPoint(int x, int y, const shared_ptr<DoubleImage> &sharedPtr);
 
 public:
-    explicit AbstractPointsFinder(const shared_ptr<DoubleImage> &image, const QString &imageName,
-                                  const QString &imageExt);
+    explicit AbstractPointsFinder(const shared_ptr<DoubleImage> &image, const QString &imageName = QString::null,
+                                  const QString &imageExt = QString::null);
 
-    virtual vector<Point> findPoints(int windowSize, int pointsCount, double tresholdCoef = 0.01) = 0;
+    virtual vector<Point> findPoints(int pointsCount, int windowSize, double tresholdCoef = 0.1) = 0;
 
     virtual QString getMethodName() = 0;
 

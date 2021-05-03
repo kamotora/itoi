@@ -10,6 +10,7 @@
 #include "../core/InputImage.h"
 #include "../point/Moravec.h"
 #include "../point/Harris.h"
+#include "../descriptor/DescriptorUtil.h"
 
 class Lab3 {
 private:
@@ -22,27 +23,6 @@ private:
 public:
     Lab3(const QString &imageName, const QString &ext) : imageName(imageName), ext(ext) {
         this->inputImage = InputImage::fromResources(imageName + ext);
-    }
-
-    void drawPlus(const Point &item, QImage &image) {
-        int plusSize = 2;
-        for (int i = -plusSize; i <= plusSize; i++) {
-            if (i == 0)
-                continue;
-            setPoint(item.getX() + i, item.getY(), image);
-            setPoint(item.getX(), item.getY() + i, image);
-        }
-    }
-
-    static pair<int, int> round(int x, int y, QImage &image) {
-        int resX = (x < 0) ? 0 : (x >= image.width() ? image.width() - 1 : x);
-        int resY = (y < 0) ? 0 : (y >= image.height() ? image.height() - 1 : y);
-        return make_pair(resX, resY);
-    }
-
-    static void setPoint(int x, int y, QImage &image) {
-        auto pair = round(x, y, image);
-        image.setPixelColor(pair.first, pair.second, qRgb(255, 0, 0));
     }
 
 public:
@@ -78,12 +58,9 @@ public:
         cout << "start moravec processing " << imageName.toStdString() << endl;
         auto inputDouble = inputImage.toDoubleImage();
         auto moravec = new Moravec(make_shared<DoubleImage>(inputDouble), imageName, ext);
-        auto points = moravec->findPoints(windowSize, pointsCount, moravecThresholdCoef);
+        auto points = moravec->findPoints(pointsCount, windowSize, moravecThresholdCoef);
         auto result = InputImage::fromDoubleImage(inputDouble).getImage();
-        for (const auto &item : points) {
-            drawPlus(item, result);
-        }
-        InputImage::saveToResources(result,
+        InputImage::saveToResources(DescriptorUtil::markPoints(points, result),
                                     imageName + "_moravec_" + QString::fromStdString(to_string(pointsCount)) + ext);
         return this;
     }
@@ -92,12 +69,9 @@ public:
         cout << "start harris processing " << imageName.toStdString() << endl;
         auto inputDouble = inputImage.toDoubleImage();
         auto harris = new Harris(make_shared<DoubleImage>(inputDouble), imageName, ext);
-        auto points = harris->findPoints(3, pointsCount, harrisThresholdCoef);
+        auto points = harris->findPoints(pointsCount, 3, harrisThresholdCoef);
         auto result = InputImage::fromDoubleImage(inputDouble).getImage();
-        for (const auto &item : points) {
-            drawPlus(item, result);
-        }
-        InputImage::saveToResources(result,
+        InputImage::saveToResources(DescriptorUtil::markPoints(points, result),
                                     imageName + "_harris_" + QString::fromStdString(to_string(pointsCount)) + ext);
         return this;
     }

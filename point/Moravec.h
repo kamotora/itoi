@@ -7,7 +7,7 @@
 
 class Moravec : public AbstractPointsFinder {
 public:
-    vector<Point> findPoints(int windowSize, int pointsCount, double tresholdCoef) override;
+    vector<Point> findPoints(int pointsCount, int windowSize, double tresholdCoef) override;
 
     Moravec(const shared_ptr<DoubleImage> &image, const QString &imageName, const QString &imageExt);
 

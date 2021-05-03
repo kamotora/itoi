@@ -4,7 +4,7 @@
 
 #include "Harris.h"
 
-vector<Point> Harris::findPoints(int windowSize, int pointsCount, double tresholdCoef) {
+vector<Point> Harris::findPoints(int pointsCount, int windowSize, double tresholdCoef) {
     int w = image->getWidth();
     int h = image->getHeight();
 
@@ -32,12 +32,15 @@ vector<Point> Harris::findPoints(int windowSize, int pointsCount, double treshol
             harris->setPixel(x, y, min(eigenvalues[0], eigenvalues[1]));
         }
     }
-    saveImage(harris, "before_filtering");
+    if (!imageName.isNull())
+        saveImage(harris, "before_filtering");
     image = harris;
     vector<Point> points = localMaximum(tresholdCoef);
-    drawPoints(points, "localMaximums");
+    if (!imageName.isNull())
+        drawPoints(points, "localMaximums");
     auto pointsAfterFiltering = filter(points, pointsCount, std::min(w / 2, h / 2));
-    drawPoints(pointsAfterFiltering, "after_filtering");
+    if (!imageName.isNull())
+        drawPoints(pointsAfterFiltering, "after_filtering");
     return pointsAfterFiltering;
 }
 
@@ -66,3 +69,5 @@ QString Harris::getMethodName() {
 
 Harris::Harris(const shared_ptr<DoubleImage> &image, const QString &imageName, const QString &imageExt)
         : AbstractPointsFinder(image, imageName, imageExt) {}
+
+Harris::Harris(const shared_ptr<DoubleImage> &image) : AbstractPointsFinder(image) {}
