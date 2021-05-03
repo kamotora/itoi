@@ -8,12 +8,16 @@
 
 #include "DoubleImage.h"
 #include "../filter/border/CopyPolicy.h"
+#include "../filter/border/MirrorPolicy.h"
 
 class DoubleImageBorderPolicy : public DoubleImage {
 private:
+    constexpr static MirrorPolicy DEFAULT_POLICY = MirrorPolicy();
     IBorderPolicy &borderPolicy;
 public:
-    DoubleImageBorderPolicy(const shared_ptr<DoubleImage>& other, IBorderPolicy &borderPolicy);
+    explicit DoubleImageBorderPolicy(const shared_ptr<DoubleImage> &other,
+                            IBorderPolicy &borderPolicy = (IBorderPolicy &) DEFAULT_POLICY);
+
     [[nodiscard]] double getBorderedPixel(int x, int y) const;
 
 };

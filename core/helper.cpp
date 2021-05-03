@@ -19,3 +19,7 @@ unique_ptr<double[]> Helper::normalizeMinMax(const unique_ptr<double[]> &data, i
     }
     return res;
 }
+
+double Helper::sqr(double value) {
+    return value * value;
+}

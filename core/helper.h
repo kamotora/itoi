@@ -11,5 +11,6 @@ public:
     static unsigned char toGrayscale(const QColor &rgbPixel);
 
     static unique_ptr<double[]> normalizeMinMax(const unique_ptr<double[]> &data, int size, double newDiff = 1.0);
+    static double sqr(double value);
 };
 #endif //ITOI_HELPER_H
