@@ -20,6 +20,7 @@ InputImage InputImage::fromResources(const QString &imageName) {
         throw invalid_argument("Fail to load image. Check path: " + path.toStdString());
     auto inputImage = InputImage();
     inputImage.setImage(image);
+    inputImage.setName(imageName.left(imageName.indexOf(".")));
     return inputImage;
 }
 
@@ -103,4 +104,25 @@ InputImage *InputImage::open(const QString &imageName) {
 
 InputImage *InputImage::saveToResources(const string &imageName) {
     return saveToResources(QString::fromStdString(imageName));
+}
+
+InputImage InputImage::from(const QPixmap &pixmap) {
+    auto inputImage = InputImage();
+    inputImage.setImage(pixmap.toImage());
+    return inputImage;
+}
+
+
+InputImage InputImage::from(const QImage &image) {
+    auto inputImage = InputImage();
+    inputImage.setImage(image);
+    return inputImage;
+}
+
+const QString &InputImage::getName() const {
+    return name;
+}
+
+void InputImage::setName(const QString &_name) {
+    InputImage::name = _name;
 }

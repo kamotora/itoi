@@ -2,7 +2,10 @@
 
 AbstractPointsFinder::AbstractPointsFinder(const shared_ptr<DoubleImage> &image, const QString &imageName,
                                            const QString &imageExt)
-        : image(image), imageName(imageName), imageExt(imageExt) {}
+        : image(image), imageName(imageName), imageExt(imageExt) {
+    if (imageName.isNull())
+        cout << "imageName for points finder == null. We will not save intermediate results" << endl;
+}
 
 vector<Point> AbstractPointsFinder::localMaximum(double thresholdCoeff) {
     vector<int> dx{-1, 0, 1, -1, 1, -1, 0, -1};
@@ -31,7 +34,8 @@ vector<Point> AbstractPointsFinder::localMaximum(double thresholdCoeff) {
                 if (i + dx[k] < 0 ||
                     i + dx[k] >= w ||
                     j + dy[k] < 0 ||
-                    j + dy[k] >= h) continue;
+                    j + dy[k] >= h)
+                    continue;
                 if (currentValue < getPixelWithBorderPolicy(i + dx[k], j + dy[k]))
                     isCorrect = false;
             }

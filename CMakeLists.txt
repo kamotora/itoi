@@ -32,7 +32,20 @@ add_executable(${PROJECT_NAME}
         point/Point.cpp point/Point.h
         point/AbstractPointsFinder.cpp point/AbstractPointsFinder.h
         point/Moravec.cpp point/Moravec.h
-        point/Harris.cpp point/Harris.h demonstration/Lab3.cpp demonstration/Lab3.h core/DoubleImageBorderPolicy.cpp core/DoubleImageBorderPolicy.h)
+        point/Harris.cpp point/Harris.h
+        distortions/Distortion.cpp distortions/Distortion.h
+        distortions/Contrast.cpp distortions/Contrast.h
+        distortions/Rotate.cpp distortions/Rotate.h
+        distortions/Scale.cpp distortions/Scale.h
+        distortions/Shift.cpp distortions/Shift.h
+        demonstration/Lab3.cpp demonstration/Lab3.h
+        core/DoubleImageBorderPolicy.cpp core/DoubleImageBorderPolicy.h
+        descriptor/AbstractDescriptor.cpp descriptor/AbstractDescriptor.h
+        descriptor/PatchDescriptor.cpp descriptor/PatchDescriptor.h
+        descriptor/PatchCreator.cpp descriptor/PatchCreator.h
+        descriptor/DescriptorUtil.cpp descriptor/DescriptorUtil.h
+        descriptor/MatchInfo.cpp descriptor/MatchInfo.h
+        demonstration/Lab4.cpp demonstration/Lab4.h distortions/Noise.cpp distortions/Noise.h)
 
 set(CMAKE_PREFIX_PATH /usr/include/{host}/qt{version}/)
 
