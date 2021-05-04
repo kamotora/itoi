@@ -15,7 +15,7 @@ public:
 
     Harris(const shared_ptr<DoubleImage> &image);
 
-    vector<Point> findPoints(int pointsCount, int windowSize = 4, double tresholdCoef = 0.1) override;
+    vector<Point> findPoints(int pointsCount, int windowSize = 4, double tresholdCoef = 0.05) override;
 
     QString getMethodName() override;
 

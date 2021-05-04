@@ -20,7 +20,7 @@ InputImage InputImage::fromResources(const QString &imageName) {
         throw invalid_argument("Fail to load image. Check path: " + path.toStdString());
     auto inputImage = InputImage();
     inputImage.setImage(image);
-    inputImage.setName(imageName);
+    inputImage.setName(imageName.left(imageName.indexOf(".")));
     return inputImage;
 }
 

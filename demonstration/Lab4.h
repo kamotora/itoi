@@ -12,6 +12,7 @@
 #include "../distortions/Shift.h"
 #include "../descriptor/PatchCreator.h"
 #include "../distortions/Contrast.h"
+#include "../distortions/Noise.h"
 
 class Lab4 {
 private:
@@ -26,45 +27,54 @@ public:
     }
 
     static void demo() {
-        Lab4("lenna", ".png", 4,
-             36, 4, 4)
-                .workWithContrast()
-                ->workWithShifted20()
-                ->workWithShifted50()
-                ;
+        Lab4("lenna", ".png", 3,
+             32, 4, 2)
+                .workWithShiftedXY(20)
+                ->workWithShiftedY(40)
+                ->workWithContrast();
 
 
         Lab4("butterfly", ".jpg", 4,
              64, 4, 4)
-                .workWithContrast()
-                ->workWithShifted20()
-                ->workWithShifted50()
-                ;
+                .workWithShiftedXY(40)
+                ->workWithContrast()
+                ->workWithShiftedX(60);
 
         Lab4("shrek", ".jpg", 4,
-             64, 4, 4)
+             24, 2, 2)
                 .workWithContrast()
-                ->workWithShifted20()
-                ->workWithShifted50()
-                ;
+                ->workWithShiftedXY(20)
+                ->workWithShiftedY(25);
     }
 
-    Lab4 *workWithShifted20() {
-        auto firstInput = createShiftedInputImage(20, 20);
-        auto secondInput = createShiftedInputImage(-20, -20);
+    Lab4 *workWithShiftedXY(int diff = 30) {
+        auto firstInput = createShiftedInputImage(diff, diff);
+        auto secondInput = createShiftedInputImage(-diff, -diff);
         work(firstInput, secondInput);
         return this;
     }
 
-    Lab4 * workWithShifted50() {
-        auto firstInput = createShiftedInputImage(0, 50);
-        auto secondInput = createShiftedInputImage(0, -50);
+    Lab4 *workWithShiftedY(int diffY = 50) {
+        auto firstInput = createShiftedInputImage(0, diffY);
+        auto secondInput = createShiftedInputImage(0, -diffY);
+        work(firstInput, secondInput);
+        return this;
+    }
+    Lab4 *workWithShiftedX(int diffX = 50) {
+        auto firstInput = createShiftedInputImage(diffX, 0);
+        auto secondInput = createShiftedInputImage(-diffX, 0);
         work(firstInput, secondInput);
         return this;
     }
 
-    Lab4 * workWithContrast() {
-        work(inputImage, createWithDistortion(make_shared<Contrast>(1.5)));
+    Lab4 *workWithContrast(double contrastFactor = 1.2) {
+        work(inputImage, createWithDistortion(make_shared<Contrast>(contrastFactor)));
+        return this;
+    }
+
+
+    Lab4 *workWithSameImages() {
+        work(inputImage, inputImage);
         return this;
     }
 

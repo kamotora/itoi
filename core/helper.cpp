@@ -23,3 +23,7 @@ unique_ptr<double[]> Helper::normalizeMinMax(const unique_ptr<double[]> &data, i
 double Helper::sqr(double value) {
     return value * value;
 }
+
+int Helper::simpleRound(int value) {
+    return (value < 0) ? 0 : (value >= 255 ? 255 : value);
+}

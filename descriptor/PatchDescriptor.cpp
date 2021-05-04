@@ -25,4 +25,5 @@ PatchDescriptor::PatchDescriptor(const shared_ptr<DoubleImage>& gradient, Point 
             descriptor.push_back(sum);
         }
     }
+    normalize();
 }

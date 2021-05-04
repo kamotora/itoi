@@ -25,7 +25,7 @@ DescriptorUtil::getGradient(const shared_ptr<DoubleImage> &first, const shared_p
 }
 
 shared_ptr<MatchInfo> DescriptorUtil::match(const vector<shared_ptr<AbstractDescriptor>> &firstList,
-                                              const vector<shared_ptr<AbstractDescriptor>> &secondList) {
+                                            const vector<shared_ptr<AbstractDescriptor>> &secondList) {
     vector<pair<Point, Point>> pointsMatching;
 
     for (const auto &item : firstList) {
@@ -40,20 +40,29 @@ shared_ptr<MatchInfo> DescriptorUtil::match(const vector<shared_ptr<AbstractDesc
 
 shared_ptr<AbstractDescriptor> DescriptorUtil::getClosest(const shared_ptr<AbstractDescriptor> &descriptor,
                                                           const vector<shared_ptr<AbstractDescriptor>> &descriptors) {
-    double min = std::numeric_limits<double>::max();
-    shared_ptr<AbstractDescriptor> selected = nullptr;
+    vector<double> distances;
+    distances.reserve(descriptors.size());
     for (const auto &patchDescriptor : descriptors) {
-        double distance = AbstractDescriptor::distance(descriptor, patchDescriptor);
-        if (distance < min) {
-            min = distance;
-            selected = patchDescriptor;
-        }
+        distances.push_back(AbstractDescriptor::distance(descriptor, patchDescriptor));
     }
-    return selected;
+    int a = getMinIndex(distances, -1);
+    int b = getMinIndex(distances, a);
+
+    double r = distances[a] / distances[b];
+    return (r <= 0.8) ? descriptors[a] : nullptr;
+}
+
+int DescriptorUtil::getMinIndex(vector<double> distances, int excludeIndex) {
+    int selectedIndex = -1;
+    for (int i = 0; i < distances.size(); i++)
+        if (i != excludeIndex && (selectedIndex == -1 || distances[i] < distances[selectedIndex]))
+            selectedIndex = i;
+
+    return selectedIndex;
 }
 
 QImage DescriptorUtil::markMatching(const shared_ptr<DoubleImage> &imageA, const shared_ptr<DoubleImage> &imageB,
-                                    const shared_ptr<MatchInfo>& matchInfo) {
+                                    const shared_ptr<MatchInfo> &matchInfo) {
     auto markedImageA = markPoints(matchInfo->getDescriptorsA(), InputImage::fromDoubleImage(*imageA).getImage());
     auto markedImageB = markPoints(matchInfo->getDescriptorsB(), InputImage::fromDoubleImage(*imageB).getImage());
     QImage resultImage = QImage(markedImageA.width() + markedImageB.width(),
@@ -64,7 +73,7 @@ QImage DescriptorUtil::markMatching(const shared_ptr<DoubleImage> &imageA, const
     painter.drawImage(QRect(markedImageA.width(), 0, markedImageA.width(), markedImageA.height()),
                       markedImageB);
 
-    painter.setPen(QColor(255,255,0));
+    painter.setPen(QColor(255, 255, 0));
     for (auto pointsPair : matchInfo->getPointsPairs()) {
 
         auto pointA = pointsPair.first;

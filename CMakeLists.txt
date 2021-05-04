@@ -45,7 +45,7 @@ add_executable(${PROJECT_NAME}
         descriptor/PatchCreator.cpp descriptor/PatchCreator.h
         descriptor/DescriptorUtil.cpp descriptor/DescriptorUtil.h
         descriptor/MatchInfo.cpp descriptor/MatchInfo.h
-        demonstration/Lab4.cpp demonstration/Lab4.h)
+        demonstration/Lab4.cpp demonstration/Lab4.h distortions/Noise.cpp distortions/Noise.h)
 
 set(CMAKE_PREFIX_PATH /usr/include/{host}/qt{version}/)
 

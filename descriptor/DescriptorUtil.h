@@ -18,11 +18,20 @@
 using namespace std;
 
 class DescriptorUtil {
-public:
+private:
+
+    static void setPoint(int x, int y, QImage &image);
+
+    static pair<int, int> round(int x, int y, QImage &image);
+
+    static void drawPlus(const Point &item, QImage &image);
+
     static shared_ptr<DoubleImage>
     getGradient(const shared_ptr<DoubleImage> &first, const shared_ptr<DoubleImage> &second);
 
-    static shared_ptr<DoubleImage> getGradient(const shared_ptr<DoubleImage> &image, bool normalize = false);
+    static int getMinIndex(vector<double> distances, int excludeIndex);
+public:
+    static shared_ptr<DoubleImage> getGradient(const shared_ptr<DoubleImage> &image, bool normalize = true);
 
     static shared_ptr<AbstractDescriptor>
     getClosest(const shared_ptr<AbstractDescriptor> &descriptor,
@@ -32,18 +41,13 @@ public:
     match(const vector<shared_ptr<AbstractDescriptor>> &firstList,
           const vector<shared_ptr<AbstractDescriptor>> &secondList);
 
-    static void setPoint(int x, int y, QImage &image);
-
-    static pair<int, int> round(int x, int y, QImage &image);
-
-    static void drawPlus(const Point &item, QImage &image);
-
     static QImage markPoints(const vector<Point> &points, const QImage &image);
 
     static QImage markPoints(const vector<shared_ptr<AbstractDescriptor>> &descriptors, const QImage &image);
 
     static QImage markMatching(const shared_ptr<DoubleImage> &imageA, const shared_ptr<DoubleImage> &imageB,
-                        const shared_ptr<MatchInfo> &matchInfo);
+                               const shared_ptr<MatchInfo> &matchInfo);
+
 };
 
 
