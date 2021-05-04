@@ -5,6 +5,7 @@
 
 #include "Distortion.h"
 #include "cmath"
+#include "../core/helper.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ public:
 private:
     double _factor;
 
+    int change(double value) const;
 };
 
 

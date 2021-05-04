@@ -24,6 +24,10 @@ double Helper::sqr(double value) {
     return value * value;
 }
 
+double Helper::simpleRound(double value) {
+    return (value < 0) ? 0 : (value >= 255 ? 255 : value);
+}
+
 int Helper::simpleRound(int value) {
     return (value < 0) ? 0 : (value >= 255 ? 255 : value);
 }

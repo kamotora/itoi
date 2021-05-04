@@ -29,22 +29,22 @@ public:
     static void demo() {
         Lab4("lenna", ".png", 3,
              32, 4, 2)
-                .workWithShiftedXY(20)
-                ->workWithShiftedY(40)
+                .workWithShiftedXY(40)
+                ->workWithShiftedY(60)
                 ->workWithContrast();
 
 
         Lab4("butterfly", ".jpg", 4,
              64, 4, 4)
-                .workWithShiftedXY(40)
+                .workWithShiftedXY(60)
                 ->workWithContrast()
-                ->workWithShiftedX(60);
+                ->workWithShiftedX(80);
 
         Lab4("shrek", ".jpg", 4,
              24, 2, 2)
                 .workWithContrast()
-                ->workWithShiftedXY(20)
-                ->workWithShiftedY(25);
+                ->workWithShiftedXY(30)
+                ->workWithShiftedY(50);
     }
 
     Lab4 *workWithShiftedXY(int diff = 30) {
@@ -67,7 +67,7 @@ public:
         return this;
     }
 
-    Lab4 *workWithContrast(double contrastFactor = 1.2) {
+    Lab4 *workWithContrast(double contrastFactor = 1.3) {
         work(inputImage, createWithDistortion(make_shared<Contrast>(contrastFactor)));
         return this;
     }
@@ -81,8 +81,8 @@ public:
     void work(const shared_ptr<InputImage> &firstInput, const shared_ptr<InputImage> &secondInput) {
         auto firstDouble = make_shared<DoubleImage>(firstInput->toDoubleImage());
         auto secondDouble = make_shared<DoubleImage>(secondInput->toDoubleImage());
-        auto matching = PatchCreator::processWithPatches(firstDouble, secondDouble, pointsCount, gridHalfSize,
-                                                         cellHalfSize);
+        auto matching = PatchCreator::create(firstDouble, secondDouble, pointsCount, gridHalfSize,
+                                             cellHalfSize);
         auto resultImage = DescriptorUtil::markMatching(firstDouble, secondDouble, matching);
         InputImage::saveToResources(resultImage,
                                     QStringLiteral("%1_MATCHING_%2%3")

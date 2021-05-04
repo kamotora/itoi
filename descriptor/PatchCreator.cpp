@@ -4,11 +4,11 @@
 
 #include "PatchCreator.h"
 
-shared_ptr<MatchInfo> PatchCreator::processWithPatches(const shared_ptr<DoubleImage> &first,
-                                                       const shared_ptr<DoubleImage> &second,
-                                                       int pointsCount,
-                                                       int gridHalfSize,
-                                                       int cellHalfSize) {
+shared_ptr<MatchInfo> PatchCreator::create(const shared_ptr<DoubleImage> &first,
+                                           const shared_ptr<DoubleImage> &second,
+                                           int pointsCount,
+                                           int gridHalfSize,
+                                           int cellHalfSize) {
     auto gradientFirst = DescriptorUtil::getGradient(first, true);
     auto gradientSecond = DescriptorUtil::getGradient(second, true);
 
