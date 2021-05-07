@@ -10,7 +10,8 @@ shared_ptr<DoubleImage> DescriptorUtil::getGradient(const shared_ptr<DoubleImage
 }
 
 shared_ptr<DoubleImage>
-DescriptorUtil::getGradient(const shared_ptr<DoubleImage> &first, const shared_ptr<DoubleImage> &second) {
+DescriptorUtil::getGradient(const shared_ptr<DoubleImage> &first, const shared_ptr<DoubleImage> &second,
+                            double (*counterFunc)(double, double)) {
     if (first->getHeight() != second->getHeight() || first->getWidth() != second->getWidth())
         throw invalid_argument("different images size");
     auto gradient = make_shared<DoubleImage>(first->getWidth(), first->getHeight());
@@ -18,10 +19,24 @@ DescriptorUtil::getGradient(const shared_ptr<DoubleImage> &first, const shared_p
     for (int i = 0; i < gradient->getSize(); i++) {
         auto firstPixel = first->getPixel(i);
         auto secondPixel = second->getPixel(i);
-        gradient->setPixel(i, sqrt(firstPixel * firstPixel + secondPixel * secondPixel));
+        gradient->setPixel(i, counterFunc(firstPixel, secondPixel));
     }
 
     return gradient;
+}
+
+shared_ptr<DoubleImage>
+DescriptorUtil::getGradient(const shared_ptr<DoubleImage> &first, const shared_ptr<DoubleImage> &second) {
+    return getGradient(first, second, [](double firstPixel, double secondPixel) {
+        return sqrt(firstPixel * firstPixel + secondPixel * secondPixel);
+    });
+}
+
+shared_ptr<DoubleImage>
+DescriptorUtil::getGradientAngle(const shared_ptr<DoubleImage> &first, const shared_ptr<DoubleImage> &second) {
+    return getGradient(first, second, [](double firstPixel, double secondPixel) {
+        return atan2(firstPixel, secondPixel);
+    });
 }
 
 shared_ptr<MatchInfo> DescriptorUtil::match(const vector<shared_ptr<AbstractDescriptor>> &firstList,
@@ -30,9 +45,8 @@ shared_ptr<MatchInfo> DescriptorUtil::match(const vector<shared_ptr<AbstractDesc
 
     for (const auto &item : firstList) {
         auto closest = getClosest(item, secondList);
-        if (closest == nullptr)
-            continue;
-        pointsMatching.emplace_back(item->getPoint(), closest->getPoint());
+        if (closest != nullptr)
+            pointsMatching.emplace_back(item->getPoint(), closest->getPoint());
     }
 
     return make_shared<MatchInfo>(pointsMatching, firstList, secondList);
@@ -49,7 +63,7 @@ shared_ptr<AbstractDescriptor> DescriptorUtil::getClosest(const shared_ptr<Abstr
     int b = getMinIndex(distances, a);
 
     double r = distances[a] / distances[b];
-    return (r <= 0.8) ? descriptors[a] : nullptr;
+    return (r <= 0.5) ? descriptors[a] : nullptr;
 }
 
 int DescriptorUtil::getMinIndex(vector<double> distances, int excludeIndex) {
@@ -70,7 +84,7 @@ QImage DescriptorUtil::markMatching(const shared_ptr<DoubleImage> &imageA, const
                                 QImage::Format_RGB32);
     QPainter painter(&resultImage);
     painter.drawImage(QRect(0, 0, markedImageA.width(), markedImageA.height()), markedImageA);
-    painter.drawImage(QRect(markedImageA.width(), 0, markedImageA.width(), markedImageA.height()),
+    painter.drawImage(QRect(markedImageA.width(), 0, markedImageB.width(), markedImageB.height()),
                       markedImageB);
 
     painter.setPen(QColor(255, 255, 0));

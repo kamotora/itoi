@@ -14,9 +14,9 @@ class PatchCreator {
 public:
     static shared_ptr<MatchInfo> create(const shared_ptr<DoubleImage> &first,
                                         const shared_ptr<DoubleImage> &second,
-                                        int pointsCount,
                                         int gridHalfSize,
-                                        int cellHalfSize);
+                                        int cellHalfSize,
+                                        int pointsCount);
 
     static vector<shared_ptr<struct AbstractDescriptor>> getDescriptors(const shared_ptr<DoubleImage> &gradient,
                                                                         const vector<Point> &interestingPoints,

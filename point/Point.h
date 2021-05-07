@@ -9,12 +9,13 @@
 
 
 class Point {
-private:
+protected:
     int x, y;
     double value;
 public:
     Point(int x, int y, double value);
 
+    [[nodiscard]]
     double getValue() const;
 
     [[nodiscard]] int getX() const;

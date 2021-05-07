@@ -37,6 +37,10 @@ public:
     applyGaussSeparable(const shared_ptr<DoubleImage> &image, double sigma,
                         IBorderPolicy &policy = (IBorderPolicy &) DEFAULT_POLICY, bool normalize = false);
 
+
+    static double getSeparableValue(pair<DoubleImage, DoubleImage> &pair, int x, int y) ;
+
+
 };
 
 

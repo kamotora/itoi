@@ -27,10 +27,19 @@ private:
     static void drawPlus(const Point &item, QImage &image);
 
     static shared_ptr<DoubleImage>
-    getGradient(const shared_ptr<DoubleImage> &first, const shared_ptr<DoubleImage> &second);
+    getGradient(const shared_ptr<DoubleImage> &first, const shared_ptr<DoubleImage> &second,
+                double (*counterFunc)(double, double));
 
     static int getMinIndex(vector<double> distances, int excludeIndex);
+
 public:
+    static shared_ptr<DoubleImage>
+    getGradientAngle(const shared_ptr<DoubleImage> &first, const shared_ptr<DoubleImage> &second);
+
+    static shared_ptr<DoubleImage>
+    getGradient(const shared_ptr<DoubleImage> &first, const shared_ptr<DoubleImage> &second);
+
+
     static shared_ptr<DoubleImage> getGradient(const shared_ptr<DoubleImage> &image, bool normalize = true);
 
     static shared_ptr<AbstractDescriptor>
