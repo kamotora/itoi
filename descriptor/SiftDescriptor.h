@@ -8,11 +8,10 @@
 
 #include "AbstractDescriptor.h"
 #include "../core/DoubleImage.h"
-#include "SiftBasket.h"
+#include "Basket.h"
 #include "../filter/Kernels.h"
 #include "../core/DoubleImageBorderPolicy.h"
 #include "../filter/FilterUtil.h"
-#include "../point/AnglePoint.h"
 
 class SiftDescriptor : public AbstractDescriptor {
 private:
@@ -22,7 +21,7 @@ private:
 
 public:
     SiftDescriptor(const shared_ptr<DoubleImageBorderPolicy> &borderedGradient,
-                   const shared_ptr<DoubleImageBorderPolicy> &borderedGradientAngle, AnglePoint point, int gridSize,
+                   const shared_ptr<DoubleImageBorderPolicy> &borderedGradientAngle, Point point, int gridSize,
                    int cellSize, int basketSize, bool needNormalize = true);
 };
 

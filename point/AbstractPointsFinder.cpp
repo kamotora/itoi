@@ -31,41 +31,54 @@ vector<Point> AbstractPointsFinder::localMaximum(double thresholdCoeff) {
             bool isCorrect = true;
             double currentValue = image->getPixel(i, j);
             for (int k = 0; k < dx.size() && isCorrect; k++) {
-                if (i + dx[k] < 0 ||
-                    i + dx[k] >= w ||
-                    j + dy[k] < 0 ||
-                    j + dy[k] >= h)
+                if (i + dx[k] < 0 || i + dx[k] >= w || j + dy[k] < 0 || j + dy[k] >= h)
                     continue;
                 if (currentValue < getPixelWithBorderPolicy(i + dx[k], j + dy[k]))
                     isCorrect = false;
             }
             if (isCorrect && currentValue > threshold) {
-                result.emplace_back(i, j, currentValue);
+                result.emplace_back(i, j, currentValue, 0);
             }
         }
     }
     return result;
 }
 
-vector<Point> AbstractPointsFinder::filter(vector<Point> &points, int pointsCount, int maxSize) {
-    vector<Point> result(points);
-    int r = 0;
-    while (result.size() > pointsCount && r < maxSize) {
-        for (int i = 0; i < result.size(); i++) {
-            for (int j = 0; j < result.size(); j++) {
-                double dist = result[i].distance(result[j]);
-                if (dist <= r) {
-                    if (result[i] < result[j]) {
-                        result.erase(result.begin() + i);
-                        i--;
-                        j = result.size();
-                    }
-                }
+vector<Point> AbstractPointsFinder::filter(vector<Point> &points, int pointsCount) {
+    if (pointsCount >= points.size())
+        return points;
+    sort(points.begin(), points.end(), [](Point a, Point b) {
+        return b < a;
+    });
+    double l = 0, r = numeric_limits<double>::max();
+    for (int i = pointsCount; i > 0; i--) {
+        double middle = (l + r) / 2;
+        if (filter(points, middle).size() > pointsCount) {
+            l = middle;
+        } else {
+            r = middle;
+        }
+    }
+    auto filtered = filter(points, l);
+    return vector<Point>(points.begin(), points.begin() + min((int) filtered.size(), pointsCount));
+}
+
+vector<Point> AbstractPointsFinder::filter(vector<Point> &points, double radius) {
+    vector<Point> filtered;
+    for (int i = 0; i < points.size(); ++i) {
+        bool ok = true;
+        for (int j = 0; j < points.size(); ++j) {
+            if (i == j) continue;
+            if (points[i].distance(points[j]) < radius) {
+                ok = false;
+                break;
             }
         }
-        r++;
+        if (ok) {
+            filtered.push_back(points[i]);
+        }
     }
-    return result;
+    return filtered;
 }
 
 shared_ptr<DoubleImage> AbstractPointsFinder::setPoints(vector<Point> &points) {

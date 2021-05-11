@@ -18,7 +18,11 @@ DoubleImage Kernels::GetSobelY() {
 }
 
 pair<DoubleImage, DoubleImage> Kernels::GetSobelSeparableY() {
-    return make_pair(DoubleImage({1, 2, 3}, 3, 1), DoubleImage({1, 0, -1}, 1, 3));
+    return make_pair(DoubleImage({1, 0, -1}, 3, 1), DoubleImage({1, 2, 1}, 1, 3));
+}
+
+pair<DoubleImage, DoubleImage> Kernels::GetSobelSeparableX() {
+    return make_pair(DoubleImage({1, 2, 1}, 3, 1), DoubleImage({1, 0, -1}, 1, 3));
 }
 
 
@@ -28,6 +32,10 @@ DoubleImage Kernels::GetIncreaseSharpness() {
                                -1.0, 9.0, -1.0,
                                -1.0, -1.0, -1.0
                        }, 3, 3);
+}
+
+DoubleImage Kernels::GetGauss(int halfSize, bool isNeedNormalize) {
+    return GetGauss(halfSize / 3.0, isNeedNormalize);
 }
 
 DoubleImage Kernels::GetGauss(double sigma, bool isNeedNormalize) {
@@ -60,7 +68,7 @@ pair<DoubleImage, DoubleImage> Kernels::GetGaussSeparableXY(int halfSize, bool n
     return GetSeparableFromKernel(kernel);
 }
 
-pair<DoubleImage, DoubleImage> Kernels::GetSeparableFromKernel(const vector<double>& kernel){
+pair<DoubleImage, DoubleImage> Kernels::GetSeparableFromKernel(const vector<double> &kernel) {
     int size = kernel.size();
     return make_pair(DoubleImage(kernel, size, 1), DoubleImage(kernel, 1, size));
 }

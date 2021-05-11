@@ -14,7 +14,7 @@ class AbstractPointsFinder {
 protected:
     shared_ptr<DoubleImage> image;
     QString imageName, imageExt;
-    constexpr static CopyPolicy DEFAULT_POLICY = CopyPolicy();
+    constexpr static MirrorPolicy DEFAULT_POLICY = MirrorPolicy();
 
     pair<int, int> round(int x, int y);
 
@@ -32,15 +32,15 @@ public:
 
     vector<Point> localMaximum(double thresholdCoeff);
 
-    static vector<Point> filter(vector<Point> &points, int pointsCount, int maxSize);
-
     shared_ptr<DoubleImage> setPoints(vector<Point> &points);
 
     void drawPoints(vector<Point> &points, const QString &name);
 
     void saveImage(const shared_ptr<DoubleImage> &outputImage, const QString &nameSuffix);
 
-    vector<Point> localMaximum(int windowSize, double thresholdCoeff);
+    static vector<Point> filter(vector<Point> &points, double radius);
+
+    static vector<Point> filter(vector<Point> &points, int pointsCount);
 };
 
 

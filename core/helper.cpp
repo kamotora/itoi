@@ -31,3 +31,9 @@ double Helper::simpleRound(double value) {
 int Helper::simpleRound(int value) {
     return (value < 0) ? 0 : (value >= 255 ? 255 : value);
 }
+
+int Helper::sign(double value){
+    if (value > 0) return 1;
+    if (value < 0) return -1;
+    return 0;
+}

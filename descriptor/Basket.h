@@ -14,13 +14,18 @@ protected:
     int size;
     double step;
 public:
-    Basket(int size);
+    explicit Basket(int size);
 
     void add(double angle, double value);
 
     static double normalize(double angle);
 
+    [[nodiscard]]
     const vector<double> &getBasket() const;
+
+    vector<double> getHighestAngles();
+
+    pair<double, int> getMaxAngle(int excludeIndex = -1, double min = numeric_limits<double>::min());
 };
 
 

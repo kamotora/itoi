@@ -57,6 +57,7 @@ public:
     static QImage markMatching(const shared_ptr<DoubleImage> &imageA, const shared_ptr<DoubleImage> &imageB,
                                const shared_ptr<MatchInfo> &matchInfo);
 
+    static void drawPointWithAngle(const Point &point, QImage &image);
 };
 
 

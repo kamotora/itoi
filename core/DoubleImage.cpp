@@ -74,6 +74,13 @@ const unique_ptr<double[]> &DoubleImage::getData() {
     return data;
 }
 
+vector<double> DoubleImage::getCopyData() {
+    vector<double> result(getSize());
+    for(int i = 0; i < result.size(); i++)
+        result[i] = data[i];
+    return result;
+}
+
 int DoubleImage::getSize() const {
     if (width == 0 || height == 0)
         throw invalid_argument("invalid image params");

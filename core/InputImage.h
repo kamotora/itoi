@@ -17,7 +17,7 @@ class InputImage {
 private:
     inline static const QString RESOURCES = "../resources";
     inline static const QString INPUT = "/input/";
-    inline static const QString OUTPUT = "/output/lab4/";
+    inline static const QString OUTPUT = "/output/lab5/";
     QImage img;
     int width, height;
     unique_ptr<unsigned char[]> data;
@@ -42,6 +42,7 @@ public:
 
     unsigned char getPixel(int i);
 
+    [[nodiscard]]
     const QString &getName() const;
     void setName(const QString &_name);
 
@@ -58,6 +59,9 @@ public:
     void setPixel(int x, int y, unsigned char value);
 
     static InputImage from(const QImage &image);
+
+    [[nodiscard]]
+    int xyToI(int x, int y) const;
 };
 
 

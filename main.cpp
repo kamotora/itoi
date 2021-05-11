@@ -10,9 +10,10 @@
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
+//        Lab1::work();
 //    Lab2::demo();
 //    Lab3::demo();
-    Lab4::demo();
-//    Lab5::demo();
+//    Lab4::demo();
+    Lab5::demo();
     return 0;
 }

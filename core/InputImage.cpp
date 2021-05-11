@@ -33,7 +33,7 @@ int InputImage::getWidth() const {
 }
 
 void InputImage::setPixel(int x, int y, unsigned char value) {
-    setPixel(x + y * width, value);
+    setPixel(xyToI(x,y), value);
 }
 
 void InputImage::setPixel(int i, unsigned char value) {
@@ -41,7 +41,7 @@ void InputImage::setPixel(int i, unsigned char value) {
 }
 
 unsigned char InputImage::getPixel(int x, int y) {
-    return getPixel(x + y * width);
+    return getPixel(xyToI(x,y));
 }
 
 unsigned char InputImage::getPixel(int i) {
@@ -125,4 +125,11 @@ const QString &InputImage::getName() const {
 
 void InputImage::setName(const QString &_name) {
     InputImage::name = _name;
+}
+
+int InputImage::xyToI(int x, int y) const {
+    if (x >= width || x < 0 || y >= height || y < 0)
+        throw invalid_argument("invalid (x,y)");
+//    return x * height + y;
+    return x + y * width;
 }

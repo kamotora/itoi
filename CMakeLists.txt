@@ -50,9 +50,9 @@ add_executable(${PROJECT_NAME}
         descriptor/HistogramDescriptor.cpp descriptor/HistogramDescriptor.h
         descriptor/SiftDescriptor.cpp descriptor/SiftDescriptor.h
         descriptor/Basket.cpp descriptor/Basket.h
-        descriptor/SiftBasket.cpp descriptor/SiftBasket.h
         descriptor/HistogramCreator.cpp descriptor/HistogramCreator.h
-        demonstration/Lab5.cpp demonstration/Lab5.h descriptor/SiftCreator.cpp descriptor/SiftCreator.h point/AnglePoint.cpp point/AnglePoint.h)
+        demonstration/Lab5.cpp demonstration/Lab5.h
+        descriptor/SiftCreator.cpp descriptor/SiftCreator.h)
 
 set(CMAKE_PREFIX_PATH /usr/include/{host}/qt{version}/)
 

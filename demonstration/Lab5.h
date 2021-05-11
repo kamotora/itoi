@@ -7,6 +7,7 @@
 #include "../core/InputImage.h"
 #include "../distortions/Shift.h"
 #include "../descriptor/SiftCreator.h"
+#include "../descriptor/HistogramCreator.h"
 #include "../distortions/Contrast.h"
 #include "../distortions/Noise.h"
 #include "../distortions/Rotate.h"
@@ -19,89 +20,103 @@ private:
 public:
     Lab5(const QString &imageName, const QString &ext, int windowSize, int basketsSize, int pointsCount, int gridSize,
          int cellSize) : imageName(imageName), ext(ext), windowSize(windowSize), pointsCount(pointsCount),
-                         basketsSize(basketsSize),
-                         gridSize(gridSize), cellSize(cellSize) {
+                         basketsSize(basketsSize), gridSize(gridSize), cellSize(cellSize) {
         this->inputImage = make_shared<InputImage>(InputImage::fromResources(imageName + ext));
     }
 
-    static void demo() {
-        Lab5("lenna", ".png", 3, 8,
-             32, 4, 2)
-                .workWithRotatedRight(40)
-                ->workWithRotatedLeft(60)
-//                ->workWithContrast()
-                ;
-
-//
-//        Lab5("butterfly", ".jpg", 4, 8,
-//             64, 4, 4)
-//                .workWithShiftedXY(60)
-//                ->workWithContrast()
-//                ->workWithShiftedX(80);
-//
-//        Lab5("shrek", ".jpg", 4, 8,
-//             24, 2, 2)
-//                .workWithContrast()
-//                ->workWithShiftedXY(30)
-//                ->workWithShiftedY(50);
-    }
-
-    Lab5 *workWithShiftedXY(int diff = 30) {
-        auto firstInput = createShiftedInputImage(diff, diff);
-        auto secondInput = createShiftedInputImage(-diff, -diff);
-        work(firstInput, secondInput);
-        return this;
-    }
-
-    Lab5 *workWithShiftedY(int diffY = 50) {
-        auto firstInput = createShiftedInputImage(0, diffY);
-        auto secondInput = createShiftedInputImage(0, -diffY);
-        work(firstInput, secondInput);
-        return this;
-    }
-
-    Lab5 *workWithShiftedX(int diffX = 50) {
-        auto firstInput = createShiftedInputImage(diffX, 0);
-        auto secondInput = createShiftedInputImage(-diffX, 0);
-        work(firstInput, secondInput);
-        return this;
-    }
-
-    Lab5 *workWithContrast(double contrastFactor = 1.3) {
-        work(inputImage, createWithDistortion(make_shared<Contrast>(contrastFactor)));
-        return this;
-    }
-
-    Lab5 *workWithRotatedRight(double angle) {
-        work(inputImage, createWithDistortion(make_shared<Rotate>(angle)));
-        return this;
-    }
-
-    Lab5 *workWithRotatedLeft(double angle) {
-        work(inputImage, createWithDistortion(make_shared<Rotate>(-angle)));
-        return this;
-    }
-
-    Lab5 *workWithSameImages() {
-        work(inputImage, inputImage);
-        return this;
-    }
-
-    void work(const shared_ptr<InputImage> &firstInput, const shared_ptr<InputImage> &secondInput) {
+    void workSift(const shared_ptr<InputImage> &firstInput, const shared_ptr<InputImage> &secondInput) {
         auto firstDouble = make_shared<DoubleImage>(firstInput->toDoubleImage());
         auto secondDouble = make_shared<DoubleImage>(secondInput->toDoubleImage());
         auto matching = SiftCreator::create(firstDouble, secondDouble, gridSize, cellSize, basketsSize,
-                                                 pointsCount);
+                                            pointsCount);
         auto resultImage = DescriptorUtil::markMatching(firstDouble, secondDouble, matching);
         InputImage::saveToResources(resultImage,
-                                    QStringLiteral("%1_MATCHING_%2%3")
+                                    QStringLiteral("%1_MATCHING_SIFT_%2%3")
                                             .arg(firstInput->getName())
                                             .arg(secondInput->getName())
                                             .arg(ext));
     }
 
+    void workHog(const shared_ptr<InputImage> &firstInput, const shared_ptr<InputImage> &secondInput) {
+        auto firstDouble = make_shared<DoubleImage>(firstInput->toDoubleImage());
+        auto secondDouble = make_shared<DoubleImage>(secondInput->toDoubleImage());
+        auto matching = HistogramCreator::create(firstDouble, secondDouble, gridSize, cellSize, basketsSize,
+                                                 pointsCount);
+        auto resultImage = DescriptorUtil::markMatching(firstDouble, secondDouble, matching);
+        InputImage::saveToResources(resultImage,
+                                    QStringLiteral("%1_MATCHING_HISTOGRAM_%2%3")
+                                            .arg(firstInput->getName())
+                                            .arg(secondInput->getName())
+                                            .arg(ext));
+    }
+
+    static void demo() {
+        Lab5("lenna", ".png", 3, 32, 50, 16, 4)
+                .workSiftWithRotatedRight(45)
+                ->workSiftWithRotatedLeft(30)
+                ->workSiftWithRotatedRight(90)
+                ->workSiftWithRotatedLeft(180)
+                ->workSiftWithShiftedXY(40)
+                ->workHogWithShiftedXY(40)
+                ->workHogWithRotatedRight(90)
+                ;
+
+        Lab5("shrek", ".jpg", 3, 32, 30, 16, 4)
+                .workSiftWithRotatedRight(45)
+                ->workSiftWithRotatedRight(90)
+                ->workSiftWithShiftedXY(35)
+                ->workHogWithShiftedXY(35)
+                ->workHogWithRotatedRight(90);
+
+        Lab5("butterfly", ".jpg", 3, 32, 100, 16, 4)
+                .workSiftWithRotatedRight(37)
+                ->workSiftWithRotatedRight(90)
+                ->workSiftWithRotatedLeft(180)
+                ->workSiftWithShiftedXY(60)
+                ->workHogWithShiftedXY(60)
+                ->workHogWithRotatedLeft(180);
+    }
+
+    Lab5 *workSiftWithRotatedRight(double angle) {
+        workSift(inputImage, createWithDistortion(make_shared<Rotate>(angle)));
+        return this;
+    }
+
+    Lab5 *workHogWithRotatedRight(double angle) {
+        workSift(inputImage, createWithDistortion(make_shared<Rotate>(angle)));
+        return this;
+    }
+
+    Lab5 *workSiftWithRotatedLeft(double angle) {
+        workHog(inputImage, createWithDistortion(make_shared<Rotate>(-angle)));
+        return this;
+    }
+
+    Lab5 *workHogWithRotatedLeft(double angle) {
+        workHog(inputImage, createWithDistortion(make_shared<Rotate>(-angle)));
+        return this;
+    }
+
+    Lab5 *workSiftWithShiftedXY(int value) {
+        auto shifted = createShifted(value);
+        workSift(shifted.first,shifted.second);
+        return this;
+    }
+
+    Lab5 *workHogWithShiftedXY(int value) {
+        auto shifted = createShifted(value);
+        workHog(shifted.first,shifted.second);
+        return this;
+    }
+
     shared_ptr<InputImage> createShiftedInputImage(int shiftX, int shiftY) {
         return createWithDistortion(make_shared<Shift>(shiftX, shiftY));
+    }
+
+    pair<shared_ptr<InputImage>, shared_ptr<InputImage>> createShifted(int diff = 30) {
+        auto firstInput = createShiftedInputImage(diff, diff);
+        auto secondInput = createShiftedInputImage(-diff, -diff);
+        return make_pair(firstInput, secondInput);
     }
 
     shared_ptr<InputImage> createWithDistortion(const shared_ptr<Distortion> &distortion) {

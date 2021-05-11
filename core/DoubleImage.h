@@ -34,17 +34,23 @@ public:
 
     void applyFunc(const std::function<double(double)> &f);
 
-    [[nodiscard]] int getHeight() const;
+    [[nodiscard]]
+    int getHeight() const;
 
-    [[nodiscard]] int getWidth() const;
+    [[nodiscard]]
+    int getWidth() const;
 
     const unique_ptr<double[]> &getData();
 
-    [[nodiscard]] int getSize() const;
+    [[nodiscard]]
+    int getSize() const;
 
     DoubleImage normalize(float diff = 1.0);
 
-    [[nodiscard]] int xyToI(int x, int y) const;
+    [[nodiscard]]
+    int xyToI(int x, int y) const;
+
+    vector<double> getCopyData();
 };
 
 

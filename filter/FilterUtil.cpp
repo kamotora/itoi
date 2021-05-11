@@ -65,13 +65,13 @@ void FilterUtil::print(ostream &out, DoubleImage &matrix) {
 }
 
 shared_ptr<DoubleImage> FilterUtil::derivX(const shared_ptr<DoubleImage> &image, IBorderPolicy &borderPolicy) {
-    auto kernel = Kernels::GetSobelX();
-    return applyConvolution(image, kernel, borderPolicy);
+    auto kernel = Kernels::GetSobelSeparableX();
+    return applySeparable(image, kernel, false, borderPolicy);
 }
 
 shared_ptr<DoubleImage> FilterUtil::derivY(const shared_ptr<DoubleImage> &image, IBorderPolicy &borderPolicy) {
-    auto kernel = Kernels::GetSobelY();
-    return applyConvolution(image, kernel, borderPolicy);
+    auto kernel = Kernels::GetSobelSeparableY();
+    return applySeparable(image, kernel, false, borderPolicy);
 }
 
 shared_ptr<DoubleImage>
@@ -84,19 +84,39 @@ FilterUtil::applyGauss(const shared_ptr<DoubleImage> &image, double sigma, IBord
 }
 
 shared_ptr<DoubleImage>
+FilterUtil::applyGauss(const shared_ptr<DoubleImage> &image, int halfSize, IBorderPolicy &policy, bool normalize) {
+    auto gaussFilter = Kernels::GetGauss(halfSize, normalize);
+    auto res = FilterUtil::applyConvolution(image, gaussFilter, policy);
+    if (normalize)
+        return make_shared<DoubleImage>(res->normalize());
+    return res;
+}
+
+shared_ptr<DoubleImage>
 FilterUtil::applyGaussSeparable(const shared_ptr<DoubleImage> &image, double sigma, IBorderPolicy &policy,
                                 bool normalize) {
-    auto result = applySeparable(image, Kernels::GetGaussSeparableXY(sigma), policy);
+    auto result = applySeparable(image, Kernels::GetGaussSeparableXY(sigma), normalize, policy);
     if (normalize)
         return make_shared<DoubleImage>(result->normalize());
     return result;
 }
 
 shared_ptr<DoubleImage>
-FilterUtil::applySeparable(const shared_ptr<DoubleImage> &image, pair<DoubleImage, DoubleImage> pair,
+FilterUtil::applyGaussSeparable(const shared_ptr<DoubleImage> &image, int halfSize, IBorderPolicy &policy,
+                                bool normalize) {
+    auto result = applySeparable(image, Kernels::GetGaussSeparableXY(halfSize, normalize), normalize, policy);
+    if (normalize)
+        return make_shared<DoubleImage>(result->normalize());
+    return result;
+}
+
+shared_ptr<DoubleImage>
+FilterUtil::applySeparable(const shared_ptr<DoubleImage> &image, pair<DoubleImage, DoubleImage> pair, bool normalize,
                            IBorderPolicy &policy) {
     auto resX = applyConvolution(image, pair.first, policy);
     auto resY = applyConvolution(resX, pair.second, policy);
+    if (normalize)
+        return make_shared<DoubleImage>(resY->normalize());
     return resY;
 }
 

@@ -1,17 +1,17 @@
 #include "SiftDescriptor.h"
 
 SiftDescriptor::SiftDescriptor(const shared_ptr<DoubleImageBorderPolicy> &borderedGradient,
-                               const shared_ptr<DoubleImageBorderPolicy> &borderedGradientAngle, AnglePoint point,
+                               const shared_ptr<DoubleImageBorderPolicy> &borderedGradientAngle, Point point,
                                int gridSize, int cellSize, int basketSize, bool needNormalize)
         : AbstractDescriptor((Point &) point) {
-    this->descriptor.reserve(gridSize * gridSize * basketSize);
+//    this->descriptor.reserve(gridSize * gridSize * basketSize);
 
     vector<vector<Basket>> baskets(gridSize, vector(gridSize, Basket(basketSize)));
 
     int border = gridSize * cellSize;
     int halfBorder = border / 2;
 
-    auto gauss = Kernels::GetGaussSeparableXY(halfBorder);
+    auto gauss = Kernels::GetGaussSeparableXY(halfBorder / 2.0);
     int left = -halfBorder, right = border - halfBorder;
 
     for (int x = left; x < right; x++) {
@@ -28,16 +28,18 @@ SiftDescriptor::SiftDescriptor(const shared_ptr<DoubleImageBorderPolicy> &border
             double gradientValue = borderedGradient->getBorderedPixel(realX, realY);
             double gaussValue = FilterUtil::getSeparableValue(gauss, halfBorder + rotatedX, halfBorder + rotatedY);
 
-            int i = (x - left) / cellSize;
-            int j = (y - left) / cellSize;
-            baskets[i][j].add(phi, gradientValue * gaussValue);
+            int i = (rotatedX - left) / cellSize;
+            int j = (rotatedY - left) / cellSize;
+            baskets[i][j].add(phi + point.getAngle(), gradientValue * gaussValue);
         }
     }
 
     for (int i = 0; i < gridSize; i++) {
         for (int j = 0; j < gridSize; j++) {
             auto basket = baskets[i][j].getBasket();
-            this->descriptor.insert(this->descriptor.end(), basket.begin(), basket.end());
+            for (const auto &item : basket)
+                descriptor.push_back(item);
+//            this->descriptor.insert(this->descriptor.end(), basket.begin(), basket.end());
         }
     }
     if (needNormalize)

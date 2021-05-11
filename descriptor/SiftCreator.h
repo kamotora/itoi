@@ -5,7 +5,7 @@
 #include "../core/DoubleImage.h"
 #include "MatchInfo.h"
 #include "SiftDescriptor.h"
-#include "SiftBasket.h"
+#include "Basket.h"
 #include "../point/Harris.h"
 #include "DescriptorUtil.h"
 
@@ -18,12 +18,13 @@ private:
     int cellSize;
     int basketSize;
     int pointsCount;
+    shared_ptr<pair<DoubleImage, DoubleImage>> gaussKernel;
 
     vector<shared_ptr<AbstractDescriptor>> createDescriptors(const shared_ptr<DoubleImage> &img);
 
     vector<shared_ptr<AbstractDescriptor>> createDescriptors(const shared_ptr<DoubleImage> &gradient,
                                                              const shared_ptr<DoubleImage> &gradientAngle,
-                                                             const vector<Point> &points);
+                                                             const vector<Point> &points) const;
 
 public:
     [[nodiscard]] const shared_ptr<DoubleImage> &getFirstImage() const;
@@ -40,12 +41,13 @@ public:
     static shared_ptr<MatchInfo> create(const shared_ptr<DoubleImage> &first,
                                         const shared_ptr<DoubleImage> &second,
                                         int _gridSize, int _cellSize,
-                                        int _basketSize, int _pointsCount);
+                                        int _basketSize = BASKET_SIZE, int _pointsCount = 100);
 
     [[nodiscard]]
-    vector<double> getMainAngles(const shared_ptr<DoubleImageBorderPolicy> &gradient,
-                                 const shared_ptr<DoubleImageBorderPolicy> &gradientAngle,
-                                 const Point &point) const;
+    vector<double> calculateAreaOrientationAngle(const shared_ptr<DoubleImageBorderPolicy> &gradient,
+                                                 const shared_ptr<DoubleImageBorderPolicy> &gradientAngle,
+                                                 const Point &point) const;
+
 };
 
 

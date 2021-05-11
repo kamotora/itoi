@@ -32,8 +32,7 @@ vector<Point> Moravec::findPoints(int pointsCount, int windowSize, double tresho
     image = moravec;
     vector<Point> points = this->localMaximum(tresholdCoef);
     drawPoints(points, "localMaximums");
-    int maxSize = std::min(w / 2, h / 2);
-    auto filteredPoints = filter(points, pointsCount, maxSize);
+    auto filteredPoints = filter(points, pointsCount);
     drawPoints(filteredPoints, "after_filtering");
     return filteredPoints;
 }
