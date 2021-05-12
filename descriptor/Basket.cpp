@@ -34,14 +34,36 @@ const vector<double> &Basket::getBasket() const {
 // пики
 vector<double> Basket::getHighestAngles() {
     auto firstMax = getMaxAngle();
-    auto secondMax = getMaxAngle(firstMax.second, firstMax.first * 0.8);
-    auto result = secondMax.second != -1 ? vector<double>{firstMax.first, secondMax.first} : vector<double>{firstMax.first};
+    auto secondMax = getMaxAngle(firstMax.first, firstMax.second * 0.8);
+//    auto result = secondMax.first != -1 ? vector<double>{firstMax.second, secondMax.second} : vector<double>{firstMax.second};
+    vector<double> result;
+    auto values = vector<pair<int, double>>{firstMax, secondMax};
+    for (int k = 0; k < 2; k++) {
+        if (k == 1 && values[k].first == -1)
+            break;
+
+        int i = values[k].first;
+        double x = values[k].first + 0.5;
+        int prevI = (i - 1 + size) % size;
+        int nextI = (i + 1) % size;
+
+        double value = basket[i], prevValue = basket[prevI], nextValue = basket[nextI];
+        result.push_back(normalize(interpolate(x - 1, prevValue, x, value, x + 1, nextValue) * step));
+    }
+
     for (int i = 0; i < result.size(); i++)
         result[i] = PI2 - result[i];
     return result;
 }
 
-pair<double, int> Basket::getMaxAngle(int excludeIndex, double min) {
+double Basket::interpolate(double x1, double y1, double x2, double y2, double x3, double y3) {
+    double a = (y3 - (x3 * (y2 - y1) + x2 * y1 - x1 * y2) / (x2 - x1)) /
+               (x3 * (x3 - x1 - x2) + x1 * x2);
+    double b = (y2 - y1) / (x2 - x1) - a * (x1 + x2);
+    return -b / (2 * a);
+}
+
+pair<int, double> Basket::getMaxAngle(int excludeIndex, double min) {
     auto max = numeric_limits<double>::min();
     int maxIndex = -1;
     for (int i = 0; i < size; i++) {
@@ -50,5 +72,5 @@ pair<double, int> Basket::getMaxAngle(int excludeIndex, double min) {
             maxIndex = i;
         }
     }
-    return make_pair((maxIndex + 0.5) * step, maxIndex);
+    return make_pair(maxIndex, (maxIndex + 0.5) * step);
 }
