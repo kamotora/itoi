@@ -6,9 +6,9 @@
 
 shared_ptr<MatchInfo> PatchCreator::create(const shared_ptr<DoubleImage> &first,
                                            const shared_ptr<DoubleImage> &second,
-                                           int pointsCount,
                                            int gridHalfSize,
-                                           int cellHalfSize) {
+                                           int cellHalfSize,
+                                           int pointsCount) {
     auto gradientFirst = DescriptorUtil::getGradient(first, true);
     auto gradientSecond = DescriptorUtil::getGradient(second, true);
 
@@ -28,7 +28,7 @@ vector<shared_ptr<AbstractDescriptor>> PatchCreator::getDescriptors(const shared
                                                                     int cellHalfSize) {
     vector<shared_ptr<AbstractDescriptor>> result;
     result.reserve(interestingPoints.size());
-    for (const auto &item : interestingPoints){
+    for (const auto &item : interestingPoints) {
         result.push_back(make_shared<PatchDescriptor>(gradient, item, gridHalfSize, cellHalfSize));
     }
     return result;

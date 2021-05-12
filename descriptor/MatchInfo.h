@@ -19,10 +19,13 @@ public:
               const vector<shared_ptr<AbstractDescriptor>> &descriptorsA,
               const vector<shared_ptr<AbstractDescriptor>> &descriptorsB);
 
+    [[nodiscard]]
     const vector<pair<Point, Point>> &getPointsPairs() const;
 
+    [[nodiscard]]
     const vector<shared_ptr<AbstractDescriptor>> &getDescriptorsA() const;
 
+    [[nodiscard]]
     const vector<shared_ptr<AbstractDescriptor>> &getDescriptorsB() const;
 };
 

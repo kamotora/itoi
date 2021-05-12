@@ -7,14 +7,17 @@
 
 #include <cmath>
 
-
 class Point {
-private:
+protected:
     int x, y;
+    double angle = 0;
     double value;
 public:
     Point(int x, int y, double value);
+    Point(int x, int y, double value, double angle);
+    Point(const Point &point, double angle);
 
+    [[nodiscard]]
     double getValue() const;
 
     [[nodiscard]] int getX() const;
@@ -28,6 +31,9 @@ public:
     bool operator>(Point point) const;
 
     static double sqr(int i) ;
+    [[nodiscard]]
+    double getAngle() const;
+    void setAngle(double _angle);
 };
 
 

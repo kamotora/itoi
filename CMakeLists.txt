@@ -45,7 +45,14 @@ add_executable(${PROJECT_NAME}
         descriptor/PatchCreator.cpp descriptor/PatchCreator.h
         descriptor/DescriptorUtil.cpp descriptor/DescriptorUtil.h
         descriptor/MatchInfo.cpp descriptor/MatchInfo.h
-        demonstration/Lab4.cpp demonstration/Lab4.h distortions/Noise.cpp distortions/Noise.h)
+        demonstration/Lab4.cpp demonstration/Lab4.cpp
+        distortions/Noise.cpp distortions/Noise.h
+        descriptor/HistogramDescriptor.cpp descriptor/HistogramDescriptor.h
+        descriptor/SiftDescriptor.cpp descriptor/SiftDescriptor.h
+        descriptor/Basket.cpp descriptor/Basket.h
+        descriptor/HistogramCreator.cpp descriptor/HistogramCreator.h
+        demonstration/Lab5.cpp demonstration/Lab5.h
+        descriptor/SiftCreator.cpp descriptor/SiftCreator.h)
 
 set(CMAKE_PREFIX_PATH /usr/include/{host}/qt{version}/)
 

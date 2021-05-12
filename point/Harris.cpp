@@ -7,11 +7,11 @@
 vector<Point> Harris::findPoints(int pointsCount, int windowSize, double tresholdCoef) {
     int w = image->getWidth();
     int h = image->getHeight();
+    auto gaussKernel = Kernels::GetGaussSeparableXY(windowSize, true);
+    image = FilterUtil::applySeparable(image, gaussKernel);
 
-    auto gaussKernel = Kernels::GetGauss(windowSize);
-
-    auto dx = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivX(image), (IBorderPolicy &) DEFAULT_POLICY);
-    auto dy = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivY(image), (IBorderPolicy &) DEFAULT_POLICY);
+    auto dx = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivX(image));
+    auto dy = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivY(image));
     auto harris = make_shared<DoubleImage>(w, h);
 
     for (int x = 0; x < w; x++) {
@@ -21,7 +21,7 @@ vector<Point> Harris::findPoints(int pointsCount, int windowSize, double treshol
                 for (int v = -windowSize; v <= windowSize; v++) {
                     double Ix = dx->getBorderedPixel(x + u, y + v);
                     double Iy = dy->getBorderedPixel(x + u, y + v);
-                    double gaussPoint = gaussKernel.getPixel(u + windowSize, v + windowSize);
+                    double gaussPoint = FilterUtil::getSeparableValue(gaussKernel, u + windowSize, v + windowSize);
                     currentMatrix[0][0] += Ix * Ix * gaussPoint;
                     currentMatrix[0][1] += Ix * Iy * gaussPoint;
                     currentMatrix[1][0] += Ix * Iy * gaussPoint;
@@ -29,7 +29,7 @@ vector<Point> Harris::findPoints(int pointsCount, int windowSize, double treshol
                 }
             }
             vector<double> eigenvalues = getEigenValues(currentMatrix);
-            harris->setPixel(x, y, min(eigenvalues[0], eigenvalues[1]));
+            harris->setPixel(x, y, *min_element(eigenvalues.begin(), eigenvalues.end()));
         }
     }
     if (!imageName.isNull())
@@ -38,7 +38,7 @@ vector<Point> Harris::findPoints(int pointsCount, int windowSize, double treshol
     vector<Point> points = localMaximum(tresholdCoef);
     if (!imageName.isNull())
         drawPoints(points, "localMaximums");
-    auto pointsAfterFiltering = filter(points, pointsCount, std::min(w / 2, h / 2));
+    auto pointsAfterFiltering = filter(points, pointsCount);
     if (!imageName.isNull())
         drawPoints(pointsAfterFiltering, "after_filtering");
     return pointsAfterFiltering;
@@ -67,7 +67,11 @@ QString Harris::getMethodName() {
     return "harris";
 }
 
-Harris::Harris(const shared_ptr<DoubleImage> &image, const QString &imageName, const QString &imageExt)
+Harris::Harris(
+        const shared_ptr<DoubleImage> &image,
+        const QString &imageName,
+        const QString &imageExt)
         : AbstractPointsFinder(image, imageName, imageExt) {}
 
-Harris::Harris(const shared_ptr<DoubleImage> &image) : AbstractPointsFinder(image) {}
+Harris::Harris(
+        const shared_ptr<DoubleImage> &image) : AbstractPointsFinder(image) {}

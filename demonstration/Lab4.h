@@ -10,6 +10,8 @@
 #include "../distortions/Distortion.h"
 #include "../core/InputImage.h"
 #include "../distortions/Shift.h"
+#include "../descriptor/HistogramCreator.h"
+
 #include "../descriptor/PatchCreator.h"
 #include "../distortions/Contrast.h"
 #include "../distortions/Noise.h"
@@ -17,32 +19,33 @@
 class Lab4 {
 private:
     const QString &imageName, &ext;
-    int windowSize, pointsCount, gridHalfSize, cellHalfSize;
+    int windowSize, pointsCount, gridSize, cellSize, basketsSize;
     shared_ptr<InputImage> inputImage;
 public:
-    Lab4(const QString &imageName, const QString &ext, int windowSize, int pointsCount, int gridHalfSize,
-         int cellHalfSize) : imageName(imageName), ext(ext), windowSize(windowSize), pointsCount(pointsCount),
-                             gridHalfSize(gridHalfSize), cellHalfSize(cellHalfSize) {
+    Lab4(const QString &imageName, const QString &ext, int windowSize, int basketsSize, int pointsCount, int gridSize,
+         int cellSize) : imageName(imageName), ext(ext), windowSize(windowSize), pointsCount(pointsCount),
+                         basketsSize(basketsSize),
+                         gridSize(gridSize), cellSize(cellSize) {
         this->inputImage = make_shared<InputImage>(InputImage::fromResources(imageName + ext));
     }
 
     static void demo() {
-        Lab4("lenna", ".png", 3,
-             32, 4, 2)
-                .workWithShiftedXY(40)
-                ->workWithShiftedY(60)
-                ->workWithContrast();
+//        Lab4("lenna", ".png", 3, 8,
+//             32, 8, 4)
+//                .workWithShiftedXY(40)
+//                ->workWithShiftedY(60)
+//                ->workWithContrast();
+//
+//
+//        Lab4("butterfly", ".jpg", 3, 8,
+//             64, 8, 4)
+//                .workWithShiftedXY(60)
+//                ->workWithContrast()
+//                ->workWithShiftedX(80);
 
-
-        Lab4("butterfly", ".jpg", 4,
-             64, 4, 4)
-                .workWithShiftedXY(60)
-                ->workWithContrast()
-                ->workWithShiftedX(80);
-
-        Lab4("shrek", ".jpg", 4,
-             24, 2, 2)
-                .workWithContrast()
+        Lab4("shrek", ".jpg", 3, 8,
+             36, 8, 4)
+                .workWithContrast(1.5)
                 ->workWithShiftedXY(30)
                 ->workWithShiftedY(50);
     }
@@ -60,6 +63,7 @@ public:
         work(firstInput, secondInput);
         return this;
     }
+
     Lab4 *workWithShiftedX(int diffX = 50) {
         auto firstInput = createShiftedInputImage(diffX, 0);
         auto secondInput = createShiftedInputImage(-diffX, 0);
@@ -81,8 +85,8 @@ public:
     void work(const shared_ptr<InputImage> &firstInput, const shared_ptr<InputImage> &secondInput) {
         auto firstDouble = make_shared<DoubleImage>(firstInput->toDoubleImage());
         auto secondDouble = make_shared<DoubleImage>(secondInput->toDoubleImage());
-        auto matching = PatchCreator::create(firstDouble, secondDouble, pointsCount, gridHalfSize,
-                                             cellHalfSize);
+        auto matching = HistogramCreator::create(firstDouble, secondDouble, gridSize, cellSize, basketsSize,
+                                                 pointsCount);
         auto resultImage = DescriptorUtil::markMatching(firstDouble, secondDouble, matching);
         InputImage::saveToResources(resultImage,
                                     QStringLiteral("%1_MATCHING_%2%3")

@@ -14,6 +14,13 @@ int Point::getY() const {
 
 Point::Point(int x, int y, double value) : x(x), y(y), value(value) {}
 
+
+Point::Point(const Point &point, double angle) : Point(point) {
+    setAngle(angle);
+}
+
+Point::Point(int x, int y, double value, double angle) : Point(Point(x, y, value), angle) {}
+
 double Point::distance(Point &point) const {
     return sqrt(sqr(x - point.x) + sqr(x - point.x));
 }
@@ -33,3 +40,12 @@ double Point::getValue() const {
 double Point::sqr(int i) {
     return i * i;
 }
+
+void Point::setAngle(double _angle) {
+    this->angle = _angle;
+}
+
+double Point::getAngle() const {
+    return angle;
+}
+

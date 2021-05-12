@@ -1,14 +1,10 @@
 #include "MirrorPolicy.h"
 
 double MirrorPolicy::getBorderedPixel(DoubleImage &image, int x, int y) {
-    if (y < 0)
-        y += image.getHeight();
-    else if (y >= image.getHeight())
-        y -= image.getHeight();
-    if (x < 0)
-        x += image.getWidth();
-    else if (x >= image.getWidth())
-        x -= image.getWidth();
+    x = abs(x);
+    y = abs(y);
+    if (x >= image.getWidth()) x = image.getWidth() - (x - image.getWidth() + 1);
+    if (y >= image.getHeight()) y = image.getHeight() - (y - image.getHeight() + 1);
     return image.getPixel(x, y);
 }
 

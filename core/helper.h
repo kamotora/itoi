@@ -17,6 +17,8 @@ public:
     static double simpleRound(double value);
 
     static int simpleRound(int value);
+
+    static int sign(double value);
 };
 
 #endif //ITOI_HELPER_H

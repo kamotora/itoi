@@ -13,7 +13,7 @@ public:
 
     virtual QPixmap distort(QPixmap pixmap);
 
-    inline QString getName() override { return QStringLiteral("ROTATED_").arg(_degrees); }
+    inline QString getName() override { return QStringLiteral("ROTATED_%1").arg(_degrees); }
 
 private:
     double _degrees;
