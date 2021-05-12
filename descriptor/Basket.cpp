@@ -6,8 +6,7 @@ Basket::Basket(int size) : size(size) {
 }
 
 void Basket::add(double angle, double value) {
-    angle = normalize(angle);
-    angle /= step;
+    angle = normalize(angle) / step;
     int i = (int) angle;
     double center = i + 0.5;
     double weight = abs(center - angle);

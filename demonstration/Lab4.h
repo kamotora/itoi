@@ -30,22 +30,22 @@ public:
     }
 
     static void demo() {
-        Lab4("lenna", ".png", 3, 8,
-             32, 4, 2)
-                .workWithShiftedXY(40)
-                ->workWithShiftedY(60)
-                ->workWithContrast();
+//        Lab4("lenna", ".png", 3, 8,
+//             32, 8, 4)
+//                .workWithShiftedXY(40)
+//                ->workWithShiftedY(60)
+//                ->workWithContrast();
+//
+//
+//        Lab4("butterfly", ".jpg", 3, 8,
+//             64, 8, 4)
+//                .workWithShiftedXY(60)
+//                ->workWithContrast()
+//                ->workWithShiftedX(80);
 
-
-        Lab4("butterfly", ".jpg", 4, 8,
-             64, 4, 4)
-                .workWithShiftedXY(60)
-                ->workWithContrast()
-                ->workWithShiftedX(80);
-
-        Lab4("shrek", ".jpg", 4, 8,
-             24, 2, 2)
-                .workWithContrast()
+        Lab4("shrek", ".jpg", 3, 8,
+             36, 8, 4)
+                .workWithContrast(1.5)
                 ->workWithShiftedXY(30)
                 ->workWithShiftedY(50);
     }

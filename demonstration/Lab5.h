@@ -53,28 +53,32 @@ public:
     static void demo() {
         Lab5("lenna", ".png", 3, 32, 50, 16, 4)
                 .workSiftWithRotatedRight(45)
-                ->workSiftWithRotatedLeft(30)
-                ->workSiftWithRotatedRight(90)
-                ->workSiftWithRotatedLeft(180)
-                ->workSiftWithShiftedXY(40)
-                ->workHogWithShiftedXY(40)
-                ->workHogWithRotatedRight(90)
+//                ->workSiftWithRotatedLeft(30)
+//                ->workSiftWithRotatedRight(90)
+//                ->workSiftWithRotatedLeft(180)
+//                ->workSiftWithShiftedXY(40)
+//                ->workHogWithShiftedXY(40)
+//                ->workHogWithRotatedRight(90)
+                ->workHogWithContrast()
+                ->workSiftWithContrast()
                 ;
-
-        Lab5("shrek", ".jpg", 3, 32, 30, 16, 4)
-                .workSiftWithRotatedRight(45)
-                ->workSiftWithRotatedRight(90)
-                ->workSiftWithShiftedXY(35)
-                ->workHogWithShiftedXY(35)
-                ->workHogWithRotatedRight(90);
-
-        Lab5("butterfly", ".jpg", 3, 32, 100, 16, 4)
-                .workSiftWithRotatedRight(37)
-                ->workSiftWithRotatedRight(90)
-                ->workSiftWithRotatedLeft(180)
-                ->workSiftWithShiftedXY(60)
-                ->workHogWithShiftedXY(60)
-                ->workHogWithRotatedLeft(180);
+//
+//        Lab5("shrek", ".jpg", 3, 32, 30, 16, 4)
+//                .workSiftWithRotatedRight(45)
+//                ->workSiftWithRotatedRight(90)
+//                ->workSiftWithRotatedRight(120)
+//                ->workSiftWithShiftedXY(35)
+//                ->workHogWithShiftedXY(35)
+//                ;
+//
+//        Lab5("butterfly", ".jpg", 3, 32, 100, 16, 4)
+//                .workSiftWithRotatedRight(37)
+//                ->workSiftWithRotatedRight(90)
+//                ->workSiftWithRotatedLeft(180)
+//                ->workSiftWithShiftedXY(60)
+//                ->workHogWithShiftedXY(60)
+//                ->workHogWithRotatedLeft(180)
+//                ;
     }
 
     Lab5 *workSiftWithRotatedRight(double angle) {
@@ -83,12 +87,12 @@ public:
     }
 
     Lab5 *workHogWithRotatedRight(double angle) {
-        workSift(inputImage, createWithDistortion(make_shared<Rotate>(angle)));
+        workHog(inputImage, createWithDistortion(make_shared<Rotate>(angle)));
         return this;
     }
 
     Lab5 *workSiftWithRotatedLeft(double angle) {
-        workHog(inputImage, createWithDistortion(make_shared<Rotate>(-angle)));
+        workSift(inputImage, createWithDistortion(make_shared<Rotate>(-angle)));
         return this;
     }
 
@@ -117,6 +121,16 @@ public:
         auto firstInput = createShiftedInputImage(diff, diff);
         auto secondInput = createShiftedInputImage(-diff, -diff);
         return make_pair(firstInput, secondInput);
+    }
+
+    Lab5 *workHogWithContrast(double contrastFactor = 1.5) {
+        workHog(inputImage, createWithDistortion(make_shared<Contrast>(contrastFactor)));
+        return this;
+    }
+
+    Lab5 *workSiftWithContrast(double contrastFactor = 1.5) {
+        workSift(inputImage, createWithDistortion(make_shared<Contrast>(contrastFactor)));
+        return this;
     }
 
     shared_ptr<InputImage> createWithDistortion(const shared_ptr<Distortion> &distortion) {

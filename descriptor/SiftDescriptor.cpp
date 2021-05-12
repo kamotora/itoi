@@ -4,7 +4,7 @@ SiftDescriptor::SiftDescriptor(const shared_ptr<DoubleImageBorderPolicy> &border
                                const shared_ptr<DoubleImageBorderPolicy> &borderedGradientAngle, Point point,
                                int gridSize, int cellSize, int basketSize, bool needNormalize)
         : AbstractDescriptor((Point &) point) {
-//    this->descriptor.reserve(gridSize * gridSize * basketSize);
+    this->descriptor.reserve(gridSize * gridSize * basketSize);
 
     vector<vector<Basket>> baskets(gridSize, vector(gridSize, Basket(basketSize)));
 
@@ -37,9 +37,7 @@ SiftDescriptor::SiftDescriptor(const shared_ptr<DoubleImageBorderPolicy> &border
     for (int i = 0; i < gridSize; i++) {
         for (int j = 0; j < gridSize; j++) {
             auto basket = baskets[i][j].getBasket();
-            for (const auto &item : basket)
-                descriptor.push_back(item);
-//            this->descriptor.insert(this->descriptor.end(), basket.begin(), basket.end());
+            this->descriptor.insert(this->descriptor.end(), basket.begin(), basket.end());
         }
     }
     if (needNormalize)
