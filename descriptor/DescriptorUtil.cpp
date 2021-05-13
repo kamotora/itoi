@@ -40,11 +40,12 @@ DescriptorUtil::getGradientAngle(const shared_ptr<DoubleImage> &first, const sha
 }
 
 shared_ptr<MatchInfo> DescriptorUtil::match(const vector<shared_ptr<AbstractDescriptor>> &firstList,
-                                            const vector<shared_ptr<AbstractDescriptor>> &secondList) {
+                                            const vector<shared_ptr<AbstractDescriptor>> &secondList,
+                                            bool showAll) {
     vector<pair<Point, Point>> pointsMatching;
 
     for (const auto &item : firstList) {
-        auto closest = getClosest(item, secondList);
+        auto closest = getClosest(item, secondList, showAll);
         if (closest != nullptr)
             pointsMatching.emplace_back(item->getPoint(), closest->getPoint());
     }
@@ -53,13 +54,16 @@ shared_ptr<MatchInfo> DescriptorUtil::match(const vector<shared_ptr<AbstractDesc
 }
 
 shared_ptr<AbstractDescriptor> DescriptorUtil::getClosest(const shared_ptr<AbstractDescriptor> &descriptor,
-                                                          const vector<shared_ptr<AbstractDescriptor>> &descriptors) {
+                                                          const vector<shared_ptr<AbstractDescriptor>> &descriptors,
+                                                          bool showAll) {
     vector<double> distances;
     distances.reserve(descriptors.size());
     for (const auto &descriptorB : descriptors) {
         distances.push_back(AbstractDescriptor::distance(descriptor, descriptorB));
     }
     int a = getMinIndex(distances, -1);
+    if(showAll)
+        return descriptors[a];
     int b = getMinIndex(distances, a);
 
     double r = distances[a] / distances[b];

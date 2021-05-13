@@ -44,11 +44,13 @@ public:
 
     static shared_ptr<AbstractDescriptor>
     getClosest(const shared_ptr<AbstractDescriptor> &descriptor,
-               const vector<shared_ptr<AbstractDescriptor>> &descriptors);
+               const vector<shared_ptr<AbstractDescriptor>> &descriptors,
+               bool showAll = false);
 
     static shared_ptr<MatchInfo>
     match(const vector<shared_ptr<AbstractDescriptor>> &firstList,
-          const vector<shared_ptr<AbstractDescriptor>> &secondList);
+          const vector<shared_ptr<AbstractDescriptor>> &secondList,
+          bool showAll = false);
 
     static QImage markPoints(const vector<Point> &points, const QImage &image);
 

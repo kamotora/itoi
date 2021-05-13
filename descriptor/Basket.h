@@ -14,7 +14,7 @@ protected:
     int size;
     double step;
 public:
-    explicit Basket(int size);
+    explicit Basket(int size = 32);
 
     void add(double angle, double value);
 

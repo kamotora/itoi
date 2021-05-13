@@ -37,7 +37,7 @@ public:
     static shared_ptr<MatchInfo> create(const shared_ptr<DoubleImage> &first,
                                         const shared_ptr<DoubleImage> &second,
                                         int _gridSize, int _cellSize,
-                                        int _basketSize, int _pointsCount);
+                                        int _basketSize, int _pointsCount, bool showAll = false);
 };
 
 

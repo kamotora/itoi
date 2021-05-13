@@ -16,13 +16,13 @@ HistogramCreator::HistogramCreator(const shared_ptr<DoubleImage> &firstImage,
 
 shared_ptr<MatchInfo>
 HistogramCreator::create(const shared_ptr<DoubleImage> &first, const shared_ptr<DoubleImage> &second, int _gridSize,
-                         int _cellSize, int _basketSize, int _pointsCount) {
+                         int _cellSize, int _basketSize, int _pointsCount, bool showAll) {
     auto creator = HistogramCreator(first, second, _gridSize, _cellSize, _basketSize, _pointsCount);
     auto firstDescriptor = creator.createDescriptors(creator.getFirstImage());
 
     auto secondDescriptor = creator.createDescriptors(creator.getSecondImage());
 
-    return DescriptorUtil::match(firstDescriptor, secondDescriptor);
+    return DescriptorUtil::match(firstDescriptor, secondDescriptor, showAll);
 }
 
 

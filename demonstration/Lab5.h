@@ -37,10 +37,10 @@ public:
                                             .arg(ext));
     }
 
-    void workHog(const shared_ptr<InputImage> &firstInput, const shared_ptr<InputImage> &secondInput) {
+    void workHog(const shared_ptr<InputImage> &firstInput, const shared_ptr<InputImage> &secondInput, bool showAll = false) {
         auto firstDouble = make_shared<DoubleImage>(firstInput->toDoubleImage());
         auto secondDouble = make_shared<DoubleImage>(secondInput->toDoubleImage());
-        auto matching = HistogramCreator::create(firstDouble, secondDouble, 8, 4, 8, pointsCount);
+        auto matching = HistogramCreator::create(firstDouble, secondDouble, 8, 4, 8, pointsCount, showAll);
         auto resultImage = DescriptorUtil::markMatching(firstDouble, secondDouble, matching);
         InputImage::saveToResources(resultImage,
                                     QStringLiteral("%1_MATCHING_HISTOGRAM_%2%3")
@@ -51,25 +51,29 @@ public:
 
     static void demo() {
         Lab5("lenna", ".png", 3, 8, 50, 4, 8)
-                .workSiftWithRotatedRight(45)
+                .workHogWithRotatedRight(90)
+                ->workSiftWithRotatedRight(45)
                 ->workSiftWithRotatedLeft(30)
+                ->workSiftWithRotatedLeft(77)
+                ->workSiftWithRotatedLeft(138)
                 ->workSiftWithRotatedRight(90)
                 ->workSiftWithRotatedLeft(180)
                 ->workSiftWithShiftedXY(40)
                 ->workHogWithShiftedXY(40)
-                ->workHogWithRotatedRight(90)
                 ->workHogWithContrast()
-                ->workSiftWithContrast();
-//
+                ->workSiftWithContrast()
+                ;
+
         Lab5("shrek", ".jpg", 3, 8, 30, 4, 8)
                 .workSiftWithRotatedRight(45)
                 ->workSiftWithRotatedRight(90)
                 ->workSiftWithRotatedRight(120)
                 ->workSiftWithShiftedXY(35)
                 ->workHogWithShiftedXY(35);
-
+//
         Lab5("butterfly", ".jpg", 3, 8, 100, 4, 8)
-                .workSiftWithRotatedRight(37)
+                .workSiftWithRotatedLeft(180)
+                ->workSiftWithRotatedRight(37)
                 ->workSiftWithRotatedRight(90)
                 ->workSiftWithRotatedLeft(180)
                 ->workSiftWithShiftedXY(60)
@@ -83,7 +87,7 @@ public:
     }
 
     Lab5 *workHogWithRotatedRight(double angle) {
-        workHog(inputImage, createWithDistortion(make_shared<Rotate>(angle)));
+        workHog(inputImage, createWithDistortion(make_shared<Rotate>(angle)), true);
         return this;
     }
 
@@ -93,7 +97,7 @@ public:
     }
 
     Lab5 *workHogWithRotatedLeft(double angle) {
-        workHog(inputImage, createWithDistortion(make_shared<Rotate>(-angle)));
+        workHog(inputImage, createWithDistortion(make_shared<Rotate>(-angle)), true);
         return this;
     }
 
