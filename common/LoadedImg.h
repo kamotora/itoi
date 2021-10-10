@@ -14,22 +14,22 @@ using namespace std;
 
 class LoadedImg : public AbstractImg {
 private:
+    LoadedImg(int width, int height);
+
+    explicit LoadedImg(const QImage &image);
+
     inline static const QString RESOURCES = "../resources";
     inline static const QString INPUT = "/input/";
     inline static const QString OUTPUT = "/output/lab5/";
     QImage img;
-    int width, height;
     unique_ptr<unsigned char[]> data;
     QString name;
 
-    void setImage(const QImage &image);
-
     void set_pixel(int i, unsigned char value);
 
-    unsigned char grayscale(const QColor &rgbPixel);
+    static unsigned char grayscale(const QColor &rgbPixel);
 
 public:
-
     static LoadedImg by_image_name(const QString &imageName);
 
     static LoadedImg copy(const QPixmap &pixmap);
@@ -38,13 +38,9 @@ public:
 
     LoadedImg *save(const string &imageName);
 
-    [[nodiscard]] int get_width() const;
+    unsigned char pixel(int x, int y);
 
-    [[nodiscard]] int get_height() const;
-
-    unsigned char get_pixel(int x, int y);
-
-    unsigned char get_pixel(int i);
+    unsigned char pixel(int i);
 
     [[nodiscard]]
     const QString &get_name() const;
@@ -61,6 +57,7 @@ public:
 
     void set_pixel(int x, int y, unsigned char value);
 
+    LoadedImg();
 };
 
 

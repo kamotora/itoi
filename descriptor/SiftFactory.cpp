@@ -13,11 +13,9 @@ SiftFactory::create(const shared_ptr<ProcessingImg> &first, const shared_ptr<Pro
                     int _gridSize,
                     int _cellSize, int _basketSize, int _pointsCount) {
     auto creator = SiftFactory(first, second, _gridSize, _cellSize, _basketSize, _pointsCount);
-    auto firstDescriptor = creator.create_descriptors(creator.get_first_image());
 
-    auto secondDescriptor = creator.create_descriptors(creator.get_second_image());
-
-    return match(firstDescriptor, secondDescriptor);
+    return match(creator.create_descriptors(creator.get_first_image()),
+                 creator.create_descriptors(creator.get_second_image()));
 }
 
 

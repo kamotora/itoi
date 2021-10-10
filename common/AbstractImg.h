@@ -5,13 +5,23 @@
 
 class AbstractImg {
 protected:
-    int width, height;
+    int _width, _height;
 public:
+    AbstractImg(int width, int height);
+
+    AbstractImg();
+
     [[nodiscard]]
     int to_index(int x, int y) const;
 
     [[nodiscard]]
-    int get_size() const;
+    int size() const;
+
+    [[nodiscard]]
+    int height() const;
+
+    [[nodiscard]]
+    int width() const;
 };
 
 

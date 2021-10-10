@@ -63,15 +63,15 @@ public:
 
 
 //
-//        Lab3("lenna", ".png").moravec()->harris();
-//
-//        Lab3("lenna_brighted", ".png").moravec()->harris();
-//
-//        Lab3("lenna_rotated", ".png").moravec()->harris();
-//
-//        Lab3("lenna_noised", ".png").moravec()->harris();
-//
-//        Lab3("lenna_mirror", ".png").moravec()->harris();
+        Lab3("lenna", ".png").moravec()->harris();
+
+        Lab3("lenna_brighted", ".png").moravec()->harris();
+
+        Lab3("lenna_rotated", ".png").moravec()->harris();
+
+        Lab3("lenna_noised", ".png").moravec()->harris();
+
+        Lab3("lenna_mirror", ".png").moravec()->harris();
     }
 };
 

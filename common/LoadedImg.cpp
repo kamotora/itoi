@@ -1,21 +1,8 @@
 #include <QLabel>
 #include "LoadedImg.h"
 
-void LoadedImg::setImage(const QImage &image) {
-    img = image;
-    height = image.height();
-    width = image.width();
-    data = std::make_unique<unsigned char[]>(get_size());
-    for (int x = 0; x < width; x++) {
-        for (int y = 0; y < height; y++) {
-            set_pixel(x, y, grayscale(image.pixelColor(x, y)));
-        }
-    }
-}
-
 unsigned char LoadedImg::grayscale(const QColor &rgbPixel) {
-    auto result = 0.213 * rgbPixel.red() + 0.715 * rgbPixel.green() + 0.072 * rgbPixel.blue();
-    return result;
+    return 0.213 * rgbPixel.red() + 0.715 * rgbPixel.green() + 0.072 * rgbPixel.blue();
 }
 
 LoadedImg LoadedImg::by_image_name(const QString &imageName) {
@@ -23,18 +10,9 @@ LoadedImg LoadedImg::by_image_name(const QString &imageName) {
     QImage image(path);
     if (image.isNull())
         throw invalid_argument("Fail to load image. Check path: " + path.toStdString());
-    LoadedImg loadedImg = LoadedImg();
-    loadedImg.setImage(image);
+    LoadedImg loadedImg = LoadedImg(image);
     loadedImg.set_name(imageName.left(imageName.indexOf(".")));
     return loadedImg;
-}
-
-int LoadedImg::get_height() const {
-    return height;
-}
-
-int LoadedImg::get_width() const {
-    return width;
 }
 
 void LoadedImg::set_pixel(int x, int y, unsigned char value) {
@@ -45,32 +23,30 @@ void LoadedImg::set_pixel(int i, unsigned char value) {
     data.get()[i] = value;
 }
 
-unsigned char LoadedImg::get_pixel(int x, int y) {
-    return get_pixel(to_index(x, y));
+unsigned char LoadedImg::pixel(int x, int y) {
+    return pixel(to_index(x, y));
 }
 
-unsigned char LoadedImg::get_pixel(int i) {
+unsigned char LoadedImg::pixel(int i) {
     return data.get()[i];
 }
 
 ProcessingImg LoadedImg::to_processing_img() {
-    auto res = ProcessingImg(width, height);
-    for (int i = 0; i < width * height; i++) {
-        res.set_pixel(i, get_pixel(i));
+    auto res = ProcessingImg(_width, _height);
+    for (int i = 0; i < _width * _height; i++) {
+        res.set_pixel(i, pixel(i));
     }
     return res.normalize();
 }
 
 LoadedImg LoadedImg::from_processing_img(ProcessingImg &image) {
     image = image.normalize(255);
-    LoadedImg result;
-    result.height = image.get_height();
-    result.width = image.get_width();
-    result.data = std::make_unique<unsigned char[]>(result.width * result.height);
-    result.img = QImage(result.width, result.height, QImage::Format_RGB32);
-    for (int x = 0; x < result.width; x++)
-        for (int y = 0; y < result.height; y++) {
-            unsigned char pixel = image.get_pixel(x, y);
+    LoadedImg result = LoadedImg(image.width(), image.height());
+    result.data = std::make_unique<unsigned char[]>(result._width * result._height);
+    result.img = QImage(result._width, result._height, QImage::Format_RGB32);
+    for (int x = 0; x < result._width; x++)
+        for (int y = 0; y < result._height; y++) {
+            unsigned char pixel = image.pixel(x, y);
             result.set_pixel(x, y, pixel);
             result.img.setPixel(x, y, qRgb(pixel, pixel, pixel));
         }
@@ -81,7 +57,7 @@ QImage LoadedImg::native_image() {
     return img;
 }
 
-void LoadedImg::save(const QImage& image, const QString &imageName) {
+void LoadedImg::save(const QImage &image, const QString &imageName) {
     if (image.isNull()) {
         cerr << "Try to save null image" << endl;
         throw invalid_argument("Try to save null image");
@@ -99,9 +75,7 @@ LoadedImg *LoadedImg::save(const string &imageName) {
 }
 
 LoadedImg LoadedImg::copy(const QPixmap &pixmap) {
-    auto img = LoadedImg();
-    img.setImage(pixmap.toImage());
-    return img;
+    return LoadedImg(pixmap.toImage());
 }
 
 
@@ -111,4 +85,20 @@ const QString &LoadedImg::get_name() const {
 
 void LoadedImg::set_name(const QString &_name) {
     LoadedImg::name = _name;
+}
+
+LoadedImg::LoadedImg(int width, int height) : AbstractImg(width, height) {}
+
+LoadedImg::LoadedImg(const QImage &image) : AbstractImg(image.width(), image.height()) {
+    this->img = image;
+    this->data = std::make_unique<unsigned char[]>(size());
+    for (int x = 0; x < _width; x++) {
+        for (int y = 0; y < _height; y++) {
+            set_pixel(x, y, grayscale(image.pixelColor(x, y)));
+        }
+    }
+}
+
+LoadedImg::LoadedImg() : AbstractImg() {
+
 }

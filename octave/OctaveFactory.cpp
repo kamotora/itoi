@@ -44,17 +44,17 @@ double OctaveFactory::calculateDeltaSigma(double oldSigma, double newSigma) {
 }
 
 shared_ptr<ProcessingImg> OctaveFactory::getHalfSizeImage(const shared_ptr<ProcessingImg> &image) {
-    auto res = ProcessingImg(image->get_width() / 2, image->get_height() / 2);
+    auto res = ProcessingImg(image->width() / 2, image->height() / 2);
 
-    for (int x = 0; x < res.get_width(); x++)
-        for (int y = 0; y < res.get_height(); y++)
-            res.set_pixel(x, y, image->get_pixel(x * 2, y * 2));
-    if (res.get_size() != ((image->get_width() / 2) * (image->get_height() / 2))) {
+    for (int x = 0; x < res.width(); x++)
+        for (int y = 0; y < res.height(); y++)
+            res.set_pixel(x, y, image->pixel(x * 2, y * 2));
+    if (res.size() != ((image->width() / 2) * (image->height() / 2))) {
         cerr << "Invalid function" << endl;
         throw runtime_error("invalid");
     }
     return make_shared<ProcessingImg>(res.normalize());
-//    return make_shared<ProcessingImg>(pixels, image->get_width() / 2, image->get_height() / 2);;
+//    return make_shared<ProcessingImg>(pixels, image->width() / 2, image->height() / 2);;
 }
 
 
@@ -75,16 +75,16 @@ shared_ptr<ProcessingImg> OctaveFactory::L(ProcessingImg &LoadedImg, vector<shar
     }
 
     int transformationCoef =static_cast<int>(pow(2, octaveLevel));
-    auto output = make_shared<ProcessingImg>(LoadedImg.get_width(), LoadedImg.get_height());
-    for (int x = 0; x < LoadedImg.get_width(); x++)
-        for (int y = 0; y < LoadedImg.get_height(); y++) {
+    auto output = make_shared<ProcessingImg>(LoadedImg.width(), LoadedImg.height());
+    for (int x = 0; x < LoadedImg.width(); x++)
+        for (int y = 0; y < LoadedImg.height(); y++) {
             //преобразование координат
             int x_n = static_cast<int>(x / transformationCoef);
             int y_n = static_cast<int>(y / transformationCoef);
-            if (y_n >= targetLayer->getImage()->get_height()) y_n = targetLayer->getImage()->get_height() - 1;
-            if (x_n >= targetLayer->getImage()->get_width()) x_n = targetLayer->getImage()->get_width() - 1;
+            if (y_n >= targetLayer->getImage()->height()) y_n = targetLayer->getImage()->height() - 1;
+            if (x_n >= targetLayer->getImage()->width()) x_n = targetLayer->getImage()->width() - 1;
 
-            output->set_pixel(x, y, targetLayer->getImage()->get_pixel(x_n, y_n));
+            output->set_pixel(x, y, targetLayer->getImage()->pixel(x_n, y_n));
         }
     return output;
 }

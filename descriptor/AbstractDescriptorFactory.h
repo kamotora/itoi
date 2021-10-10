@@ -42,22 +42,22 @@ protected:
     count_gradient(const shared_ptr<ProcessingImg> &first, const shared_ptr<ProcessingImg> &second);
 
     static shared_ptr<ProcessingImg>
-    count_gradient_angle(const shared_ptr<ProcessingImg> &first, const shared_ptr<ProcessingImg> &second);
+    count_gradient_angle(const shared_ptr<ProcessingImg> &first_pixel, const shared_ptr<ProcessingImg> &second_pixel);
 
-    static int get_min_ind(vector<double> distances, int excludeIndex);
+    static int get_min_ind(vector<double> distances, int exclude_idx);
 
     static shared_ptr<AbstractDescriptor>
     getClosest(const shared_ptr<AbstractDescriptor> &descriptor,
                const vector<shared_ptr<AbstractDescriptor>> &descriptors,
-               bool showAll = false);
+               bool need_show_all = false);
 
     static shared_ptr<DescriptorPair>
-    match(const vector<shared_ptr<AbstractDescriptor>> &firstList,
-          const vector<shared_ptr<AbstractDescriptor>> &secondList,
-          bool showAll = false);
+    match(const vector<shared_ptr<AbstractDescriptor>> &first,
+          const vector<shared_ptr<AbstractDescriptor>> &second,
+          bool need_show_all = false);
 
     static double
-    dist(const shared_ptr<AbstractDescriptor> &descriptorA, const shared_ptr<AbstractDescriptor> &descriptorB);
+    dist(const shared_ptr<AbstractDescriptor> &first, const shared_ptr<AbstractDescriptor> &second);
 };
 
 

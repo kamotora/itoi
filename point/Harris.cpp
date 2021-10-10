@@ -1,8 +1,8 @@
 #include "Harris.h"
 
 vector<Point> Harris::find_points(int pointsCount, int windowSize, double tresholdCoef) {
-    int w = image->get_width();
-    int h = image->get_height();
+    int w = image->width();
+    int h = image->height();
     auto gaussKernel = Kernels::gauss_separable_xy(windowSize, true);
     image = Filter::applySeparable(image, gaussKernel);
 

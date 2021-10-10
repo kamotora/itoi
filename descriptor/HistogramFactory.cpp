@@ -1,16 +1,16 @@
 #include "HistogramFactory.h"
 
 
-HistogramFactory::HistogramFactory(const shared_ptr<ProcessingImg> &firstImage,
-                                   const shared_ptr<ProcessingImg> &secondImage, int gridSize,
-                                   int cellSize, int basketSize, int pointsCount)
-        : AbstractDescriptorFactory(firstImage, secondImage, gridSize, cellSize, basketSize, pointsCount) {}
+HistogramFactory::HistogramFactory(const shared_ptr<ProcessingImg> &first,
+                                   const shared_ptr<ProcessingImg> &secondImage, int grid_size,
+                                   int cell_size, int basket_size, int points_count)
+        : AbstractDescriptorFactory(first, secondImage, grid_size, cell_size, basket_size, points_count) {}
 
 shared_ptr<DescriptorPair>
 HistogramFactory::create(const shared_ptr<ProcessingImg> &first, const shared_ptr<ProcessingImg> &second,
-                         int _gridSize,
-                         int _cellSize, int _basketSize, int _pointsCount, bool is_need_show) {
-    auto factory = HistogramFactory(first, second, _gridSize, _cellSize, _basketSize, _pointsCount);
+                         int _grid_size,
+                         int _cell_size, int _basket_size, int _points_count, bool is_need_show) {
+    auto factory = HistogramFactory(first, second, _grid_size, _cell_size, _basket_size, _points_count);
     auto first_descriptor = factory.create_descriptors(factory.get_first_image());
 
     auto second_descriptor = factory.create_descriptors(factory.get_second_image());
@@ -35,12 +35,12 @@ HistogramFactory::create_descriptors(const shared_ptr<ProcessingImg> &img) {
 
 vector<shared_ptr<AbstractDescriptor>>
 HistogramFactory::create_descriptors(const shared_ptr<ProcessingImg> &gradient,
-                                     const shared_ptr<ProcessingImg> &gradientAngle,
+                                     const shared_ptr<ProcessingImg> &angle_gradient,
                                      const vector<Point> &points) {
     vector<shared_ptr<AbstractDescriptor>> descriptors;
     descriptors.reserve(points.size());
     for (const auto &item: points)
         descriptors.push_back(
-                make_shared<Histogram>(gradient, gradientAngle, item, grid_size, cell_size, basket_size));
+                make_shared<Histogram>(gradient, angle_gradient, item, grid_size, cell_size, basket_size));
     return descriptors;
 }

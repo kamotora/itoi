@@ -1,10 +1,12 @@
 #include "DescriptorDrawer.h"
 
 
-QImage DescriptorDrawer::markMatching(const shared_ptr<ProcessingImg> &imageA, const shared_ptr<ProcessingImg> &imageB,
-                                      const shared_ptr<DescriptorPair> &matchInfo) {
-    auto markedImageA = markPoints(matchInfo->getDescriptorsA(), LoadedImg::from_processing_img(*imageA).native_image());
-    auto markedImageB = markPoints(matchInfo->getDescriptorsB(), LoadedImg::from_processing_img(*imageB).native_image());
+QImage DescriptorDrawer::draw_matching(const shared_ptr<ProcessingImg> &imageA, const shared_ptr<ProcessingImg> &imageB,
+                                       const shared_ptr<DescriptorPair> &matchInfo) {
+    auto markedImageA = draw_points(matchInfo->first(),
+                                    LoadedImg::from_processing_img(*imageA).native_image());
+    auto markedImageB = draw_points(matchInfo->second(),
+                                    LoadedImg::from_processing_img(*imageB).native_image());
     auto minMaxHeight = minmax(markedImageA.height(), markedImageB.height());
     QImage resultImage = QImage(markedImageA.width() + markedImageB.width(), minMaxHeight.second, QImage::Format_RGB32);
 
@@ -17,7 +19,7 @@ QImage DescriptorDrawer::markMatching(const shared_ptr<ProcessingImg> &imageA, c
                       markedImageB);
 
     painter.setPen(QColor(255, 255, 0));
-    for (auto pointsPair: matchInfo->getPointsPairs()) {
+    for (auto pointsPair: matchInfo->points()) {
 
         auto pointA = pointsPair.first;
         auto pointB = pointsPair.second;
@@ -26,13 +28,13 @@ QImage DescriptorDrawer::markMatching(const shared_ptr<ProcessingImg> &imageA, c
     return resultImage;
 }
 
-void DescriptorDrawer::drawPlus(const Point &item, QImage &image) {
+void DescriptorDrawer::draw_plus(const Point &item, QImage &image) {
     int plusSize = 2;
     for (int i = -plusSize; i <= plusSize; i++) {
         if (i == 0)
             continue;
-        setPoint(item.get_x() + i, item.get_y(), image);
-        setPoint(item.get_x(), item.get_y() + i, image);
+        set_point(item.get_x() + i, item.get_y(), image);
+        set_point(item.get_x(), item.get_y() + i, image);
     }
 }
 
@@ -42,7 +44,7 @@ pair<int, int> DescriptorDrawer::round(int x, int y, QImage &image) {
     return make_pair(resX, resY);
 }
 
-void DescriptorDrawer::setPoint(int x, int y, QImage &image) {
+void DescriptorDrawer::set_point(int x, int y, QImage &image) {
     auto pair = round(x, y, image);
     image.setPixelColor(pair.first, pair.second, qRgb(255, 0, 0));
 }
@@ -50,19 +52,19 @@ void DescriptorDrawer::setPoint(int x, int y, QImage &image) {
 QImage DescriptorDrawer::mark_points(const vector<Point> &points, const QImage &image) {
     QImage resultImage(image);
     for (const auto &item: points) {
-        drawPlus(item, resultImage);
+        draw_plus(item, resultImage);
     }
     return resultImage;
 }
 
-QImage DescriptorDrawer::markPoints(const vector<shared_ptr<AbstractDescriptor>> &descriptors, const QImage &image) {
+QImage DescriptorDrawer::draw_points(const vector<shared_ptr<AbstractDescriptor>> &descriptors, const QImage &image) {
     QImage resultImage(image);
     for (const auto &item: descriptors)
-        drawPointWithAngle(item->getPoint(), resultImage);
+        draw_vectored_point(item->get_point(), resultImage);
     return resultImage;
 }
 
-void DescriptorDrawer::drawPointWithAngle(const Point &point, QImage &image) {
+void DescriptorDrawer::draw_vectored_point(const Point &point, QImage &image) {
 
     QPainter painter(&image);
     double angle = point.get_angle();

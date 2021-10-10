@@ -6,25 +6,25 @@
 
 class DescriptorPair {
 private:
-    vector<pair<Point, Point>> pointsPairs;
-    vector<shared_ptr<AbstractDescriptor>> descriptorsA;
-    vector<shared_ptr<AbstractDescriptor>> descriptorsB;
+    vector<pair<Point, Point>> _points;
+    vector<shared_ptr<AbstractDescriptor>> _first;
+    vector<shared_ptr<AbstractDescriptor>> _second;
 
 public:
     DescriptorPair(const vector<pair<Point, Point>> &pointsPairs,
                    const vector<shared_ptr<AbstractDescriptor>> &descriptorsA,
-                   const vector<shared_ptr<AbstractDescriptor>> &descriptorsB) : pointsPairs(pointsPairs),
-                                                                            descriptorsA(descriptorsA),
-                                                                            descriptorsB(descriptorsB) {}
+                   const vector<shared_ptr<AbstractDescriptor>> &descriptorsB) : _points(pointsPairs),
+                                                                                 _first(descriptorsA),
+                                                                                 _second(descriptorsB) {}
 
     [[nodiscard]]
-    const vector<pair<Point, Point>> &getPointsPairs() const;
+    const vector<pair<Point, Point>> &points() const;
 
     [[nodiscard]]
-    const vector<shared_ptr<AbstractDescriptor>> &getDescriptorsA() const;
+    const vector<shared_ptr<AbstractDescriptor>> &first() const;
 
     [[nodiscard]]
-    const vector<shared_ptr<AbstractDescriptor>> &getDescriptorsB() const;
+    const vector<shared_ptr<AbstractDescriptor>> &second() const;
 };
 
 

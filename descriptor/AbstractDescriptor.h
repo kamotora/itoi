@@ -19,10 +19,10 @@ protected:
     Point point;
 public:
     [[nodiscard]]
-    const Point &getPoint() const;
+    const Point &get_point() const;
 
     [[nodiscard]]
-    const vector<double> &getDescriptor() const;
+    const vector<double> &get_descriptor() const;
 
     void setDescriptor(vector<double> newDescriptor);
 

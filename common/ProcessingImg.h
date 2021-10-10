@@ -9,14 +9,13 @@ using namespace std;
 
 class ProcessingImg : public AbstractImg {
 private:
-    int width, height;
     unique_ptr<double[]> data;
 public:
-    ProcessingImg(unique_ptr<double[]> byteSource, int width, int height);
+    ProcessingImg(unique_ptr<double[]> byteSource, int _width, int _height);
 
-    ProcessingImg(vector<double> array, int width, int height);
+    ProcessingImg(vector<double> array, int _width, int _height);
 
-    ProcessingImg(int width, int height);
+    ProcessingImg(int _width, int _height);
 
     ProcessingImg(ProcessingImg const &other);
 
@@ -26,9 +25,11 @@ public:
 
     void set_pixel(int x, int y, double value);
 
-    virtual double get_pixel(int x, int y) const;
+    [[nodiscard]]
+    virtual double pixel(int x, int y) const;
 
-    virtual double get_pixel(int i) const;
+    [[nodiscard]]
+    virtual double pixel(int i) const;
 
     void set_pixel(int i, double value);
 
@@ -36,11 +37,7 @@ public:
 
     ProcessingImg normalize(float diff = 1.0);
 
-    [[nodiscard]]
-    int get_height() const;
 
-    [[nodiscard]]
-    int get_width() const;
 };
 
 

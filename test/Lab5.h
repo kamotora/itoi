@@ -29,7 +29,7 @@ private:
         auto secondDouble = make_shared<ProcessingImg>(secondInput->to_processing_img());
         auto matching = SiftFactory::create(firstDouble, secondDouble, gridSize, cellSize, basketsSize,
                                             pointsCount);
-        auto resultImage = DescriptorDrawer::markMatching(firstDouble, secondDouble, matching);
+        auto resultImage = DescriptorDrawer::draw_matching(firstDouble, secondDouble, matching);
         LoadedImg::save(resultImage,
                         QStringLiteral("%1_MATCHING_SIFT_%2%3")
                                 .arg(firstInput->get_name())
@@ -42,7 +42,7 @@ private:
         auto firstDouble = make_shared<ProcessingImg>(firstInput->to_processing_img());
         auto secondDouble = make_shared<ProcessingImg>(secondInput->to_processing_img());
         auto matching = HistogramFactory::create(firstDouble, secondDouble, 8, 4, 8, pointsCount, showAll);
-        auto resultImage = DescriptorDrawer::markMatching(firstDouble, secondDouble, matching);
+        auto resultImage = DescriptorDrawer::draw_matching(firstDouble, secondDouble, matching);
         LoadedImg::save(resultImage,
                         QStringLiteral("%1_MATCHING_HISTOGRAM_%2%3")
                                 .arg(firstInput->get_name())

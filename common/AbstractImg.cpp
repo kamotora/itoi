@@ -2,14 +2,27 @@
 
 
 int AbstractImg::to_index(int x, int y) const {
-    if (x >= width || x < 0 || y >= height || y < 0)
+    if (x >= _width || x < 0 || y >= _height || y < 0)
         throw std::invalid_argument("error to convect x, y to index");
-    return x + y * width;
+    return x + y * _width;
 }
 
 
-int AbstractImg::get_size() const {
-    if (width == 0 || height == 0)
+int AbstractImg::size() const {
+    if (_width == 0 || _height == 0)
         throw std::invalid_argument("invalid size");
-    return width * height;
+    return _width * _height;
 }
+
+int AbstractImg::height() const {
+    return _height;
+}
+
+
+int AbstractImg::width() const {
+    return _width;
+}
+
+AbstractImg::AbstractImg(int width, int height) : _width(width), _height(height) {}
+
+AbstractImg::AbstractImg() {}

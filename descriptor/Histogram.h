@@ -14,8 +14,8 @@
 
 class Histogram : public AbstractDescriptor {
 public:
-    Histogram(const shared_ptr<ProcessingImg> &gradient, const shared_ptr<ProcessingImg> &gradientAngle,
-              Point point, int gridSize, int cellSize, int basketSize, bool needNormalize = true);
+    Histogram(const shared_ptr<ProcessingImg> &gradient, const shared_ptr<ProcessingImg> &gradient_angle,
+              Point point, int grid_size, int cell_size, int basket_size, bool need_normalize = true);
 };
 
 

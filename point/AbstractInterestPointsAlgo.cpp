@@ -4,22 +4,22 @@ AbstractInterestPointsAlgo::AbstractInterestPointsAlgo(const shared_ptr<Processi
                                                        const QString &imageExt)
         : image(image), imageName(imageName), imageExt(imageExt) {
     if (imageName.isNull())
-        cout << "imageName for points finder == null. We will not save intermediate results" << endl;
+        cout << "imageName for _points finder == null. We will not save intermediate results" << endl;
 }
 
 vector<Point> AbstractInterestPointsAlgo::localMaximum(double thresholdCoeff) {
     vector<int> dx{-1, 0, 1, -1, 1, -1, 0, -1};
     vector<int> dy{-1, -1, -1, 0, 0, 1, 1, 1};
-    int w = image->get_width();
-    int h = image->get_height();
+    int w = image->width();
+    int h = image->height();
 
 //    image->normalize();
 
     double min = std::numeric_limits<double>::max(),
             max = std::numeric_limits<double>::min();
     // min and max search
-    for (int i = 0; i < image->get_size(); i++) {
-        double temp = image->get_pixel(i);
+    for (int i = 0; i < image->size(); i++) {
+        double temp = image->pixel(i);
         if (max < temp) max = temp;
         if (min > temp) min = temp;
     }
@@ -29,7 +29,7 @@ vector<Point> AbstractInterestPointsAlgo::localMaximum(double thresholdCoeff) {
     for (int i = 0; i < w; i++) {
         for (int j = 0; j < h; j++) {
             bool isCorrect = true;
-            double currentValue = image->get_pixel(i, j);
+            double currentValue = image->pixel(i, j);
             for (int k = 0; k < dx.size() && isCorrect; k++) {
                 if (i + dx[k] < 0 || i + dx[k] >= w || j + dy[k] < 0 || j + dy[k] >= h)
                     continue;
@@ -95,8 +95,8 @@ shared_ptr<ProcessingImg> AbstractInterestPointsAlgo::setPoints(vector<Point> &p
 }
 
 pair<int, int> AbstractInterestPointsAlgo::round(int x, int y) {
-    int resX = (x < 0) ? 0 : (x >= image->get_width() ? image->get_width() - 1 : x);
-    int resY = (y < 0) ? 0 : (y >= image->get_height() ? image->get_height() - 1 : y);
+    int resX = (x < 0) ? 0 : (x >= image->width() ? image->width() - 1 : x);
+    int resY = (y < 0) ? 0 : (y >= image->height() ? image->height() - 1 : y);
     return make_pair(resX, resY);
 }
 
@@ -111,8 +111,8 @@ double AbstractInterestPointsAlgo::getPixelWithBorderPolicy(int x, int y, IBorde
 
 
 void AbstractInterestPointsAlgo::drawPoints(vector<Point> &points, const QString &name) {
-    auto res = make_shared<ProcessingImg>(image->get_width(), image->get_height());
-    for (int i = 0; i < res->get_size(); i++)
+    auto res = make_shared<ProcessingImg>(image->width(), image->height());
+    for (int i = 0; i < res->size(); i++)
         res->set_pixel(i, 0);
     for (const auto &item : points)
         res->set_pixel(item.get_x(), item.get_y(), 255);

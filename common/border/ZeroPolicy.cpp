@@ -1,11 +1,8 @@
 #include "ZeroPolicy.h"
 
 double ZeroPolicy::bordered_pixel(ProcessingImg &image, int x, int y) {
-    if(x < 0 || x >= image.get_width() || y < 0 || y >= image.get_height())
+    if(x < 0 || x >= image.width() || y < 0 || y >= image.height())
         return 0;
-    return image.get_pixel(x, y);
+    return image.pixel(x, y);
 }
 
-QString ZeroPolicy::to_string() {
-    return "zeroBorderPolicy";
-}

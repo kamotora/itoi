@@ -12,7 +12,7 @@ void AbstractDescriptor::normalize() {
 
 
 
-const vector<double> &AbstractDescriptor::getDescriptor() const {
+const vector<double> &AbstractDescriptor::get_descriptor() const {
     return descriptor;
 }
 
@@ -24,6 +24,6 @@ AbstractDescriptor::AbstractDescriptor(Point point) : point(point) {
 
 }
 
-const Point &AbstractDescriptor::getPoint() const {
+const Point &AbstractDescriptor::get_point() const {
     return point;
 }

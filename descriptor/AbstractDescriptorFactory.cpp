@@ -12,14 +12,12 @@ shared_ptr<ProcessingImg>
 AbstractDescriptorFactory::count_gradient(const shared_ptr<ProcessingImg> &first,
                                           const shared_ptr<ProcessingImg> &second,
                                           double (*counterFunc)(double, double)) {
-    if (first->get_height() != second->get_height() || first->get_width() != second->get_width())
+    if (first->height() != second->height() || first->width() != second->width())
         throw invalid_argument("different images size");
-    auto gradient = make_shared<ProcessingImg>(first->get_width(), first->get_height());
+    auto gradient = make_shared<ProcessingImg>(first->width(), first->height());
 
-    for (int i = 0; i < gradient->get_size(); i++) {
-        auto firstPixel = first->get_pixel(i);
-        auto secondPixel = second->get_pixel(i);
-        gradient->set_pixel(i, counterFunc(firstPixel, secondPixel));
+    for (int i = 0; i < gradient->size(); i++) {
+        gradient->set_pixel(i, counterFunc(first->pixel(i), second->pixel(i)));
     }
 
     return gradient;
@@ -36,37 +34,37 @@ AbstractDescriptorFactory::count_gradient(const shared_ptr<ProcessingImg> &first
 shared_ptr<ProcessingImg>
 AbstractDescriptorFactory::count_gradient_angle(const shared_ptr<ProcessingImg> &first,
                                                 const shared_ptr<ProcessingImg> &second) {
-    return count_gradient(first, second, [](double firstPixel, double secondPixel) {
-        return atan2(secondPixel, firstPixel);
+    return count_gradient(first, second, [](double first_pixel, double second_pixel) {
+        return atan2(second_pixel, first_pixel);
     });
 }
 
 
-shared_ptr<DescriptorPair> AbstractDescriptorFactory::match(const vector<shared_ptr<AbstractDescriptor>> &firstList,
-                                                            const vector<shared_ptr<AbstractDescriptor>> &secondList,
-                                                            bool showAll) {
+shared_ptr<DescriptorPair> AbstractDescriptorFactory::match(const vector<shared_ptr<AbstractDescriptor>> &first,
+                                                            const vector<shared_ptr<AbstractDescriptor>> &second,
+                                                            bool need_show_all) {
     vector<pair<Point, Point>> pointsMatching;
 
-    for (const auto &item: firstList) {
-        auto closest = getClosest(item, secondList, showAll);
+    for (const auto &item: first) {
+        auto closest = getClosest(item, second, need_show_all);
         if (closest == nullptr)
             continue;
-        pointsMatching.emplace_back(item->getPoint(), closest->getPoint());
+        pointsMatching.emplace_back(item->get_point(), closest->get_point());
     }
 
-    return make_shared<DescriptorPair>(pointsMatching, firstList, secondList);
+    return make_shared<DescriptorPair>(pointsMatching, first, second);
 }
 
 shared_ptr<AbstractDescriptor> AbstractDescriptorFactory::getClosest(const shared_ptr<AbstractDescriptor> &descriptor,
                                                                      const vector<shared_ptr<AbstractDescriptor>> &descriptors,
-                                                                     bool showAll) {
+                                                                     bool need_show_all) {
     vector<double> distances;
     distances.reserve(descriptors.size());
     for (const auto &descriptorB: descriptors) {
         distances.push_back(dist(descriptor, descriptorB));
     }
     int a = get_min_ind(distances, -1);
-    if (showAll)
+    if (need_show_all)
         return descriptors[a];
     int b = get_min_ind(distances, a);
 
@@ -75,24 +73,24 @@ shared_ptr<AbstractDescriptor> AbstractDescriptorFactory::getClosest(const share
 }
 
 
-int AbstractDescriptorFactory::get_min_ind(vector<double> distances, int excludeIndex) {
-    int selectedIndex = -1;
+int AbstractDescriptorFactory::get_min_ind(vector<double> distances, int exclude_idx) {
+    int idx = -1;
     for (int i = 0; i < distances.size(); i++)
-        if (i != excludeIndex && (selectedIndex == -1 || distances[i] < distances[selectedIndex]))
-            selectedIndex = i;
+        if (i != exclude_idx && (idx == -1 || distances[i] < distances[idx]))
+            idx = i;
 
-    return selectedIndex;
+    return idx;
 }
 
-double AbstractDescriptorFactory::dist(const shared_ptr<AbstractDescriptor> &descriptorA,
-                                       const shared_ptr<AbstractDescriptor> &descriptorB) {
-    auto descA = descriptorA->getDescriptor();
-    auto descB = descriptorB->getDescriptor();
-    if (descA.size() != descB.size())
+double AbstractDescriptorFactory::dist(const shared_ptr<AbstractDescriptor> &first,
+                                       const shared_ptr<AbstractDescriptor> &second) {
+    auto first_desc = first->get_descriptor();
+    auto second_desc = second->get_descriptor();
+    if (first_desc.size() != second_desc.size())
         throw invalid_argument("size of descriptors not equal");
     double sum = 0;
-    for (int i = 0; i < descA.size(); i++) {
-        sum += (descA[i] - descB[i]) * (descA[i] - descB[i]);
+    for (int i = 0; i < first_desc.size(); i++) {
+        sum += (first_desc[i] - second_desc[i]) * (first_desc[i] - second_desc[i]);
     }
     return sqrt(sum);
 }

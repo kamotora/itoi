@@ -60,7 +60,7 @@ private:
         auto secondDouble = make_shared<ProcessingImg>(secondInput->to_processing_img());
         auto matching = HistogramFactory::create(firstDouble, secondDouble, gridSize, cellSize, basketsSize,
                                                  pointsCount);
-        auto resultImage = DescriptorDrawer::markMatching(firstDouble, secondDouble, matching);
+        auto resultImage = DescriptorDrawer::draw_matching(firstDouble, secondDouble, matching);
         LoadedImg::save(resultImage,
                         QStringLiteral("%1_MATCHING_%2%3")
                                 .arg(firstInput->get_name())
@@ -81,18 +81,18 @@ private:
     }
 public:
     static void test() {
-//        Lab4("lenna", ".png", 3, 8,
-//             32, 8, 4)
-//                .shifted_xy(40)
-//                ->shifted_y(60)
-//                ->contrast();
-//
-//
-//        Lab4("butterfly", ".jpg", 3, 8,
-//             64, 8, 4)
-//                .shifted_xy(60)
-//                ->contrast()
-//                ->shifted_x(80);
+        Lab4("lenna", ".png", 3, 8,
+             32, 8, 4)
+                .shifted_xy(40)
+                ->shifted_y(60)
+                ->contrast();
+
+
+        Lab4("butterfly", ".jpg", 3, 8,
+             64, 8, 4)
+                .shifted_xy(60)
+                ->contrast()
+                ->shifted_x(80);
 
         Lab4("shrek", ".jpg", 3, 8,
              36, 8, 4)

@@ -4,20 +4,20 @@
 
 
 ProcessingImg Filter::applyCrossCorel(ProcessingImg &image, ProcessingImg &kernel, IBorderPolicy &borderPolicy) {
-    int kernelW = kernel.get_width();
-    int kernelH = kernel.get_height();
+    int kernelW = kernel.width();
+    int kernelH = kernel.height();
     if (!(kernelW % 2) || !(kernelH % 2)) {
         cerr << "Invalid kernel size" << endl;
     }
     int kernelKW = kernelW / 2;
     int kernelKH = kernelH / 2;
-    auto result = ProcessingImg(image.get_width(), image.get_height());
-    for (int x = 0; x < image.get_width(); x++) {
-        for (int y = 0; y < image.get_height(); y++) {
+    auto result = ProcessingImg(image.width(), image.height());
+    for (int x = 0; x < image.width(); x++) {
+        for (int y = 0; y < image.height(); y++) {
             double res = 0;
-            for (int i = 0, u = -kernelKW; i < kernel.get_width(); i++, u++) {
-                for (int j = 0, v = -kernelKH; j < kernel.get_height(); j++, v++) {
-                    res += borderPolicy.get_pixel(image, x + u, y + v) * kernel.get_pixel(i, j);
+            for (int i = 0, u = -kernelKW; i < kernel.width(); i++, u++) {
+                for (int j = 0, v = -kernelKH; j < kernel.height(); j++, v++) {
+                    res += borderPolicy.get_pixel(image, x + u, y + v) * kernel.pixel(i, j);
                 }
             }
             result.set_pixel(x, y, res);
@@ -28,20 +28,20 @@ ProcessingImg Filter::applyCrossCorel(ProcessingImg &image, ProcessingImg &kerne
 
 shared_ptr<ProcessingImg>
 Filter::applyConvolution(const shared_ptr<ProcessingImg> &image, ProcessingImg &kernel, IBorderPolicy &borderPolicy) {
-    int kernelW = kernel.get_width();
-    int kernelH = kernel.get_height();
+    int kernelW = kernel.width();
+    int kernelH = kernel.height();
     if (!(kernelW % 2) || !(kernelH % 2)) {
-        cerr << "Invalid kernel size. Width: " << kernelW << ", height: " << kernelH << endl;
+        cerr << "Invalid kernel size. Width: " << kernelW << ", _height: " << kernelH << endl;
     }
     int kernelKW = kernelW / 2;
     int kernelKH = kernelH / 2;
-    auto result = make_shared<ProcessingImg>(image->get_width(), image->get_height());
-    for (int x = 0; x < image->get_width(); x++) {
-        for (int y = 0; y < image->get_height(); y++) {
+    auto result = make_shared<ProcessingImg>(image->width(), image->height());
+    for (int x = 0; x < image->width(); x++) {
+        for (int y = 0; y < image->height(); y++) {
             double res = 0;
             for (int i = 0, u = -kernelKW; i < kernelW; i++, u++) {
                 for (int j = 0, v = -kernelKH; j < kernelH; j++, v++) {
-                    res += borderPolicy.get_pixel(*image, x - u, y - v) * kernel.get_pixel(i, j);
+                    res += borderPolicy.get_pixel(*image, x - u, y - v) * kernel.pixel(i, j);
                 }
             }
             result->set_pixel(x, y, res);
@@ -51,13 +51,13 @@ Filter::applyConvolution(const shared_ptr<ProcessingImg> &image, ProcessingImg &
 }
 
 void Filter::print(ostream &out, ProcessingImg &matrix) {
-    int w = matrix.get_width();
-    int h = matrix.get_height();
+    int w = matrix.width();
+    int h = matrix.height();
     out << "Image [" << w << "," << h << "]" << endl;
     out << std::fixed;
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) {
-            out << setprecision(3) << setw(7) << right << matrix.get_pixel(x, y);
+            out << setprecision(3) << setw(7) << right << matrix.pixel(x, y);
         }
         out << endl;
     }
@@ -121,5 +121,5 @@ Filter::applySeparable(const shared_ptr<ProcessingImg> &image, pair<ProcessingIm
 }
 
 double Filter::get_separable_value(pair<ProcessingImg, ProcessingImg> &pair, int x, int y) {
-    return pair.first.get_pixel(x, 0) * pair.second.get_pixel(0, y);
+    return pair.first.pixel(x, 0) * pair.second.pixel(0, y);
 }

@@ -1,8 +1,8 @@
 #include "Moravec.h"
 
 vector<Point> Moravec::find_points(int pointsCount, int windowSize, double tresholdCoef) {
-    int w = image->get_width();
-    int h = image->get_height();
+    int w = image->width();
+    int h = image->height();
 
     auto moravec = make_shared<ProcessingImg>(w, h);
     for (int i = 0; i < w; i++) {

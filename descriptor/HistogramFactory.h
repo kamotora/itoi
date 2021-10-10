@@ -12,22 +12,22 @@ private:
     vector<shared_ptr<AbstractDescriptor>> create_descriptors(const shared_ptr<ProcessingImg> &img);
 
     vector<shared_ptr<AbstractDescriptor>> create_descriptors(const shared_ptr<ProcessingImg> &gradient,
-                                                              const shared_ptr<ProcessingImg> &gradientAngle,
+                                                              const shared_ptr<ProcessingImg> &angle_gradient,
                                                               const vector<Point> &points);
 
 public:
 
-    HistogramFactory(const shared_ptr<ProcessingImg> &firstImage,
+    HistogramFactory(const shared_ptr<ProcessingImg> &first,
                      const shared_ptr<ProcessingImg> &second,
-                     int gridSize,
-                     int cellSize,
-                     int basketSize,
-                     int pointsCount);
+                     int grid_size,
+                     int cell_size,
+                     int basket_size,
+                     int points_count);
 
     static shared_ptr<DescriptorPair> create(const shared_ptr<ProcessingImg> &first,
                                              const shared_ptr<ProcessingImg> &second,
-                                             int _gridSize, int _cellSize,
-                                             int _basketSize, int _pointsCount, bool is_need_show = false);
+                                             int _grid_size, int _cell_size,
+                                             int _basket_size, int _points_count, bool is_need_show = false);
 };
 
 
