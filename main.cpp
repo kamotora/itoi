@@ -1,19 +1,17 @@
 #include <QApplication>
 #include <QPushButton>
 #include <QLabel>
-#include "demonstration/Lab1.h"
-#include "filter/FilterUtil.h"
-#include "demonstration/Lab2.h"
-#include "demonstration/Lab3.h"
-#include "demonstration/Lab4.h"
-#include "demonstration/Lab5.h"
+#include "common/Filter.h"
+#include "test/Lab2.h"
+#include "test/Lab3.h"
+#include "test/Lab4.h"
+#include "test/Lab5.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-//        Lab1::work();
-//    Lab2::demo();
-//    Lab3::demo();
-//    Lab4::demo();
-    Lab5::demo();
+    Lab2::test();
+//    Lab3::test();
+//    Lab4::test();
+    Lab5::test();
     return 0;
 }

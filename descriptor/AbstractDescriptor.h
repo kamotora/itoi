@@ -1,7 +1,3 @@
-//
-// Created by kamotora on 28.04.2021.
-//
-
 #ifndef ITOI_ABSTRACTDESCRIPTOR_H
 #define ITOI_ABSTRACTDESCRIPTOR_H
 
@@ -9,26 +5,28 @@
 #include <numeric>
 #include <algorithm>
 #include "../point/Point.h"
-#include "../core/helper.h"
+#include "../common/border/MirrorPolicy.h"
 
 using namespace std;
 
 class AbstractDescriptor {
 protected:
-    AbstractDescriptor(Point point);
+    IBorderPolicy *DEFAULT_POLICY = new MirrorPolicy();
+
+    explicit AbstractDescriptor(Point point);
 
     vector<double> descriptor;
     Point point;
 public:
+    [[nodiscard]]
     const Point &getPoint() const;
 
+    [[nodiscard]]
     const vector<double> &getDescriptor() const;
 
     void setDescriptor(vector<double> newDescriptor);
 
     void normalize();
-
-    static double distance(const shared_ptr<AbstractDescriptor>& descriptorA, const shared_ptr<AbstractDescriptor>& descriptorB);
 };
 
 

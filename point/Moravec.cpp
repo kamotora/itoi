@@ -1,16 +1,10 @@
 #include "Moravec.h"
 
-vector<Point> Moravec::findPoints(int pointsCount, int windowSize, double tresholdCoef) {
-    vector<int> dx{-1, 0, 1, -1, 1, -1, 0, -1};
-    vector<int> dy{-1, -1, -1, 0, 0, 1, 1, 1};
+vector<Point> Moravec::find_points(int pointsCount, int windowSize, double tresholdCoef) {
+    int w = image->get_width();
+    int h = image->get_height();
 
-    int w = image->getWidth();
-    int h = image->getHeight();
-
-    auto smoothed = make_shared<DoubleImageBorderPolicy>(FilterUtil::applyGauss(image, windowSize),
-                                                         (IBorderPolicy &) DEFAULT_POLICY);
-
-    auto moravec = make_shared<DoubleImage>(w, h);
+    auto moravec = make_shared<ProcessingImg>(w, h);
     for (int i = 0; i < w; i++) {
         for (int j = 0; j < h; j++) {
             double min = std::numeric_limits<double>::max();
@@ -25,7 +19,7 @@ vector<Point> Moravec::findPoints(int pointsCount, int windowSize, double tresho
                 }
                 min = std::min(min, sum);
             }
-            moravec->setPixel(i, j, min);
+            moravec->set_pixel(i, j, min);
         }
     }
     saveImage(moravec, "before_filtering");
@@ -37,9 +31,9 @@ vector<Point> Moravec::findPoints(int pointsCount, int windowSize, double tresho
     return filteredPoints;
 }
 
-QString Moravec::getMethodName() {
+QString Moravec::method_name() {
     return "moravec";
 }
 
-Moravec::Moravec(const shared_ptr<DoubleImage> &image, const QString &imageName, const QString &imageExt)
-        : AbstractPointsFinder(image, imageName, imageExt) {}
+Moravec::Moravec(const shared_ptr<ProcessingImg> &image, const QString &imageName, const QString &imageExt)
+        : AbstractInterestPointsAlgo(image, imageName, imageExt) {}

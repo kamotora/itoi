@@ -3,7 +3,7 @@
 #define IP_SHIFT_H
 
 #include "Distortion.h"
-#include "../core/DoubleImage.h"
+#include "../common/ProcessingImg.h"
 
 using namespace std;
 

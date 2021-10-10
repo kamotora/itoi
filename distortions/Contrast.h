@@ -5,7 +5,7 @@
 
 #include "Distortion.h"
 #include "cmath"
-#include "../core/helper.h"
+
 
 using namespace std;
 

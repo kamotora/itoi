@@ -1,35 +1,33 @@
-//
-// Created by kamotora on 30.03.2021.
-//
-
 #include "Harris.h"
 
-vector<Point> Harris::findPoints(int pointsCount, int windowSize, double tresholdCoef) {
-    int w = image->getWidth();
-    int h = image->getHeight();
-    auto gaussKernel = Kernels::GetGaussSeparableXY(windowSize, true);
-    image = FilterUtil::applySeparable(image, gaussKernel);
+vector<Point> Harris::find_points(int pointsCount, int windowSize, double tresholdCoef) {
+    int w = image->get_width();
+    int h = image->get_height();
+    auto gaussKernel = Kernels::gauss_separable_xy(windowSize, true);
+    image = Filter::applySeparable(image, gaussKernel);
 
-    auto dx = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivX(image));
-    auto dy = make_shared<DoubleImageBorderPolicy>(FilterUtil::derivY(image));
-    auto harris = make_shared<DoubleImage>(w, h);
+    auto dx = Filter::sobel_x(image);
+    auto dy = Filter::sobel_y(image);
+    auto harris = make_shared<ProcessingImg>(w, h);
 
     for (int x = 0; x < w; x++) {
         for (int y = 0; y < h; y++) {
             vector<vector<double>> currentMatrix(2, vector<double>(2, 0));
             for (int u = -windowSize; u <= windowSize; u++) {
                 for (int v = -windowSize; v <= windowSize; v++) {
-                    double Ix = dx->getBorderedPixel(x + u, y + v);
-                    double Iy = dy->getBorderedPixel(x + u, y + v);
-                    double gaussPoint = FilterUtil::getSeparableValue(gaussKernel, u + windowSize, v + windowSize);
-                    currentMatrix[0][0] += Ix * Ix * gaussPoint;
-                    currentMatrix[0][1] += Ix * Iy * gaussPoint;
-                    currentMatrix[1][0] += Ix * Iy * gaussPoint;
-                    currentMatrix[1][1] += Iy * Iy * gaussPoint;
+                    double values[2] = {0, 0};
+                    values[0] = ((IBorderPolicy &) DEFAULT_POLICY).get_pixel(*dx, x + u, y + v);
+                    values[1] = ((IBorderPolicy &) DEFAULT_POLICY).get_pixel(*dy, x + u, y + v);
+                    double gaussPoint = Filter::get_separable_value(gaussKernel, u + windowSize, v + windowSize);
+                    for (int i = 0; i < 2; i++) {
+                        for (int j = 0; j < 2; j++) {
+                            currentMatrix[i][j] += values[i] * values[j] * gaussPoint;
+                        }
+                    }
                 }
             }
-            vector<double> eigenvalues = getEigenValues(currentMatrix);
-            harris->setPixel(x, y, *min_element(eigenvalues.begin(), eigenvalues.end()));
+            vector<double> eigenvalues = eigen_values(currentMatrix);
+            harris->set_pixel(x, y, *min_element(eigenvalues.begin(), eigenvalues.end()));
         }
     }
     if (!imageName.isNull())
@@ -44,7 +42,7 @@ vector<Point> Harris::findPoints(int pointsCount, int windowSize, double treshol
     return pointsAfterFiltering;
 }
 
-vector<double> Harris::getEigenValues(vector<vector<double>> matrix) {
+vector<double> Harris::eigen_values(vector<vector<double>> matrix) {
     vector<double> eigenvalues(2);
 
     double a = 1;
@@ -63,15 +61,15 @@ vector<double> Harris::getEigenValues(vector<vector<double>> matrix) {
     return eigenvalues;
 }
 
-QString Harris::getMethodName() {
+QString Harris::method_name() {
     return "harris";
 }
 
 Harris::Harris(
-        const shared_ptr<DoubleImage> &image,
+        const shared_ptr<ProcessingImg> &image,
         const QString &imageName,
         const QString &imageExt)
-        : AbstractPointsFinder(image, imageName, imageExt) {}
+        : AbstractInterestPointsAlgo(image, imageName, imageExt) {}
 
 Harris::Harris(
-        const shared_ptr<DoubleImage> &image) : AbstractPointsFinder(image) {}
+        const shared_ptr<ProcessingImg> &image) : AbstractInterestPointsAlgo(image) {}

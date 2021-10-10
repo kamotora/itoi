@@ -23,6 +23,6 @@ int Contrast::change(double value) const {
     result *= _factor;
     result += 0.5;
     result *= 255;
-    return (int) Helper::simpleRound(result);
+    int intResult = (int) result;
+    return (intResult < 0) ? 0 : (intResult >= 255 ? 255 : intResult);
 }
-

@@ -2,16 +2,20 @@
 #define ITOI_MORAVEC_H
 
 
-#include "AbstractPointsFinder.h"
-#include "../filter/FilterUtil.h"
+#include "AbstractInterestPointsAlgo.h"
+#include "../common/Filter.h"
 
-class Moravec : public AbstractPointsFinder {
+class Moravec : public AbstractInterestPointsAlgo {
+private:
+    vector<int> dx{-1, 0, 1, -1, 1, -1, 0, -1};
+    vector<int> dy{-1, -1, -1, 0, 0, 1, 1, 1};
+
 public:
-    vector<Point> findPoints(int pointsCount, int windowSize, double tresholdCoef) override;
+    vector<Point> find_points(int pointsCount, int windowSize, double tresholdCoef) override;
 
-    Moravec(const shared_ptr<DoubleImage> &image, const QString &imageName, const QString &imageExt);
+    Moravec(const shared_ptr<ProcessingImg> &image, const QString &imageName, const QString &imageExt);
 
-    QString getMethodName() override;
+    QString method_name() override;
 };
 
 

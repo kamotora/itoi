@@ -1,25 +1,21 @@
-//
-// Created by kamotora on 30.03.2021.
-//
-
 #ifndef ITOI_HARRIS_H
 #define ITOI_HARRIS_H
 
 
-#include "AbstractPointsFinder.h"
-#include "../filter/FilterUtil.h"
+#include "AbstractInterestPointsAlgo.h"
+#include "../common/Filter.h"
 
-class Harris : public AbstractPointsFinder {
+class Harris : public AbstractInterestPointsAlgo {
 public:
-    Harris(const shared_ptr<DoubleImage> &image, const QString &imageName, const QString &imageExt);
+    Harris(const shared_ptr<ProcessingImg> &image, const QString &imageName, const QString &imageExt);
 
-    Harris(const shared_ptr<DoubleImage> &image);
+    Harris(const shared_ptr<ProcessingImg> &image);
 
-    vector<Point> findPoints(int pointsCount, int windowSize = 4, double tresholdCoef = 0.05) override;
+    vector<Point> find_points(int pointsCount, int windowSize = 4, double tresholdCoef = 0.05) override;
 
-    QString getMethodName() override;
+    QString method_name() override;
 
-    static vector<double> getEigenValues(vector<vector<double>> matrix);
+    static vector<double> eigen_values(vector<vector<double>> matrix);
 };
 
 

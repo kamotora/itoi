@@ -1,7 +1,3 @@
-//
-// Created by kamotora on 30.03.2021.
-//
-
 #ifndef ITOI_POINT_H
 #define ITOI_POINT_H
 
@@ -20,9 +16,9 @@ public:
     [[nodiscard]]
     double getValue() const;
 
-    [[nodiscard]] int getX() const;
+    [[nodiscard]] int get_x() const;
 
-    [[nodiscard]] int getY() const;
+    [[nodiscard]] int get_y() const;
 
     double distance(Point &point) const;
 
@@ -32,8 +28,8 @@ public:
 
     static double sqr(int i) ;
     [[nodiscard]]
-    double getAngle() const;
-    void setAngle(double _angle);
+    double get_angle() const;
+    void set_angle(double _angle);
 };
 
 

@@ -27,14 +27,14 @@ double Basket::normalize(double angle) {
     return angle;
 }
 
-const vector<double> &Basket::getBasket() const {
+const vector<double> &Basket::get_basket() const {
     return basket;
 }
 
 // пики
-vector<double> Basket::getHighestAngles() {
-    auto firstMax = getMaxAngle();
-    auto secondMax = getMaxAngle(firstMax.first, firstMax.second * 0.8);
+vector<double> Basket::get_highest_angles() {
+    auto firstMax = get_max_angle();
+    auto secondMax = get_max_angle(firstMax.first, firstMax.second * 0.8);
 //    auto result = secondMax.first != -1 ? vector<double>{firstMax.second, secondMax.second} : vector<double>{firstMax.second};
     vector<double> result;
     auto values = vector<pair<int, double>>{firstMax, secondMax};
@@ -51,8 +51,8 @@ vector<double> Basket::getHighestAngles() {
         result.push_back(normalize(interpolate(x - 1, prevValue, x, value, x + 1, nextValue) * step));
     }
 
-    for (int i = 0; i < result.size(); i++)
-        result[i] = PI2 - result[i];
+    for (double & i : result)
+        i = PI2 - i;
     return result;
 }
 
@@ -63,7 +63,7 @@ double Basket::interpolate(double x1, double y1, double x2, double y2, double x3
     return -b / (2 * a);
 }
 
-pair<int, double> Basket::getMaxAngle(int excludeIndex, double min) {
+pair<int, double> Basket::get_max_angle(int excludeIndex, double min) {
     auto max = numeric_limits<double>::min();
     int maxIndex = -1;
     for (int i = 0; i < size; i++) {

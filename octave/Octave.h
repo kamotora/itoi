@@ -2,16 +2,19 @@
 #define ITOI_OCTAVE_H
 
 
-#include "OctaveElement.h"
+#include "Element.h"
 #include "vector"
 
 class Octave {
 private:
-    vector<shared_ptr<OctaveElement>> elements;
+    vector<shared_ptr<Element>> elements;
 public:
-    [[nodiscard]] vector<shared_ptr<OctaveElement>> getElements() const;
-    void addElement(const shared_ptr<OctaveElement>& element);
-    shared_ptr<OctaveElement> getLast();
+    [[nodiscard]]
+    vector<shared_ptr<Element>> get_elements() const;
+
+    void addElement(const shared_ptr<Element> &element);
+
+    shared_ptr<Element> getLast();
 };
 
 

@@ -1,14 +1,10 @@
-//
-// Created by kamotora on 30.03.2021.
-//
-
 #include "Point.h"
 
-int Point::getX() const {
+int Point::get_x() const {
     return x;
 }
 
-int Point::getY() const {
+int Point::get_y() const {
     return y;
 }
 
@@ -16,7 +12,7 @@ Point::Point(int x, int y, double value) : x(x), y(y), value(value) {}
 
 
 Point::Point(const Point &point, double angle) : Point(point) {
-    setAngle(angle);
+    set_angle(angle);
 }
 
 Point::Point(int x, int y, double value, double angle) : Point(Point(x, y, value), angle) {}
@@ -41,11 +37,11 @@ double Point::sqr(int i) {
     return i * i;
 }
 
-void Point::setAngle(double _angle) {
+void Point::set_angle(double _angle) {
     this->angle = _angle;
 }
 
-double Point::getAngle() const {
+double Point::get_angle() const {
     return angle;
 }
 
