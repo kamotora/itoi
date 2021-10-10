@@ -113,6 +113,9 @@ private:
 
 public:
     static void test() {
+
+        cout << "Start test for Lab2..." << endl;
+
         Lab5("lenna", ".png", 3, 8, 50, 4, 8)
                 .hog_with_rotated_right(90)
                 ->hog_with_rotated_right(45)

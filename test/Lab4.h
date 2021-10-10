@@ -81,6 +81,9 @@ private:
     }
 public:
     static void test() {
+
+        cout << "Start test for Lab2..." << endl;
+
         Lab4("lenna", ".png", 3, 8,
              32, 8, 4)
                 .shifted_xy(40)

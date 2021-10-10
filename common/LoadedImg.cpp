@@ -1,4 +1,5 @@
 #include <QLabel>
+#include <filesystem>
 #include "LoadedImg.h"
 
 unsigned char LoadedImg::grayscale(const QColor &rgbPixel) {
@@ -62,6 +63,8 @@ void LoadedImg::save(const QImage &image, const QString &imageName) {
         cerr << "Try to save null image" << endl;
         throw invalid_argument("Try to save null image");
     }
+    auto dir = (RESOURCES + OUTPUT).toStdString();
+    std::filesystem::create_directories(dir);
     image.save(RESOURCES + OUTPUT + imageName);
 }
 

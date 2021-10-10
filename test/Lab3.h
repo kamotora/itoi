@@ -48,6 +48,8 @@ private:
 public:
     static void test() {
 
+        cout << "Start test for Lab2..." << endl;
+
         Lab3("shrek", ".jpg").moravec()->moravec();
 
 

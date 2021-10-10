@@ -4,7 +4,7 @@ AbstractInterestPointsAlgo::AbstractInterestPointsAlgo(const shared_ptr<Processi
                                                        const QString &imageExt)
         : image(image), imageName(imageName), imageExt(imageExt) {
     if (imageName.isNull())
-        cout << "imageName for _points finder == null. We will not save intermediate results" << endl;
+        cout << "imageName for points finder == null. We will not save intermediate results" << endl;
 }
 
 vector<Point> AbstractInterestPointsAlgo::localMaximum(double thresholdCoeff) {

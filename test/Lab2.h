@@ -43,7 +43,8 @@ private:
 
     void saveAsCompoundImage(const vector<shared_ptr<Octave>> &octaves) {
         for (int i = 0; i < nLevels; i++) {
-            auto resultImage = LoadedImg::from_processing_img(*octaves[0]->get_elements()[i]->getImage()).native_image();
+            auto resultImage = LoadedImg::from_processing_img(
+                    *octaves[0]->get_elements()[i]->getImage()).native_image();
             for (int j = 0; j < nOctaves; j++) {
                 auto curImage = LoadedImg::from_processing_img(
                         *octaves[j]->get_elements()[i]->getImage()).native_image();
@@ -58,7 +59,9 @@ private:
     }
 
 public:
+//    int main(int argc, char *argv[]) {
     static void test() {
+        cout << "Start test for Lab2..." << endl;
 //        a
         {
             Lab2(5, 2, 1, 0.5, 7.13, "butterfly", ".jpg")

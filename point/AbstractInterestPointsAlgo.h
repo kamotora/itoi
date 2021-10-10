@@ -23,7 +23,11 @@ protected:
     void setPoint(int x, int y, const shared_ptr<ProcessingImg> &sharedPtr);
 
 public:
-    explicit AbstractInterestPointsAlgo(const shared_ptr<ProcessingImg> &image, const QString &imageName = QString::null,
+    /**
+     * Чтобы сохранить промежуточные результаты, нужно указать imageName и imageExt
+     */
+    explicit AbstractInterestPointsAlgo(const shared_ptr<ProcessingImg> &image,
+                                        const QString &imageName = QString::null,
                                         const QString &imageExt = QString::null);
 
     virtual vector<Point> find_points(int pointsCount, int windowSize, double tresholdCoef = 0.1) = 0;
