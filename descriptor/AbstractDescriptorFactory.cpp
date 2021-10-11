@@ -1,11 +1,11 @@
 #include "AbstractDescriptorFactory.h"
 
 const shared_ptr<ProcessingImg> &AbstractDescriptorFactory::get_first_image() const {
-    return firstImage;
+    return _first;
 }
 
 const shared_ptr<ProcessingImg> &AbstractDescriptorFactory::get_second_image() const {
-    return secondImage;
+    return _second;
 }
 
 shared_ptr<ProcessingImg>
@@ -43,21 +43,20 @@ AbstractDescriptorFactory::count_gradient_angle(const shared_ptr<ProcessingImg> 
 shared_ptr<DescriptorPair> AbstractDescriptorFactory::match(const vector<shared_ptr<AbstractDescriptor>> &first,
                                                             const vector<shared_ptr<AbstractDescriptor>> &second,
                                                             bool need_show_all) {
-    vector<pair<Point, Point>> pointsMatching;
+    vector<pair<Point, Point>> matched_points;
 
     for (const auto &item: first) {
-        auto closest = getClosest(item, second, need_show_all);
-        if (closest == nullptr)
-            continue;
-        pointsMatching.emplace_back(item->get_point(), closest->get_point());
+        auto closest = get_closest(item, second, need_show_all);
+        if (closest != nullptr)
+            matched_points.emplace_back(item->get_point(), closest->get_point());
     }
 
-    return make_shared<DescriptorPair>(pointsMatching, first, second);
+    return make_shared<DescriptorPair>(matched_points, first, second);
 }
 
-shared_ptr<AbstractDescriptor> AbstractDescriptorFactory::getClosest(const shared_ptr<AbstractDescriptor> &descriptor,
-                                                                     const vector<shared_ptr<AbstractDescriptor>> &descriptors,
-                                                                     bool need_show_all) {
+shared_ptr<AbstractDescriptor> AbstractDescriptorFactory::get_closest(const shared_ptr<AbstractDescriptor> &descriptor,
+                                                                      const vector<shared_ptr<AbstractDescriptor>> &descriptors,
+                                                                      bool need_show_all) {
     vector<double> distances;
     distances.reserve(descriptors.size());
     for (const auto &descriptorB: descriptors) {

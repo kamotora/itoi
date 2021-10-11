@@ -5,15 +5,15 @@
 
 #include <QtGui/QPixmap>
 
-class Distortion {
+class AbstractDistortion {
 public:
-    Distortion() = default;
+    AbstractDistortion() = default;
 
     virtual QPixmap distort(QPixmap pixmap) = 0;
 
     virtual QString getName() = 0;
 
-    virtual ~Distortion() = default;
+    virtual ~AbstractDistortion() = default;
 };
 
 

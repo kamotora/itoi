@@ -12,10 +12,15 @@ shared_ptr<DescriptorPair>
 SiftFactory::create(const shared_ptr<ProcessingImg> &first, const shared_ptr<ProcessingImg> &second,
                     int _gridSize,
                     int _cellSize, int _basketSize, int _pointsCount) {
-    auto creator = SiftFactory(first, second, _gridSize, _cellSize, _basketSize, _pointsCount);
+    auto factory = SiftFactory(first,
+                               second,
+                               _gridSize,
+                               _cellSize,
+                               _basketSize,
+                               _pointsCount);
 
-    return match(creator.create_descriptors(creator.get_first_image()),
-                 creator.create_descriptors(creator.get_second_image()));
+    return match(factory.create_descriptors(factory.get_first_image()),
+                 factory.create_descriptors(factory.get_second_image()));
 }
 
 
@@ -23,10 +28,9 @@ vector<shared_ptr<AbstractDescriptor>>
 SiftFactory::create_descriptors(const shared_ptr<ProcessingImg> &img) {
     auto x = Filter::sobel_x(img);
     auto y = Filter::sobel_y(img);
-    auto gradient = count_gradient_angle(x, y);
-    auto gradientAngle = count_gradient_angle(x, y);
     auto points = (new Harris(img))->find_points(pointsCount);
-    return create_descriptors(gradient, gradientAngle, points);
+    return create_descriptors(count_gradient_angle(x, y),
+                              count_gradient_angle(x, y), points);
 }
 
 
@@ -64,8 +68,7 @@ vector<double> SiftFactory::calculate_angles(const shared_ptr<ProcessingImg> &gr
         }
     }
 
-    auto peeks = basket.get_highest_angles();
-    return peeks;
+    return basket.get_highest_angles();
 }
 
 

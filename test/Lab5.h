@@ -3,7 +3,7 @@
 
 
 #include <QPixmap>
-#include "../distortions/Distortion.h"
+#include "../distortions/AbstractDistortion.h"
 #include "../common/LoadedImg.h"
 #include "../distortions/Shift.h"
 #include "../descriptor/SiftFactory.h"
@@ -103,7 +103,7 @@ private:
         return this;
     }
 
-    shared_ptr<LoadedImg> createWithDistortion(const shared_ptr<Distortion> &distortion) {
+    shared_ptr<LoadedImg> createWithDistortion(const shared_ptr<AbstractDistortion> &distortion) {
         auto result = make_shared<LoadedImg>(
                 LoadedImg::copy(distortion->distort(QPixmap::fromImage(loadedImg->native_image()))));
         result->set_name(imageName + "_" + distortion->getName());
@@ -114,35 +114,36 @@ private:
 public:
     static void test() {
 
-        cout << "Start test for Lab2..." << endl;
+        cout << "Start test for Lab5..." << endl;
 
         Lab5("lenna", ".png", 3, 8, 50, 4, 8)
                 .hog_with_rotated_right(90)
-                ->hog_with_rotated_right(45)
-                ->hog_with_rotated_right(30)
-                ->hog_with_rotated_right(77)
-                ->hog_with_rotated_right(138)
-                ->hog_with_rotated_right(90)
-                ->hog_with_rotated_right(180)
-                ->sift_with_shifted_xy(40)
-                ->sift_with_shifted_xy(40)
+//                ->sift_with_rotated_right(45)
+//                ->sift_with_rotated_left(30)
+//                ->sift_with_rotated_left(77)
+//                ->sift_with_rotated_left(138)
+//                ->sift_with_rotated_right(90)
+//                ->sift_with_rotated_left(180)
+//                ->sift_with_shifted_xy(40)
+//                ->hog_with_shifted_xy(40)
                 ->hog_with_contrast()
-                ->sift_with_contrast();
+                ->sift_with_contrast()
+                ;
 
         Lab5("shrek", ".jpg", 3, 8, 30, 4, 8)
                 .sift_with_rotated_right(45)
-                ->sift_with_rotated_right(90)
+//                ->sift_with_rotated_right(90)
                 ->sift_with_rotated_right(120)
                 ->sift_with_shifted_xy(35)
-                ->sift_with_shifted_xy(35);
+                ->hog_with_shifted_xy(35);
 //
         Lab5("butterfly", ".jpg", 3, 8, 100, 4, 8)
-                .sift_with_rotated_left(180)
-                ->sift_with_rotated_left(37)
-                ->sift_with_rotated_left(90)
+                .hog_with_rotated_left(180)
+//                ->sift_with_rotated_left(37)
+//                ->sift_with_rotated_left(90)
                 ->sift_with_rotated_left(180)
                 ->sift_with_shifted_xy(60)
-                ->sift_with_shifted_xy(60)
+                ->hog_with_shifted_xy(60)
                 ->sift_with_rotated_left(180);
     }
 };

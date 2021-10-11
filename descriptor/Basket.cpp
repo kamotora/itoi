@@ -35,7 +35,6 @@ const vector<double> &Basket::get_basket() const {
 vector<double> Basket::get_highest_angles() {
     auto firstMax = get_max_angle();
     auto secondMax = get_max_angle(firstMax.first, firstMax.second * 0.8);
-//    auto result = secondMax._first != -1 ? vector<double>{firstMax.second, secondMax.second} : vector<double>{firstMax.second};
     vector<double> result;
     auto values = vector<pair<int, double>>{firstMax, secondMax};
     for (int k = 0; k < 2; k++) {

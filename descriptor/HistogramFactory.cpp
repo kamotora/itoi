@@ -10,12 +10,13 @@ shared_ptr<DescriptorPair>
 HistogramFactory::create(const shared_ptr<ProcessingImg> &first, const shared_ptr<ProcessingImg> &second,
                          int _grid_size,
                          int _cell_size, int _basket_size, int _points_count, bool is_need_show) {
-    auto factory = HistogramFactory(first, second, _grid_size, _cell_size, _basket_size, _points_count);
-    auto first_descriptor = factory.create_descriptors(factory.get_first_image());
+    auto factory = HistogramFactory(first, second,
+                                    _grid_size, _cell_size,
+                                    _basket_size, _points_count);
 
-    auto second_descriptor = factory.create_descriptors(factory.get_second_image());
-
-    return match(first_descriptor, second_descriptor, is_need_show);
+    return match(factory.create_descriptors(factory.get_first_image()),
+                 factory.create_descriptors(factory.get_second_image()),
+                 is_need_show);
 }
 
 
@@ -24,12 +25,11 @@ HistogramFactory::create_descriptors(const shared_ptr<ProcessingImg> &img) {
     auto x = Filter::sobel_x(img);
     auto y = Filter::sobel_y(img);
 
-    auto gradient = count_gradient(x, y);
-    auto gradientAngle = count_gradient_angle(x, y);
-
     auto points = (new Harris(img))->find_points(pointsCount);
 
-    return create_descriptors(gradient, gradientAngle, points);
+    return create_descriptors(count_gradient(x, y),
+                              count_gradient_angle(x, y),
+                              points);
 }
 
 

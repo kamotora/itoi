@@ -12,7 +12,7 @@ public:
     [[nodiscard]]
     vector<shared_ptr<Element>> get_elements() const;
 
-    void addElement(const shared_ptr<Element> &element);
+    void add_element(const shared_ptr<Element> &element);
 
     shared_ptr<Element> getLast();
 };

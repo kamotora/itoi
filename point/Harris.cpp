@@ -4,7 +4,7 @@ vector<Point> Harris::find_points(int pointsCount, int windowSize, double tresho
     int w = image->width();
     int h = image->height();
     auto gaussKernel = Kernels::gauss_separable_xy(windowSize, true);
-    image = Filter::applySeparable(image, gaussKernel);
+    image = Filter::apply_separable(image, gaussKernel);
 
     auto dx = Filter::sobel_x(image);
     auto dy = Filter::sobel_y(image);

@@ -3,13 +3,13 @@
 #define IP_CONTRAST_H
 
 
-#include "Distortion.h"
+#include "AbstractDistortion.h"
 #include "cmath"
 
 
 using namespace std;
 
-class Contrast : public Distortion {
+class Contrast : public AbstractDistortion {
 public:
     explicit Contrast(double factor) : _factor(factor) {};
 

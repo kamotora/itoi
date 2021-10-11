@@ -18,15 +18,15 @@ Histogram::Histogram(const shared_ptr<ProcessingImg> &gradient,
 
     for (int x = left; x < right; x++) {
         for (int y = left; y < right; y++) {
-            int realX = (point.get_x() + x);
-            int realY = (point.get_y() + y);
-            double phi = DEFAULT_POLICY->get_pixel(*gradient_angle, realX, realY);
-            double gradientValue = DEFAULT_POLICY->get_pixel(*gradient, realX, realY);
-            double gaussValue = Filter::get_separable_value(gauss, halfBorder + x, halfBorder + y);
+            int real_x = (point.get_x() + x);
+            int real_y = (point.get_y() + y);
+            double phi = DEFAULT_POLICY->get_pixel(*gradient_angle, real_x, real_y);
+            double gradient_value = DEFAULT_POLICY->get_pixel(*gradient, real_x, real_y);
+            double gauss_value = Filter::get_separable_value(gauss, halfBorder + x, halfBorder + y);
 
             int i = (x - left) / cell_size;
             int j = (y - left) / cell_size;
-            baskets[i][j].add(phi, gradientValue * gaussValue);
+            baskets[i][j].add(phi, gradient_value * gauss_value);
         }
     }
 

@@ -3,7 +3,7 @@
 
 
 #include <QPixmap>
-#include "../distortions/Distortion.h"
+#include "../distortions/AbstractDistortion.h"
 #include "../common/LoadedImg.h"
 #include "../distortions/Shift.h"
 #include "../descriptor/HistogramFactory.h"
@@ -72,7 +72,7 @@ private:
         return create_with_distortion(make_shared<Shift>(shiftX, shiftY));
     }
 
-    shared_ptr<LoadedImg> create_with_distortion(const shared_ptr<Distortion> &distortion) {
+    shared_ptr<LoadedImg> create_with_distortion(const shared_ptr<AbstractDistortion> &distortion) {
         auto result = make_shared<LoadedImg>(
                 LoadedImg::copy(distortion->distort(QPixmap::fromImage(loadedImg->native_image()))));
         result->set_name(imageName + "_" + distortion->getName());
@@ -82,7 +82,7 @@ private:
 public:
     static void test() {
 
-        cout << "Start test for Lab2..." << endl;
+        cout << "Start test for Lab4..." << endl;
 
         Lab4("lenna", ".png", 3, 8,
              32, 8, 4)
@@ -97,11 +97,11 @@ public:
                 ->contrast()
                 ->shifted_x(80);
 
-        Lab4("shrek", ".jpg", 3, 8,
-             36, 8, 4)
-                .contrast(1.5)
-                ->shifted_xy(30)
-                ->shifted_xy(50);
+//        Lab4("shrek", ".jpg", 3, 8,
+//             36, 8, 4)
+//                .contrast(1.5)
+//                ->shifted_xy(30)
+//                ->shifted_xy(50);
     }
 };
 

@@ -30,7 +30,7 @@ add_executable(${PROJECT_NAME}
         point/AbstractInterestPointsAlgo.cpp point/AbstractInterestPointsAlgo.h
         point/Moravec.cpp point/Moravec.h
         point/Harris.cpp point/Harris.h
-        distortions/Distortion.cpp distortions/Distortion.h
+        distortions/AbstractDistortion.cpp distortions/AbstractDistortion.h
         distortions/Contrast.cpp distortions/Contrast.h
         distortions/Rotate.cpp distortions/Rotate.h
         distortions/Shift.cpp distortions/Shift.h

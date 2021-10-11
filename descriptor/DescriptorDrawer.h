@@ -26,7 +26,7 @@ public:
 
     static QImage draw_points(const vector<shared_ptr<AbstractDescriptor>> &descriptors, const QImage &image);
 
-    static QImage draw_matching(const shared_ptr<ProcessingImg> &imageA, const shared_ptr<ProcessingImg> &imageB,
+    static QImage draw_matching(const shared_ptr<ProcessingImg> &firstImage, const shared_ptr<ProcessingImg> &secondImage,
                                 const shared_ptr<DescriptorPair> &matchInfo);
 
     static void draw_vectored_point(const Point &point, QImage &image);

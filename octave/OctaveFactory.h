@@ -14,7 +14,7 @@ public:
     generate_octaves(int octavesCount, int nLevels, double sigma0, ProcessingImg &LoadedImg, double sigmaA = 0.5);
 
     static shared_ptr<struct Octave>
-    generateOneOctave(int nLevels, double sigma0, const shared_ptr<ProcessingImg> &startImage, double k,
+    generateOneOctave(int nLevels, double sigma0, const shared_ptr<ProcessingImg> &start_image, double k,
                       double globalSigma);
 
     static double calculateDeltaSigma(double oldSigma, double newSigma);

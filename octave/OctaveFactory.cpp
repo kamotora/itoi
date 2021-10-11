@@ -7,7 +7,7 @@ OctaveFactory::generate_octaves(int octavesCount, int nLevels, double sigma0, Pr
                                 double sigmaA) {
     double k = pow(2.0, 1.0 / nLevels); // интервал между масштабами в октаве
     auto deltaSigma = calculateDeltaSigma(sigmaA, sigma0);
-    auto startImage = Filter::applyGauss(make_shared<ProcessingImg>(LoadedImg), deltaSigma);
+    auto startImage = Filter::gauss(make_shared<ProcessingImg>(LoadedImg), deltaSigma);
     auto globalSigma = sigma0;
     vector<shared_ptr<Octave>> octaves;
     for (int i = 0; i < octavesCount; i++) {
@@ -20,20 +20,20 @@ OctaveFactory::generate_octaves(int octavesCount, int nLevels, double sigma0, Pr
 }
 
 shared_ptr<Octave>
-OctaveFactory::generateOneOctave(int nLevels, double sigma0, const shared_ptr<ProcessingImg> &startImage, double k,
+OctaveFactory::generateOneOctave(int nLevels, double sigma0, const shared_ptr<ProcessingImg> &start_image, double k,
                                  double globalSigma) {
     auto result = make_shared<Octave>();
-    auto startElement = make_shared<Element>(sigma0, globalSigma, startImage);
-    result->addElement(startElement);
+    auto start_element = make_shared<Element>(sigma0, globalSigma, start_image);
+    result->add_element(start_element);
     auto oldSigma = sigma0;
     double curK = k;
     for (int i = 1; i <= nLevels; i++) {
 
         auto newSigma = oldSigma * curK;
         auto deltaSigma = calculateDeltaSigma(oldSigma, newSigma);
-        auto newImage = Filter::applyGauss(startElement->getImage(), deltaSigma);
+        auto newImage = Filter::gauss(start_element->getImage(), deltaSigma);
         Element element(newSigma, globalSigma * curK, newImage);
-        result->addElement(make_shared<Element>(element));
+        result->add_element(make_shared<Element>(element));
         curK *= k;
     }
     return result;

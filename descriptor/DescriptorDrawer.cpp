@@ -1,12 +1,12 @@
 #include "DescriptorDrawer.h"
 
 
-QImage DescriptorDrawer::draw_matching(const shared_ptr<ProcessingImg> &imageA, const shared_ptr<ProcessingImg> &imageB,
+QImage DescriptorDrawer::draw_matching(const shared_ptr<ProcessingImg> &firstImage, const shared_ptr<ProcessingImg> &secondImage,
                                        const shared_ptr<DescriptorPair> &matchInfo) {
     auto markedImageA = draw_points(matchInfo->first(),
-                                    LoadedImg::from_processing_img(*imageA).native_image());
+                                    LoadedImg::from_processing_img(*firstImage).native_image());
     auto markedImageB = draw_points(matchInfo->second(),
-                                    LoadedImg::from_processing_img(*imageB).native_image());
+                                    LoadedImg::from_processing_img(*secondImage).native_image());
     auto minMaxHeight = minmax(markedImageA.height(), markedImageB.height());
     QImage resultImage = QImage(markedImageA.width() + markedImageB.width(), minMaxHeight.second, QImage::Format_RGB32);
 

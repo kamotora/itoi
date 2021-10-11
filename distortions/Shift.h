@@ -2,12 +2,12 @@
 #ifndef IP_SHIFT_H
 #define IP_SHIFT_H
 
-#include "Distortion.h"
+#include "AbstractDistortion.h"
 #include "../common/ProcessingImg.h"
 
 using namespace std;
 
-class Shift : public Distortion {
+class Shift : public AbstractDistortion {
 public:
     Shift(int x, int y) : _x(x), _y(y) {};
 

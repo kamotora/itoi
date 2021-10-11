@@ -48,20 +48,20 @@ private:
 public:
     static void test() {
 
-        cout << "Start test for Lab2..." << endl;
+        cout << "Start test for Lab3..." << endl;
 
-        Lab3("shrek", ".jpg").moravec()->moravec();
+        Lab3("shrek", ".jpg").moravec()->harris();
 
 
-        Lab3("cat_dog", ".jpg").moravec()->moravec();
+        Lab3("cat_dog", ".jpg").moravec()->harris();
 
-        Lab3("cat_dog_brighted", ".jpg").moravec()->moravec();
+        Lab3("cat_dog_brighted", ".jpg").moravec()->harris();
 
-        Lab3("cat_dog_rotated", ".jpg").moravec()->moravec();
-
-        Lab3("cat_dog_noised", ".png").moravec()->moravec();
-
-        Lab3("cat_dog_mirror", ".jpg").moravec()->moravec();
+//        Lab3("cat_dog_rotated", ".jpg").moravec()->harris();
+//
+//        Lab3("cat_dog_noised", ".png").moravec()->harris();
+//
+//        Lab3("cat_dog_mirror", ".jpg").moravec()->harris();
 
 
 //
@@ -69,9 +69,9 @@ public:
 
         Lab3("lenna_brighted", ".png").moravec()->harris();
 
-        Lab3("lenna_rotated", ".png").moravec()->harris();
-
-        Lab3("lenna_noised", ".png").moravec()->harris();
+//        Lab3("lenna_rotated", ".png").moravec()->harris();
+//
+//        Lab3("lenna_noised", ".png").moravec()->harris();
 
         Lab3("lenna_mirror", ".png").moravec()->harris();
     }

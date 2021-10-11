@@ -3,11 +3,11 @@
 #define IP_ROTATE_H
 
 
-#include "Distortion.h"
+#include "AbstractDistortion.h"
 
 using namespace std;
 
-class Rotate : public Distortion {
+class Rotate : public AbstractDistortion {
 public:
     explicit Rotate(double degrees) : _degrees(degrees) {};
 

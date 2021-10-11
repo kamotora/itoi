@@ -30,7 +30,7 @@ public:
                                         const QString &imageName = QString::null,
                                         const QString &imageExt = QString::null);
 
-    virtual vector<Point> find_points(int pointsCount, int windowSize, double tresholdCoef = 0.1) = 0;
+    virtual vector<Point> find_points(int pointsCount, int windowSize, double treshold = 0.1) = 0;
 
     virtual QString method_name() = 0;
 
