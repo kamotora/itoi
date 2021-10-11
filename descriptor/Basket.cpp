@@ -50,8 +50,8 @@ vector<double> Basket::get_highest_angles() {
         result.push_back(normalize(interpolate(x - 1, prevValue, x, value, x + 1, nextValue) * step));
     }
 
-    for (double & i : result)
-        i = PI2 - i;
+    for (int i = 0; i < result.size(); i++)
+        result[i] = PI2 - result[i];
     return result;
 }
 

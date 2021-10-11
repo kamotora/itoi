@@ -9,9 +9,9 @@
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    Lab2::test();
-    Lab3::test();
-    Lab4::test();
+//    Lab2::test();
+//    Lab3::test();
+//    Lab4::test();
     Lab5::test();
     return 0;
 }

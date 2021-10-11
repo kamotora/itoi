@@ -8,7 +8,7 @@
 #include "AbstractDescriptor.h"
 #include "DescriptorPair.h"
 
-static const double MAX_CLOSEST = 0.7;
+static const double MAX_CLOSEST = 0.85;
 
 class AbstractDescriptorFactory {
 protected:

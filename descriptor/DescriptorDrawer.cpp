@@ -18,7 +18,7 @@ QImage DescriptorDrawer::draw_matching(const shared_ptr<ProcessingImg> &firstIma
     painter.drawImage(QRect(markedImageA.width(), 0, markedImageB.width(), markedImageB.height()),
                       markedImageB);
 
-    painter.setPen(QColor(255, 255, 0));
+    painter.setPen(QColor(255, 0, 0));
     for (auto pointsPair: matchInfo->points()) {
 
         auto pointA = pointsPair.first;
@@ -46,7 +46,7 @@ pair<int, int> DescriptorDrawer::round(int x, int y, QImage &image) {
 
 void DescriptorDrawer::set_point(int x, int y, QImage &image) {
     auto pair = round(x, y, image);
-    image.setPixelColor(pair.first, pair.second, qRgb(255, 0, 0));
+    image.setPixelColor(pair.first, pair.second, qRgb(255, 255, 0));
 }
 
 QImage DescriptorDrawer::mark_points(const vector<Point> &points, const QImage &image) {
@@ -68,7 +68,7 @@ void DescriptorDrawer::draw_vectored_point(const Point &point, QImage &image) {
 
     QPainter painter(&image);
     double angle = point.get_angle();
-    painter.setPen(QPen(QColor(255, 0, 0)));
+    painter.setPen(QPen(QColor(255, 255, 0)));
     painter.drawEllipse(QPoint(point.get_x(), point.get_y()), 2, 2);
     if (angle > -10) {
         int dx = (int) (cos(angle) * 10);

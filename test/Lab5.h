@@ -133,7 +133,7 @@ public:
         Lab5("shrek", ".jpg", 3, 8, 30, 4, 8)
                 .sift_with_rotated_right(45)
 //                ->sift_with_rotated_right(90)
-                ->sift_with_rotated_right(120)
+//                ->sift_with_rotated_right(120)
                 ->sift_with_shifted_xy(35)
                 ->hog_with_shifted_xy(35);
 //
@@ -141,7 +141,6 @@ public:
                 .hog_with_rotated_left(180)
 //                ->sift_with_rotated_left(37)
 //                ->sift_with_rotated_left(90)
-                ->sift_with_rotated_left(180)
                 ->sift_with_shifted_xy(60)
                 ->hog_with_shifted_xy(60)
                 ->sift_with_rotated_left(180);
